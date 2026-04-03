@@ -3344,33 +3344,58 @@
 
     // ===== APP VIEW SWITCHING =====
     var APP_VIEWS = { overview:'view-overview', pixels:'view-pixels', gtmview:'view-gtmview', variables:'view-variables' };
+
+    // Original parent containers — for restoring moved elements
+    var _gtmPaneOrigParent = null;
+    var _dlPaneOrigParent  = null;
+
     function switchAppView(viewKey, btnEl) {
-      // hide all views
+      // Restore any moved panes back to their original parent first
+      var paneGtm = document.getElementById('pane-gtm');
+      var paneDl  = document.getElementById('pane-dl');
+      if (_gtmPaneOrigParent && paneGtm && paneGtm.parentElement !== _gtmPaneOrigParent) {
+        _gtmPaneOrigParent.appendChild(paneGtm);
+      }
+      if (_dlPaneOrigParent && paneDl && paneDl.parentElement !== _dlPaneOrigParent) {
+        _dlPaneOrigParent.appendChild(paneDl);
+      }
+
+      // Hide all views
       Object.values(APP_VIEWS).forEach(function(id){
         var el = document.getElementById(id);
         if(el) el.classList.remove('active');
       });
-      // show target
+
+      // Show target
       var target = document.getElementById(APP_VIEWS[viewKey]);
       if(target) target.classList.add('active');
-      // update sidebar active
+
+      // Update sidebar active state
       document.querySelectorAll('#et-sidebar .sb-link').forEach(function(b){ b.classList.remove('active'); });
       if(btnEl) btnEl.classList.add('active');
 
-      // If going to GTM view and we have generated content, inject it
+      // If going to GTM view — MOVE the live pane-gtm element into the view
       if(viewKey === 'gtmview') {
         var gtmViewContent = document.getElementById('gtmViewContent');
-        var paneGtm = document.getElementById('pane-gtm');
+        paneGtm = document.getElementById('pane-gtm');
         if(paneGtm && document.getElementById('outWrap').classList.contains('on')) {
-          gtmViewContent.innerHTML = paneGtm.innerHTML;
+          if (!_gtmPaneOrigParent) _gtmPaneOrigParent = paneGtm.parentElement;
+          // Make it visible (remove opane hidden state) and move it
+          paneGtm.classList.add('on');
+          gtmViewContent.innerHTML = '';
+          gtmViewContent.appendChild(paneGtm);
         }
       }
-      // If going to variables view and we have generated content, inject it
+
+      // If going to variables view — MOVE the live pane-dl element into the view
       if(viewKey === 'variables') {
         var varsContent = document.getElementById('varsViewContent');
-        var paneDl = document.getElementById('pane-dl');
+        paneDl = document.getElementById('pane-dl');
         if(paneDl && document.getElementById('outWrap').classList.contains('on')) {
-          varsContent.innerHTML = paneDl.innerHTML;
+          if (!_dlPaneOrigParent) _dlPaneOrigParent = paneDl.parentElement;
+          paneDl.classList.add('on');
+          varsContent.innerHTML = '';
+          varsContent.appendChild(paneDl);
         }
       }
     }
