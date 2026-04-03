@@ -5384,6 +5384,41 @@
         return JSON.stringify(res.data);
       }
 
+      function isApiNotEnabled(res) {
+        var msg = errMsg(res).toLowerCase();
+        return msg.indexOf('has not been used') !== -1 ||
+               msg.indexOf('is disabled') !== -1 ||
+               msg.indexOf('api_not_enabled') !== -1 ||
+               res.status === 403;
+      }
+
+      function showApiNotEnabledUI(onRetry) {
+        var secs = 10;
+        overlay.innerHTML = '<div id="_gtm_api_err" style="background:#12121f;border:1.5px solid rgba(239,68,68,.4);border-radius:16px;padding:28px 24px;min-width:320px;max-width:440px;width:92vw;color:#e2e8f0;text-align:center">'
+          + '<div style="font-size:36px;margin-bottom:12px">⚙️</div>'
+          + '<div style="font-size:18px;font-weight:800;color:#fca5a5;margin-bottom:8px">Tag Manager API غير مفعّلة</div>'
+          + '<div style="font-size:13px;color:#94a3b8;line-height:1.7;margin-bottom:20px">'
+          + 'الـ API اتفعّلت لكن محتاجة بعض الوقت حتى تنتشر.<br>'
+          + 'هيحاول تاني تلقائياً بعد <span id="_gtm_cdown" style="color:#c4b5fd;font-weight:700">' + secs + '</span> ثانية.</div>'
+          + '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'
+          + '<button id="_gtm_retry_now" onclick="window._gtmRetryNow()" style="background:rgba(124,58,237,.18);border:1.5px solid rgba(124,58,237,.5);border-radius:10px;padding:10px 20px;color:#c4b5fd;cursor:pointer;font-family:Cairo,sans-serif;font-size:14px;font-weight:700">🔄 حاول دلوقتي</button>'
+          + '<a href="https://console.developers.google.com/apis/api/tagmanager.googleapis.com/overview?project=976141198118" target="_blank" style="background:rgba(59,130,246,.1);border:1.5px solid rgba(59,130,246,.4);border-radius:10px;padding:10px 20px;color:#93c5fd;cursor:pointer;font-family:Cairo,sans-serif;font-size:14px;font-weight:700;text-decoration:none;display:inline-block">🔗 فعّل الـ API</a>'
+          + '</div>'
+          + '<button onclick="window._gtmPickerClose()" style="margin-top:14px;background:transparent;border:none;color:#475569;cursor:pointer;font-family:Cairo,sans-serif;font-size:12px">إلغاء</button>'
+          + '</div>';
+        window._gtmPickerClose = function () { overlay.remove(); };
+        window._gtmRetryNow = function () { clearInterval(window._gtmCdownInterval); onRetry(); };
+        window._gtmCdownInterval = setInterval(function () {
+          secs--;
+          var el = document.getElementById('_gtm_cdown');
+          if (el) el.textContent = secs;
+          if (secs <= 0) {
+            clearInterval(window._gtmCdownInterval);
+            onRetry();
+          }
+        }, 1000);
+      }
+
       // ── overlay ───────────────────────────────────────────────
       if (!document.getElementById('_gtm_spin_style')) {
         var st = document.createElement('style');
@@ -5446,9 +5481,17 @@
 
       // ── steps ─────────────────────────────────────────────────
       async function step_accounts() {
-        spin('جاري تحميل الـ GTM Accounts...');
+        spin('⏳ جاري تحميل الـ GTM Accounts...');
         var res = await gtmGet('accounts');
-        if (!res.ok) { overlay.remove(); alert('❌ فشل جلب الـ Accounts:\n' + errMsg(res)); return; }
+        if (!res.ok) {
+          if (isApiNotEnabled(res)) {
+            showApiNotEnabledUI(step_accounts);
+          } else {
+            overlay.remove();
+            alert('❌ فشل جلب الـ Accounts:\n' + errMsg(res));
+          }
+          return;
+        }
         var accounts = (res.data.account) || [];
         if (!accounts.length) { overlay.remove(); alert('مش لاقي أي GTM Account مربوط بالـ Google Account ده'); return; }
         if (accounts.length === 1) { step_containers(accounts[0].accountId); return; }
