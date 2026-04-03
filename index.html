@@ -3307,16 +3307,35 @@
 
       <!-- ══════ GTM CONTAINER VIEW ══════ -->
       <div class="app-view" id="view-gtmview">
-        <div style="margin-bottom:16px;">
+        <div style="margin-bottom:24px;">
           <h2 style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--wht);letter-spacing:-.5px;">GTM Container</h2>
-          <p style="font-size:13px;color:var(--mut);margin-top:4px;">Import or publish your container directly to Google Tag Manager</p>
+          <p style="font-size:13px;color:var(--mut);margin-top:4px;">Import or publish your pixel config directly to Google Tag Manager</p>
         </div>
+
         <div id="gtmViewContent">
-          <div style="text-align:center;padding:80px 20px;color:var(--mut);">
-            <span class="material-symbols-outlined" style="font-size:48px;opacity:.3;display:block;margin-bottom:12px;">inventory_2</span>
-            <p style="font-size:14px;">قم بإنشاء الـ Config أولاً من <button onclick="switchAppView('pixels',document.getElementById('sbPixels'))" style="color:var(--acc);background:none;border:none;font-size:14px;font-weight:600;cursor:pointer;">Pixel Config</button></p>
-          </div>
+          <!-- The generated pane-gtm will be injected here by switchAppView -->
         </div>
+
+        <!-- ── DIRECT PUBLISH SECTION ── -->
+        <h3 style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--wht);margin:32px 0 16px;">Direct Publish</h3>
+
+        <!-- ── STEP 1: CONNECT ── -->
+        <div style="background:var(--sur2);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:28px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:800;color:#000;font-size:15px;flex-shrink:0;">1</div>
+            <div>
+              <div style="font-weight:700;font-size:15px;color:var(--wht);">Connect Google Account</div>
+              <div style="font-size:12px;color:var(--mut);margin-top:2px;">Sign in with the Google account that owns your GTM container</div>
+            </div>
+            <div id="gtmConnStatus" style="margin-left:auto;font-size:12px;color:var(--mut);font-weight:600;"></div>
+          </div>
+          <button id="gtmConnectBtn" onclick="doGTMPublish()"
+            style="display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#000;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:opacity .2s;">
+            <span class="material-symbols-outlined" style="font-size:18px;">device_hub</span>
+            Connect Google Account
+          </button>
+        </div>
+
       </div>
       <!-- END GTM CONTAINER VIEW -->
 
