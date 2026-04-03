@@ -5310,7 +5310,7 @@
         provider.addScope('https://www.googleapis.com/auth/tagmanager.readonly');
         provider.addScope('https://www.googleapis.com/auth/tagmanager.edit.containerversions');
         provider.addScope('https://www.googleapis.com/auth/tagmanager.publish');
-        provider.setCustomParameters({ prompt: 'select_account' });
+        provider.setCustomParameters({ prompt: 'consent select_account' });
 
         var result = await gtmAuth.signInWithPopup(provider);
         var token  = result.credential && result.credential.accessToken;
