@@ -145,6 +145,11 @@
       }
     }
 
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
     @keyframes pulse {
 
       0%,
@@ -452,27 +457,31 @@
       line-height: 1.8;
     }
 
-    /* PROGRESS — Easy Track Stepper */
+    /* PROGRESS — Easy Track Stepper v2 */
     .ptrack {
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 44px;
-      padding: 0 20px;
+      padding: 16px 24px;
+      background: rgba(25, 28, 34, 0.7);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px;
+      backdrop-filter: blur(8px);
     }
 
     .pstep {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .pcirc {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      border: 2px solid var(--sur3);
+      border: 2px solid rgba(255,255,255,0.08);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -480,8 +489,8 @@
       font-size: 13px;
       font-weight: 700;
       color: var(--mut);
-      background: var(--bg);
-      transition: all .3s;
+      background: var(--sur2);
+      transition: all .35s cubic-bezier(.16,1,.3,1);
       position: relative;
       z-index: 1;
     }
@@ -489,43 +498,62 @@
     .pcirc.on {
       border-color: var(--acc);
       color: var(--acc);
-      background: var(--acc-dim);
-      box-shadow: 0 0 0 4px rgba(70, 241, 197, .1), 0 0 20px rgba(70, 241, 197, .15);
+      background: rgba(70,241,197,0.08);
+      box-shadow: 0 0 0 5px rgba(70,241,197,.08), 0 0 24px rgba(70,241,197,.2);
+    }
+
+    .pcirc.on::before {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(70,241,197,.2);
+      animation: pulsering 2s ease infinite;
+    }
+
+    @keyframes pulsering {
+      0%  { transform: scale(1);   opacity: .6; }
+      70% { transform: scale(1.3); opacity: 0; }
+      100%{ transform: scale(1);   opacity: 0; }
     }
 
     .pcirc.done {
       border-color: var(--acc);
       background: var(--acc);
       color: #00382b;
-      font-size: 15px;
-      box-shadow: 0 0 16px rgba(70, 241, 197, .25);
+      font-size: 16px;
+      box-shadow: 0 0 20px rgba(70,241,197,.3), 0 4px 12px rgba(0,0,0,.3);
     }
 
     .plbl {
       font-size: 10px;
       color: var(--mut);
-      transition: color .3s;
+      transition: all .3s;
       white-space: nowrap;
       font-weight: 600;
       font-family: var(--font-ui);
-      letter-spacing: .5px;
+      letter-spacing: .8px;
       text-transform: uppercase;
+      opacity: .7;
     }
 
     .plbl.on {
       color: var(--acc);
+      opacity: 1;
+      text-shadow: 0 0 12px rgba(70,241,197,.4);
     }
 
     .pcon {
       flex: 1;
-      height: 1px;
+      height: 2px;
       max-width: 80px;
       min-width: 24px;
-      background: var(--sur3);
-      margin-bottom: 26px;
+      background: rgba(255,255,255,0.06);
+      margin-bottom: 32px;
       transition: background .4s;
       position: relative;
       overflow: hidden;
+      border-radius: 2px;
     }
 
     .pcon::after {
@@ -534,12 +562,14 @@
       inset: 0;
       background: linear-gradient(to right, var(--acc2), var(--acc));
       transform: scaleX(0);
-      transform-origin: left;
-      transition: transform .6s ease;
+      transform-origin: right;
+      transition: transform .6s cubic-bezier(.16,1,.3,1);
+      border-radius: 2px;
     }
 
     .pcon.done::after {
       transform: scaleX(1);
+      transform-origin: right;
     }
 
     /* PANELS — Glass Cards */
@@ -699,8 +729,10 @@
     /* CMS Selection Grid (New Design) */
     .cms-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
       gap: 20px;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     .cms-card {
@@ -1045,22 +1077,21 @@
     /* ── OUTPUT TABS ── */
     .otabs {
       display: flex;
-      gap: 1px;
-      background: rgba(25, 28, 34, .9);
-      border: 1px solid rgba(255, 255, 255, .06);
-      padding: 4px;
-      border-radius: 14px;
-      margin-bottom: 20px;
+      gap: 4px;
+      background: rgba(16, 19, 26, 0.95);
+      border: 1px solid rgba(70, 241, 197, 0.08);
+      padding: 6px;
+      border-radius: 16px;
+      margin-bottom: 24px;
       overflow-x: auto;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
     }
 
-    .otabs::-webkit-scrollbar {
-      height: 0;
-    }
+    .otabs::-webkit-scrollbar { height: 0; }
 
     .otab {
-      padding: 8px 16px;
-      border-radius: 10px;
+      padding: 9px 16px;
+      border-radius: 11px;
       border: none;
       background: transparent;
       color: var(--mut);
@@ -1068,18 +1099,28 @@
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
-      transition: all .15s;
+      transition: all .2s;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      letter-spacing: 0.2px;
     }
 
     .otab:hover {
       color: var(--wht2);
+      background: rgba(255,255,255,0.04);
     }
 
     .otab.on {
-      background: var(--sur3);
+      background: rgba(70, 241, 197, 0.1);
       color: var(--acc);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, .5);
+      box-shadow: 0 0 0 1px rgba(70,241,197,0.2), 0 2px 8px rgba(0,0,0,0.4);
+      font-weight: 700;
+    }
+
+    .otab.on .material-symbols-outlined {
+      filter: drop-shadow(0 0 4px rgba(70,241,197,0.5));
     }
 
     .opane {
@@ -2198,13 +2239,30 @@
     }
 
     #userBar .ub-logo {
-      font-weight: 800;
-      font-size: 20px;
+      font-weight: 900;
+      font-size: 18px;
       color: var(--acc);
       text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(70,241,197,0.15);
+      background: rgba(70,241,197,0.05);
+      transition: all .2s;
+      letter-spacing: -0.3px;
+    }
+
+    #userBar .ub-logo:hover {
+      background: rgba(70,241,197,0.1);
+      border-color: rgba(70,241,197,0.3);
+      box-shadow: 0 0 16px rgba(70,241,197,0.1);
+    }
+
+    #userBar .ub-logo .material-symbols-outlined {
+      font-size: 20px;
+      filter: drop-shadow(0 0 6px rgba(70,241,197,0.5));
     }
 
     #userBar .ub-nav {
@@ -2276,6 +2334,113 @@
     .ub-icons button:hover {
       color: var(--acc);
     }
+
+    /* ── History Panel ───────────────────────────────────────── */
+    #historyPanel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 380px;
+      max-width: 95vw;
+      height: 100vh;
+      background: #0D1018;
+      border-right: 1px solid rgba(70,241,197,0.1);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform .35s cubic-bezier(.16,1,.3,1);
+      box-shadow: 4px 0 40px rgba(0,0,0,0.6);
+    }
+    #historyPanel.open { transform: translateX(0); }
+
+    #historyOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 149;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+    #historyOverlay.open { opacity: 1; pointer-events: all; }
+
+    .hp-header {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hp-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--wht);
+      flex: 1;
+    }
+    .hp-close {
+      background: none;
+      border: none;
+      color: var(--mut);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      transition: all .15s;
+      display: flex;
+    }
+    .hp-close:hover { background: var(--sur2); color: var(--wht); }
+
+    .hp-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+    }
+    .hp-empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--mut);
+    }
+    .hp-empty .material-symbols-outlined { font-size:48px; opacity:.3; display:block; margin-bottom:12px; }
+    .hp-empty p { font-size:13px; line-height:1.7; }
+
+    .hp-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .hp-item:last-child { border-bottom: none; }
+    .hp-item-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--acc-dim);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--acc); flex-shrink: 0; margin-top: 1px;
+    }
+    .hp-item-info { flex: 1; min-width: 0; }
+    .hp-item-name { font-size:13px; font-weight:600; color:var(--wht2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .hp-item-meta { font-size:11px; color:var(--mut); margin-top:3px; }
+    .hp-item-badge {
+      font-size:10px; padding:3px 8px; border-radius:100px;
+      background:var(--acc-dim); color:var(--acc);
+      font-weight:600; white-space:nowrap; flex-shrink:0;
+    }
+
+    .ub-profile {
+      position: relative;
+      cursor: pointer;
+    }
+    .ub-profile::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 1.5px solid transparent;
+      transition: border-color .2s;
+    }
+    .ub-profile:hover::after { border-color: rgba(70,241,197,0.5); }
 
     .ub-profile {
       width: 32px;
@@ -2532,7 +2697,7 @@
     <div class="ub-left">
       <a href="index.html" class="ub-logo">
         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">radar</span>
-        Easy Track
+        <span>Easy<span style="color:#e1e2eb;">Track</span></span>
       </a>
       <div class="ub-nav" style="display:none;">
         <a href="#" class="ub-nav-link active">Dashboard</a>
@@ -2555,10 +2720,10 @@
         <button><span class="material-symbols-outlined">notifications</span></button>
         <button><span class="material-symbols-outlined">help</span></button>
       </div>
-      <div class="ub-profile">
+      <div class="ub-profile" onclick="toggleHistory()" title="سجل النشاط">
         <img
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuDj6yl2AOM1v07OkjHxEhwA3D3NxxfJGf6J_t02PyuQca57V1XH6I00Rp6qjOnaKFbIXhDWlGDEn3WbaR-NBHQjKdkjXYOgKtJ9dMX8t9EfOOq-CT2ZVQr-B9teg0lekCP08lY6McYWuY6n4O88QojZYsS9hY-PbIflYNW-TprDPgyq8vdWK8NJOoDXXsasyqn4NSKIbyl5svwn92sthixu2gV-8wTqjML-RvosELRK0q1x-k4cg7W8KsqURlaaRw0l1IEhTt1EQQ"
-          alt="User profile" onclick="logout()" title="تسجيل الخروج" style="cursor:pointer;">
+          alt="User profile" style="width:100%;height:100%;object-fit:cover;">
       </div>
     </div>
   </div>
@@ -2603,6 +2768,27 @@
   <!-- Overlay -->
   <div id="dashOverlay" onclick="toggleDashboard()"></div>
 
+  <!-- History Overlay -->
+  <div id="historyOverlay" onclick="toggleHistory()"></div>
+
+  <!-- History Panel -->
+  <div id="historyPanel">
+    <div class="hp-header">
+      <span class="material-symbols-outlined" style="color:var(--acc);font-size:22px;">history</span>
+      <div class="hp-title">سجل النشاط</div>
+      <button class="hp-close" onclick="toggleHistory()">
+        <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+      </button>
+    </div>
+    <div class="hp-body" id="historyBody">
+      <div class="hp-empty" id="historyEmpty">
+        <span class="material-symbols-outlined">manage_history</span>
+        <p>لم يتم تسجيل أي نشاط بعد.<br>ابدأ بإنشاء مشروع تتبع جديد.</p>
+      </div>
+      <div id="historyList"></div>
+    </div>
+  </div>
+
   <!-- Plan limit banner -->
   <div id="limitBanner">
     <button class="lb-close" onclick="document.getElementById('limitBanner').style.display='none'">✕</button>
@@ -2616,27 +2802,29 @@
     <!-- GATE -->
     <div id="gate">
       <div class="gbox">
-        <div class="geyebrow">
-          <div style="display:flex;align-items:center;gap:14px;margin-bottom:28px;">
-            <!-- Easy Track Icon -->
-            <div
-              style="width:56px;height:56px;border-radius:16px;background:rgba(70,241,197,0.1);border:1px solid rgba(70,241,197,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 24px rgba(70,241,197,0.1);">
-              <span class="material-symbols-outlined"
-                style="font-size:28px;color:#46f1c5;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">radar</span>
+        <!-- Easy Track Logo — Login Screen -->
+        <div style="text-align:center;margin-bottom:32px;">
+          <div style="display:inline-flex;flex-direction:column;align-items:center;gap:14px;">
+            <!-- Logo Icon -->
+            <div style="position:relative;width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,rgba(70,241,197,0.12),rgba(0,212,170,0.08));border:1.5px solid rgba(70,241,197,0.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(70,241,197,0.15),0 0 80px rgba(70,241,197,0.06),inset 0 1px 0 rgba(255,255,255,0.08);">
+              <span class="material-symbols-outlined" style="font-size:40px;color:#46f1c5;font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 48;filter:drop-shadow(0 0 10px rgba(70,241,197,0.5));">radar</span>
+              <!-- Corner accents -->
+              <span style="position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:#46f1c5;box-shadow:0 0 8px #46f1c5;"></span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px;line-height:1;">
-              <div
-                style="font-family:'Plus Jakarta Sans',Cairo,sans-serif;font-weight:900;font-size:24px;letter-spacing:-0.8px;color:#e1e2eb;">
-                Easy<span style="color:#46f1c5;">Track</span>
+            <!-- Brand Name -->
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+              <div style="font-family:'Plus Jakarta Sans',Cairo,sans-serif;font-weight:900;font-size:32px;letter-spacing:-1.2px;color:#e1e2eb;line-height:1;">
+                Easy<span style="color:#46f1c5;text-shadow:0 0 20px rgba(70,241,197,0.4);">Track</span>
               </div>
-              <div
-                style="font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:rgba(70,241,197,0.6);text-transform:uppercase;">
-                Pixel Config Generator</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="display:inline-block;width:20px;height:1px;background:rgba(70,241,197,0.4);"></span>
+                <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:3.5px;color:rgba(70,241,197,0.7);text-transform:uppercase;">Pixel Config v3</span>
+                <span style="display:inline-block;width:20px;height:1px;background:rgba(70,241,197,0.4);"></span>
+              </div>
             </div>
           </div>
         </div>
         <h1 class="gtitle">احصل على <em>Pixel Setup</em> كامل<br>في دقيقتين — مجاناً</h1>
-        <p class="gsub">JSON Config + GTM Container + DataLayer Code<br>بناءً على GA4 Official Schema من Google</p>
         <!-- Auth Tabs -->
         <div class="gate-tabs">
           <button class="gate-tab on" id="gtab-login" onclick="switchGateTab('login')">تسجيل دخول</button>
@@ -2699,6 +2887,61 @@
       </div>
     </div>
 
+    <!-- Settings Panel -->
+    <div id="settingsPanel" style="position:fixed;top:0;left:0;width:400px;max-width:95vw;height:100vh;background:#0D1018;border-right:1px solid rgba(70,241,197,0.1);z-index:150;display:flex;flex-direction:column;transform:translateX(-100%);transition:transform .35s cubic-bezier(.16,1,.3,1);box-shadow:4px 0 40px rgba(0,0,0,0.6);">
+      <div style="padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:12px;">
+        <span class="material-symbols-outlined" style="color:var(--acc);font-size:22px;font-variation-settings:'FILL' 1;">manage_accounts</span>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--wht);flex:1;">إعدادات الحساب</div>
+        <button onclick="toggleSettings()" style="background:none;border:none;color:var(--mut);cursor:pointer;padding:6px;border-radius:8px;display:flex;transition:all .15s;">
+          <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+        </button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px;">
+        <div style="background:linear-gradient(135deg,rgba(70,241,197,0.08),rgba(70,241,197,0.03));border:1px solid rgba(70,241,197,0.2);border-radius:14px;padding:16px 18px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <span class="material-symbols-outlined" style="color:var(--acc);font-size:20px;font-variation-settings:'FILL' 1;">workspace_premium</span>
+            <span style="font-weight:700;font-size:15px;color:var(--wht);">الخطة الحالية</span>
+          </div>
+          <div id="settingsPlanBadge" style="display:inline-flex;align-items:center;gap:8px;background:rgba(70,241,197,0.12);border:1px solid rgba(70,241,197,0.3);padding:6px 14px;border-radius:8px;font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--acc);">BASIC</div>
+          <div id="settingsPlanLimits" style="margin-top:10px;font-size:12px;color:var(--mut);line-height:1.8;">1 مشروع · 3 منصات</div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <div style="font-size:11px;letter-spacing:2px;color:var(--mut2);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:12px;">معلومات الحساب</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div>
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:6px;">الاسم</label>
+              <input id="settingsName" type="text" placeholder="اسمك" style="width:100%;background:rgba(39,42,49,0.6);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;color:var(--wht2);font-family:var(--font-ui);font-size:13px;outline:none;">
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:6px;">البريد الإلكتروني</label>
+              <input id="settingsEmail" type="email" readonly placeholder="email@example.com" style="width:100%;background:rgba(39,42,49,0.3);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:11px 14px;color:var(--mut);font-family:var(--font-ui);font-size:13px;outline:none;direction:ltr;text-align:right;">
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:6px;">رقم الهاتف</label>
+              <input id="settingsPhone" type="tel" placeholder="+966 5XX XXX XXXX" style="width:100%;background:rgba(39,42,49,0.6);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;color:var(--wht2);font-family:var(--font-ui);font-size:13px;outline:none;direction:ltr;text-align:right;">
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--mut);display:block;margin-bottom:6px;">المنصة الأساسية</label>
+              <select id="settingsCms" style="width:100%;background:rgba(39,42,49,0.6);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;color:var(--wht2);font-family:var(--font-ui);font-size:13px;outline:none;">
+                <option value="">اختار...</option>
+                <option value="salla">سلة</option>
+                <option value="zid">زد</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <button onclick="saveSettings()" style="width:100%;background:var(--acc);color:#00382b;border:none;border-radius:12px;padding:13px;font-family:var(--font-display);font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(70,241,197,0.2);">
+          <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;">save</span> حفظ الإعدادات
+        </button>
+        <div style="margin-top:16px;text-align:center;">
+          <button onclick="logout()" style="background:none;border:1px solid rgba(255,82,82,0.2);color:var(--red);border-radius:10px;padding:10px 20px;font-family:var(--font-ui);font-size:13px;cursor:pointer;">
+            تسجيل الخروج
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="settingsOverlay" onclick="toggleSettings()" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:149;opacity:0;pointer-events:none;transition:opacity .3s;"></div>
+
     <!-- ═══ SIDEBAR ═══ -->
     <aside id="et-sidebar">
       <div class="sb-project">
@@ -2727,7 +2970,7 @@
           <span class="material-symbols-outlined" style="font-size:18px;">code</span>
           <span>Variables</span>
         </button>
-        <button class="sb-link" type="button" onclick="toggleDashboard()">
+        <button class="sb-link" type="button" onclick="toggleSettings()">
           <span class="material-symbols-outlined" style="font-size:18px;">settings</span>
           <span>Settings</span>
         </button>
@@ -2737,10 +2980,18 @@
           <span class="material-symbols-outlined" style="font-size:18px;">add_circle</span>
           <span>New Tracking Pixel</span>
         </button>
-        <a class="sb-footer-link" href="https://www.linkedin.com/in/youssef-elsouly" target="_blank">
-          <span class="material-symbols-outlined" style="font-size:18px;">description</span>
-          <span>Documentation</span>
-        </a>
+
+        <!-- Quick Guide Section -->
+        <div style="padding:8px 12px 4px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--mut2);text-transform:uppercase;">Quick Guide</div>
+        <button class="sb-footer-link" type="button" onclick="showCmsGuide('salla')">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#e84393;">storefront</span>
+          <span>سلة — Setup Guide</span>
+        </button>
+        <button class="sb-footer-link" type="button" onclick="showCmsGuide('zid')">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#4f6ef7;">bolt</span>
+          <span>زد — Setup Guide</span>
+        </button>
+
         <button class="sb-footer-link" type="button" onclick="logout()">
           <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
           <span>Log Out</span>
@@ -2753,6 +3004,31 @@
 
       <!-- ══════ OVERVIEW VIEW ══════ -->
       <div class="app-view active" id="view-overview">
+
+        <!-- User Welcome Header -->
+        <div id="overviewUserHeader" style="display:flex;align-items:center;gap:14px;padding:18px 24px;background:rgba(16,19,26,0.8);border:1px solid rgba(255,255,255,0.05);border-radius:18px;margin-bottom:24px;backdrop-filter:blur(12px);">
+          <!-- Avatar / Settings opener -->
+          <div onclick="toggleSettings()" title="إعدادات الحساب" style="cursor:pointer;position:relative;flex-shrink:0;">
+            <div style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,rgba(70,241,197,0.2),rgba(0,212,170,0.1));border:2px solid rgba(70,241,197,0.3);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:all .2s;" id="ovUserAvatar">
+              <span class="material-symbols-outlined" style="font-size:24px;color:var(--acc);font-variation-settings:'FILL' 1;">person</span>
+            </div>
+            <div style="position:absolute;bottom:0;right:0;width:12px;height:12px;background:var(--acc);border-radius:50%;border:2px solid #0B0E14;box-shadow:0 0 6px var(--acc);"></div>
+          </div>
+          <!-- Name + Plan -->
+          <div style="flex:1;min-width:0;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--wht);line-height:1.2;" id="ovWelcomeName">مرحباً...</div>
+            <div style="font-size:12px;color:var(--mut);margin-top:3px;">العمل على متجرك</div>
+          </div>
+          <!-- Plan badge -->
+          <div id="ovPlanBadge" style="display:flex;align-items:center;gap:6px;background:rgba(70,241,197,0.08);border:1px solid rgba(70,241,197,0.2);border-radius:100px;padding:5px 12px;">
+            <span class="material-symbols-outlined" style="font-size:13px;color:var(--acc);font-variation-settings:'FILL' 1;">workspace_premium</span>
+            <span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--acc);" id="ovPlanText">BASIC</span>
+          </div>
+          <!-- Settings button -->
+          <button onclick="toggleSettings()" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:8px 10px;color:var(--mut);cursor:pointer;display:flex;align-items:center;transition:all .2s;" title="إعدادات الحساب">
+            <span class="material-symbols-outlined" style="font-size:18px;">settings</span>
+          </button>
+        </div>
 
         <!-- Hero Section -->
         <div id="overviewHero">
@@ -2863,65 +3139,44 @@
           <div class="psub" style="font-size:16px;">اختر متجرك للبدء في دمج أحداث التتبع بكل دقة.</div>
         </div>
         <div class="cms-grid" id="cmsGrid">
+          <!-- سلة -->
           <button class="cms-card" data-val="salla">
             <div class="cms-chk">✓</div>
-            <div class="cms-logo">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2Ba8StGnWDE1cFBJ2z6uugQTDVTr8tlt-No7cmQlTK1635auH4lat8R5jvBLDsKOAqz-pPqx7wt_lFxt3E9gHS-V5HWYJFco9XwhW9KUT5E675jcywUOV1HpKACGnSdgljfO3BZFIqmGN_p_6Paom65jQPJBK18JOu06QdD4EBBgLnZSz9OFpMveuSqufWGEyGBHJtbE083DpSO9sMZq-6ADynNA6VcllZfN6TXa7kL78sLOOcuohIwIeFThKF-LGNQCZb4zozQ"
-                alt="Salla">
+            <div class="cms-logo" style="background:rgba(232,67,147,0.08);border-color:rgba(232,67,147,0.2);">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;">
+                <rect width="80" height="80" rx="18" fill="rgba(232,67,147,0.12)"/>
+                <!-- Salla shopping bag icon -->
+                <path d="M52 32H28a2 2 0 00-2 1.7l-3 20A2 2 0 0025 56h30a2 2 0 002-2.3l-3-20A2 2 0 0052 32z" fill="#E84393" opacity="0.9"/>
+                <path d="M33 32c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="#E84393" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="35" cy="40" r="1.5" fill="white"/>
+                <circle cx="45" cy="40" r="1.5" fill="white"/>
+                <text x="40" y="52" text-anchor="middle" font-family="Arial" font-weight="700" font-size="10" fill="white">سلة</text>
+              </svg>
             </div>
             <h3 class="cms-title">سلة</h3>
-            <p class="cms-sub">Arabic e-commerce engine</p>
-            <div class="cms-sel-btn">اختيار <span class="material-symbols-outlined"
-                style="font-size:16px;">chevron_left</span></div>
-          </button>
-
-          <button class="cms-card" data-val="shopify">
-            <div class="cms-chk">✓</div>
-            <div class="cms-logo">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYMc5s-eJhZbAaHTXAkTADuGeVZ7RPVL2booXUwr3OXP0lxOcuPVF66HpXBlHjxQP50oCPBk4WQZ0aIAeENMKmH31BH-r6qKltDLAHGqim-iOp-XtiWqRgEgbdKHFkUBM8KWpO9HFnnTEQuJf4jfCRa5cl4a7Fi_X14KGNC8p2zVmygjxvakY-BJJHJ7KnRQiawLqLKO1QK9B1o7F62UUA0rQhqPQla_ewoEGOOH8qOoxLjdL4tuPFSKZ4mlTgjMnag9T9z85ojQ"
-                alt="Shopify">
+            <p class="cms-sub">GTM Native · Data Layer تلقائي</p>
+            <div style="display:flex;gap:4px;justify-content:center;margin-top:6px;flex-wrap:wrap;">
+              <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(70,241,197,0.1);color:var(--acc);font-family:var(--font-mono);">GTM Native</span>
+              <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(173,198,255,0.1);color:var(--blu);font-family:var(--font-mono);">DataLayer Auto</span>
             </div>
-            <h3 class="cms-title">Shopify</h3>
-            <p class="cms-sub">Global retail standard</p>
-            <div class="cms-sel-btn">اختيار <span class="material-symbols-outlined"
-                style="font-size:16px;">chevron_left</span></div>
+            <div class="cms-sel-btn">اختيار <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span></div>
           </button>
 
-          <button class="cms-card" data-val="woocommerce">
-            <div class="cms-chk">✓</div>
-            <div class="cms-logo">
-              <img
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2owanyWFY7Q2K5hhr_63a8_tqYKbpwq0DKphP_biW9h1AM_pf3YJT4uaYxPBA6RuwDN9MUlSBzMy8k9XncBPKGH3o_btQ3WT_mBmgNTZ0aQMDvR3agXzHtuYd4MZv2-DFfGj8vSjsHsdW_g85fdpyEQS5QlVQi6Y3N3EQOP6O9FdtgLD7GHbrEJrSXCuTedFDtIu7ATjJDqrkWTRx0tnmdIAjB3vhsXvBfUiGPK6VqqYmXG0N-tp5rg0gl_ZaazfofDo6Uy1Jog"
-                alt="WooCommerce">
-            </div>
-            <h3 class="cms-title">WooCommerce</h3>
-            <p class="cms-sub">WordPress open source</p>
-            <div class="cms-sel-btn">اختيار <span class="material-symbols-outlined"
-                style="font-size:16px;">chevron_left</span></div>
-          </button>
-
+          <!-- زد -->
           <button class="cms-card" data-val="zid">
             <div class="cms-chk">✓</div>
-            <div class="cms-logo">
-              <span class="material-symbols-outlined">bolt</span>
+            <div class="cms-logo" style="background:rgba(79,110,247,0.08);border-color:rgba(79,110,247,0.2);">
+              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:48px;height:48px;">
+                <path d="M50 10 L80 45 L60 45 L85 90 L35 50 L55 50 Z" fill="#4f6ef7" stroke="#46f1c5" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
             </div>
             <h3 class="cms-title">زد</h3>
-            <p class="cms-sub">Zid ecommerce</p>
-            <div class="cms-sel-btn">اختيار <span class="material-symbols-outlined"
-                style="font-size:16px;">chevron_left</span></div>
-          </button>
-
-          <button class="cms-card" data-val="custom">
-            <div class="cms-chk">✓</div>
-            <div class="cms-logo">
-              <span class="material-symbols-outlined">code</span>
+            <p class="cms-sub">Events تلقائية · GTM Native</p>
+            <div style="display:flex;gap:4px;justify-content:center;margin-top:6px;flex-wrap:wrap;">
+              <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(70,241,197,0.1);color:var(--acc);font-family:var(--font-mono);">GTM Native</span>
+              <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(79,110,247,0.12);color:#7b8ff5;font-family:var(--font-mono);">Events Auto</span>
             </div>
-            <h3 class="cms-title">Custom Site</h3>
-            <p class="cms-sub">Manual API injection</p>
-            <div class="cms-sel-btn">اختيار <span class="material-symbols-outlined"
-                style="font-size:16px;">chevron_left</span></div>
+            <div class="cms-sel-btn">اختيار <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span></div>
           </button>
         </div>
         <div class="pacts"><button class="bnxt" id="btn1" disabled onclick="goStep(2)">التالي →</button></div>
@@ -2934,24 +3189,86 @@
           <div class="psub">ممكن تختار أكتر من واحدة</div>
         </div>
         <div class="cgrid" id="platGrid">
+
+          <!-- Meta -->
           <button class="cbtn" data-val="meta">
-            <div class="cchk">✓</div><span class="cicon">📘</span>Meta
+            <div class="cchk">✓</div>
+            <span class="cicon">
+              <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
+                <path d="M5 25c0-5.8 1.3-10.2 3.2-13.1C10.1 9 12.5 7.5 15 7.5c2 0 3.8.8 5.5 2.4 1.2 1.1 2.5 2.9 4.5 6.1 2-3.2 3.3-5 4.5-6.1 1.7-1.6 3.5-2.4 5.5-2.4 2.5 0 4.9 1.5 6.8 4.4C43.7 14.8 45 19.2 45 25c0 3.8-.7 7-2 9.4-1.6 2.9-3.9 4.6-6.3 4.6-1.5 0-2.9-.5-4.4-1.5-1.9-1.3-3.8-3.4-6.6-7.6-2.8 4.2-4.7 6.3-6.6 7.6-1.5 1-2.9 1.5-4.4 1.5-2.4 0-4.7-1.7-6.3-4.6C5.7 32 5 28.8 5 25z" fill="#1877F2"/>
+                <path d="M25 27.5c-2.8-4.2-4.7-6.3-6.6-7.6-1-.7-2-1-2.9-1-1.5 0-2.8.9-3.7 2.3C10.9 22.8 10 24.8 10 25c0 5.8 2.2 11 5 11 .8 0 1.7-.3 2.7-1 1.5-1 3-2.7 5.3-5.8L25 27.5zm0 0c2.8-4.2 4.7-6.3 6.6-7.6 1-.7 2-1 2.9-1 1.5 0 2.8.9 3.7 2.3.9 1.6 1.8 3.6 1.8 3.8 0 5.8-2.2 11-5 11-.8 0-1.7-.3-2.7-1-1.5-1-3-2.7-5.3-5.8V27.5z" fill="white" opacity="0.3"/>
+              </svg>
+            </span>
+            Meta Pixel
           </button>
+
+          <!-- Snapchat -->
           <button class="cbtn" data-val="snapchat">
-            <div class="cchk">✓</div><span class="cicon">👻</span>Snapchat
+            <div class="cchk">✓</div>
+            <span class="cicon">
+              <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
+                <rect width="50" height="50" rx="12" fill="#FFFC00"/>
+                <path d="M25 8c-5.6 0-9.5 3.8-9.5 9.3v1.5c-.6.3-1.4.4-2.1.2-.3 0-.4.1-.4.4 0 1.2 2.1 1.7 2.5 1.8.4 1.3 1.2 2.4 2.2 3.2-1.6.8-3.9 1.2-4.2 2.3 0 .2.2.4.4.4 2 .3 3.7 1.1 4.9 2.7.1.2.1.3-.1.4-1.5.6-3 .6-3 1.4 0 .5.7.7 1.3.7.9 0 1.8-.3 2.6-.6.5-.2.9-.2 1.3.1.8.6 1 1.7 1 2.7 0 .2.1.4.3.4 1 .1 2.1.1 2.8.1s1.8 0 2.8-.1c.2 0 .3-.2.3-.4 0-1 .2-2.1 1-2.7.4-.3.8-.3 1.3-.1.8.3 1.7.6 2.6.6.6 0 1.3-.2 1.3-.7 0-.8-1.5-.8-3-1.4-.2-.1-.2-.2-.1-.4 1.2-1.6 2.9-2.4 4.9-2.7.2 0 .4-.2.4-.4-.3-1.1-2.6-1.5-4.2-2.3 1-.8 1.8-1.9 2.2-3.2.4-.1 2.5-.6 2.5-1.8 0-.3-.1-.4-.4-.4-.7.2-1.5.1-2.1-.2v-1.5C34.5 11.8 30.6 8 25 8z" fill="#333"/>
+              </svg>
+            </span>
+            Snapchat
           </button>
+
+          <!-- TikTok -->
           <button class="cbtn" data-val="tiktok">
-            <div class="cchk">✓</div><span class="cicon">🎵</span>TikTok
+            <div class="cchk">✓</div>
+            <span class="cicon">
+              <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
+                <rect width="50" height="50" rx="12" fill="#010101"/>
+                <path d="M34.5 14.5a7.5 7.5 0 01-7.5-7.5h-5v22.3c0 2.1-1.7 3.7-3.8 3.7a3.75 3.75 0 01-3.7-3.7c0-2.1 1.7-3.7 3.7-3.7.4 0 .7.1 1 .2V20a8.9 8.9 0 00-1-.1c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7 8.7-3.9 8.7-8.7V21.4a12.6 12.6 0 007.5 2.4v-5a7.4 7.4 0 01-4.9-4.3h4.9V14.5z" fill="white"/>
+                <path d="M36.7 14.5a7.5 7.5 0 01-7.5-7.5h-3v22.3c0 2.1-1.7 3.7-3.8 3.7a3.75 3.75 0 01-3.7-3.7c0-2.1 1.7-3.7 3.7-3.7.4 0 .7.1 1 .2V20a8.9 8.9 0 00-1-.1c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7 8.7-3.9 8.7-8.7V21.4a12.6 12.6 0 007.5 2.4v-5a7.6 7.6 0 01-2.9-4.3" fill="#69C9D0"/>
+              </svg>
+            </span>
+            TikTok
           </button>
+
+          <!-- Google Ads -->
           <button class="cbtn" data-val="google">
-            <div class="cchk">✓</div><span class="cicon">🔍</span>Google Ads
+            <div class="cchk">✓</div>
+            <span class="cicon">
+              <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
+                <path d="M25 8A17 17 0 1 0 25 42A17 17 0 1 0 25 8Z" fill="white"/>
+                <path d="M33.5 20H25v5h4.9c-.4 2.5-2.6 4.3-4.9 4.3a5.8 5.8 0 0 1 0-11.6c1.4 0 2.7.5 3.7 1.4l3.5-3.5A10.5 10.5 0 0 0 25 12.5a12.5 12.5 0 0 0 0 25c7 0 11.5-4.9 11.5-12 0-.8-.1-1.7-.2-2.5H33.5z" fill="#4285F4"/>
+                <path d="M14.3 27.9l-4 3.1A12.5 12.5 0 0 0 25 37.5v-5c-4.1 0-7.7-2.3-9.4-5.8l-.3.2z" fill="#34A853"/>
+                <path d="M10.3 18.6A12.5 12.5 0 0 0 12.5 31l4-3.1c-.7-1.4-1-3-1-4.9 0-2 .4-3.8 1.1-5.4l-4.1-3.2a12.4 12.4 0 0 0-2.2 4.2z" fill="#FBBC05"/>
+                <path d="M25 12.5c2.7 0 5.1 1 6.9 2.5l3.6-3.6A12.4 12.4 0 0 0 25 8a12.5 12.5 0 0 0-10.7 6l4.1 3.2A7.5 7.5 0 0 1 25 12.5z" fill="#EA4335"/>
+              </svg>
+            </span>
+            Google Ads
           </button>
+
+          <!-- GA4 -->
           <button class="cbtn" data-val="ga4">
-            <div class="cchk">✓</div><span class="cicon">📊</span>GA4
+            <div class="cchk">✓</div>
+            <span class="cicon">
+              <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
+                <rect width="50" height="50" rx="12" fill="#F9AB00" opacity="0.15"/>
+                <rect x="10" y="30" width="8" height="12" rx="3" fill="#E37400"/>
+                <rect x="21" y="20" width="8" height="22" rx="3" fill="#F9AB00"/>
+                <rect x="32" y="8" width="8" height="34" rx="3" fill="#E37400"/>
+                <circle cx="14" cy="25" r="4" fill="#F9AB00"/>
+              </svg>
+            </span>
+            Google Analytics
           </button>
+
+          <!-- X/Twitter -->
           <button class="cbtn" data-val="twitter">
-            <div class="cchk">✓</div><span class="cicon">𝕏</span>X / Twitter
+            <div class="cchk">✓</div>
+            <span class="cicon">
+              <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
+                <rect width="50" height="50" rx="12" fill="#000"/>
+                <path d="M28.3 22.5L38.5 11h-2.4l-8.9 10.3L20.3 11H12l10.7 15.5L12 39h2.4l9.3-10.8 7.4 10.8H39L28.3 22.5zm-3.3 3.8l-1.1-1.5L15.1 12.8h3.7l6.9 9.9 1.1 1.5 9 12.9h-3.7l-7.1-10.8z" fill="white"/>
+              </svg>
+            </span>
+            X / Twitter
           </button>
+
         </div>
         <div class="pacts">
           <button class="bbk" onclick="goStep(1)">← رجوع</button>
@@ -2989,40 +3306,36 @@
       <div class="outwrap" id="outWrap">
         <div class="sumstrip" id="sumStrip"></div>
         <div class="otabs">
-          <button class="otab on" onclick="oTab('json',this)">📄 JSON Config</button>
-          <button class="otab" onclick="oTab('gtm',this)">📦 GTM Container</button>
-          <button class="otab" onclick="oTab('dl',this)">🏷️ DataLayer Code</button>
-          <button class="otab" onclick="oTab('consent',this)">🍪 Consent v2</button>
-          <button class="otab" onclick="oTab('health',this)">🩺 Pixel Health</button>
-          <button class="otab" onclick="oTab('guide',this)">📋 Guide</button>
-          <button class="otab" onclick="oTab('score',this)">⭐ Event Score</button>
-          <button class="otab" onclick="oTab('projects',this)">📁 مشاريعي</button>
-          <button class="otab" onclick="oTab('plan',this)">📊 Tracking Plan</button>
-          <button class="otab" id="sallaBridgeTab" style="display:none" onclick="oTab('bridge',this)">🏗️ سلة
-            Bridge</button>
-          <button class="otab" onclick="oTab('audit',this)">📑 Audit Report</button>
-          <button class="otab" onclick="oTab('stores',this)">🏪 المتاجر</button>
+          <button class="otab on" id="tabGtm" onclick="oTab('gtm',this)">
+            <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1;">inventory_2</span>
+            GTM Container
+          </button>
+          <button class="otab" id="tabHealth" onclick="oTab('health',this)">
+            <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1;">health_and_safety</span>
+            Pixel Health
+          </button>
+          <button class="otab" id="tabScore" onclick="oTab('score',this)">
+            <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1;">stars</span>
+            Event Score
+          </button>
+          <button class="otab" id="tabGuide" onclick="oTab('guide',this)">
+            <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1;">auto_stories</span>
+            Setup Guide
+          </button>
+          <button class="otab" id="tabPlan" onclick="oTab('plan',this)">
+            <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1;">table_chart</span>
+            Tracking Plan
+          </button>
+          <button class="otab" id="tabProjects" onclick="oTab('projects',this)">
+            <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1;">folder_open</span>
+            مشاريعي
+          </button>
         </div>
 
-        <div class="opane on" id="pane-json">
-          <div class="cwrap">
-            <div class="ctbar">
-              <div class="ctdots">
-                <div class="ctdot" style="background:#ff5f57"></div>
-                <div class="ctdot" style="background:#febc2e"></div>
-                <div class="ctdot" style="background:#28c840"></div>
-              </div>
-              <span class="clang">pixel-config.json</span>
-              <div class="ctacts">
-                <button class="dlbtn" id="dlJson">⬇️ تحميل</button>
-                <button class="cpybtn" id="cpyJson">نسخ</button>
-              </div>
-            </div>
-            <div class="cbody" id="jsonBody"></div>
-          </div>
-        </div>
+        <!-- pane-json hidden (download only, no tab) -->
+        <div style="display:none" id="pane-json"><div class="cbody" id="jsonBody"></div></div>
 
-        <div class="opane" id="pane-gtm">
+        <div class="opane on" id="pane-gtm">
 
           <!-- GTM Stepper -->
           <div class="gtm-stepper">
@@ -3134,75 +3447,30 @@
 
         </div>
 
-        <div class="opane" id="pane-dl">
-          <div class="infonote gld"><strong style="color:var(--gold)">🏷️ DataLayer Code</strong> — حطه في الـ site مش
-            في GTM.<br>كل event له <code>window.dataLayer.push()</code> — اكمل الـ values من الـ dynamic data.</div>
-          <div class="cwrap">
-            <div class="ctbar">
-              <div class="ctdots">
-                <div class="ctdot" style="background:#ff5f57"></div>
-                <div class="ctdot" style="background:#febc2e"></div>
-                <div class="ctdot" style="background:#28c840"></div>
-              </div>
-              <span class="clang">datalayer.js</span>
-              <button class="cpybtn" id="cpyDl">نسخ</button>
-            </div>
-            <div class="cbody" id="dlBody"></div>
-          </div>
-        </div>
+        <!-- pane-dl hidden (no tab) -->
+        <div style="display:none" id="pane-dl"><div class="cbody" id="dlBody"></div></div>
 
-        <div class="opane" id="pane-consent">
-          <div class="infonote gld" style="margin-bottom:16px">
-            <strong style="color:var(--gold)">🍪 Consent Mode v2</strong> — مطلوب من Google من مارس 2024 لكل campaigns
-            في أوروبا والـ MENA.<br>
-            الـ GTM Container بيحتوي على الـ tags تلقائياً — محتاج بس تربط الـ CMP بتاعك.
-          </div>
-          <div class="cwrap" style="margin-bottom:16px">
-            <div class="ctbar">
-              <div class="ctdots">
-                <div class="ctdot" style="background:#ff5f57"></div>
-                <div class="ctdot" style="background:#febc2e"></div>
-                <div class="ctdot" style="background:#28c840"></div>
-              </div>
-              <span class="clang">consent-init.js</span>
-              <div class="ctacts"><button class="cpybtn" id="cpyConsent">نسخ</button></div>
-            </div>
-            <div class="cbody" id="consentBody"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px" id="consentGuide">
-            <div class="infonote grn">
-              <strong style="color:var(--grn)">✅ CMPs مدعومة مع GTM</strong><br><br>
-              <strong>Cookiebot</strong> — Template جاهز في GTM Gallery<br>
-              <strong>OneTrust</strong> — Template جاهز في GTM Gallery<br>
-              <strong>Iubenda</strong> — Template جاهز في GTM Gallery<br>
-              <strong>Complianz</strong> — WordPress Plugin + GTM
-            </div>
-            <div class="infonote" style="background:rgba(96,165,250,.06);border-color:rgba(96,165,250,.2)">
-              <strong style="color:var(--blu)">📋 خطوات الربط</strong><br><br>
-              1. افتح GTM → Templates → Search Gallery<br>
-              2. ابحث عن اسم الـ CMP بتاعك<br>
-              3. أضف الـ Template واعمل Tag جديد<br>
-              4. الـ Tag بيشغّل <code>consent_update</code> تلقائياً<br>
-              5. تأكد من GTM Preview إن الـ consent بيتبعت
-            </div>
-          </div>
-        </div>
+        <!-- pane-consent hidden (no tab) -->
+        <div style="display:none" id="pane-consent"><div id="consentBody"></div></div>
         <div class="opane" id="pane-health">
-          <div class="infonote gld" style="margin-bottom:20px">
-            <strong style="color:var(--gold)">🩺 Pixel Health Checker</strong> — حط URL الموقع وهيتأكد إن الـ pixels
-            موجودة صح في الـ HTML.
-            <br><span style="font-size:11px;color:var(--mut)">⚠️ بيفحص الـ base code بس — مش بيشغّل JavaScript أو
-              events.</span>
+          <div id="healthConfigCheck">
+            <div style="text-align:center;padding:60px 24px;color:var(--mut);">
+              <span class="material-symbols-outlined" style="font-size:48px;display:block;margin-bottom:12px;opacity:.3">health_and_safety</span>
+              <p style="font-size:14px;">اعمل Generate من Pixel Config عشان نحلل صحة الـ Configuration.</p>
+            </div>
           </div>
-          <div style="display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap;">
-            <input id="healthUrl" type="url" placeholder="https://example.com"
-              style="flex:1;min-width:200px;background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 16px;color:var(--wht);font-family:var(--font-mono);font-size:13px;outline:none;direction:ltr;">
-            <button onclick="runHealthCheck()"
-              style="background:linear-gradient(135deg,var(--gold),#c8922a);color:#05090f;border:none;border-radius:12px;padding:13px 28px;font-family:var(--font-ui);font-size:14px;font-weight:900;cursor:pointer;white-space:nowrap;">
-              🔍 افحص
-            </button>
+          <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.05);padding-top:16px;">
+            <div style="font-size:12px;color:var(--mut);margin-bottom:10px;">🔗 أو افحص URL مباشرة:</div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <input id="healthUrl" type="url" placeholder="https://example.com"
+                style="flex:1;min-width:200px;background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 16px;color:var(--wht);font-family:var(--font-mono);font-size:13px;outline:none;direction:ltr;">
+              <button onclick="runHealthCheck()"
+                style="background:linear-gradient(135deg,var(--acc),var(--acc2));color:#05090f;border:none;border-radius:12px;padding:13px 28px;font-family:var(--font-ui);font-size:14px;font-weight:900;cursor:pointer;white-space:nowrap;">
+                🔍 افحص URL
+              </button>
+            </div>
+            <div id="healthResults" style="margin-top:16px;"></div>
           </div>
-          <div id="healthResults"></div>
         </div>
         <div class="opane" id="pane-guide">
           <div class="gsteps" id="guideSteps"></div>
@@ -3222,83 +3490,8 @@
           <div id="planContent"></div>
         </div>
 
-        <!-- Salla UA→GA4 Bridge Tab -->
-        <div class="opane" id="pane-bridge">
-          <div class="infonote"
-            style="background:rgba(255,149,0,.06);border-color:rgba(255,149,0,.2);margin-bottom:16px">
-            <strong style="color:#ff9500">🏗️ سلة UA→GA4 Bridge</strong> — سلة بتبعت events بـ Universal Analytics
-            format القديم.<br>
-            الـ Bridge ده Custom HTML Tag في GTM بيحوّل الـ UA events لـ GA4 تلقائياً — من غير ما تغيّر في كود سلة.
-            <br><br>
-            <strong style="color:var(--wht2)">طريقة الاستخدام:</strong><br>
-            1. انسخ الكود أو حمّله<br>
-            2. في GTM → Tags → New → Custom HTML Tag<br>
-            3. الـ Trigger: <strong>All Pages</strong> (يتشغّل قبل أي event tag)<br>
-            4. التسلسل: في Tag Sequencing → Setup Tag → حطّه قبل كل الـ tags التانية
-          </div>
-          <div class="cwrap">
-            <div class="ctbar">
-              <div class="ctdots">
-                <div class="ctdot" style="background:#ff5f57"></div>
-                <div class="ctdot" style="background:#febc2e"></div>
-                <div class="ctdot" style="background:#28c840"></div>
-              </div>
-              <span class="clang">salla-ua-ga4-bridge.js</span>
-              <div class="ctacts">
-                <button class="dlbtn" id="dlBridge" onclick="dlBridgeFile()">⬇️ تحميل</button>
-                <button class="cpybtn" id="cpyBridge" onclick="copyEl('bridgeBody',this)">نسخ</button>
-              </div>
-            </div>
-            <div class="cbody" id="bridgeBody"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-            <div class="infonote grn">
-              <strong style="color:var(--grn)">✅ Events المدعومة</strong><br><br>
-              <code>productDetail</code> → <code>view_item</code><br>
-              <code>addToCart</code> → <code>add_to_cart</code><br>
-              <code>removeFromCart</code> → <code>remove_from_cart</code><br>
-              <code>checkout</code> → <code>begin_checkout</code><br>
-              <code>purchase</code> → <code>purchase</code><br>
-              <code>search</code> → <code>search</code>
-            </div>
-            <div class="infonote" style="background:rgba(96,165,250,.06);border-color:rgba(96,165,250,.2)">
-              <strong style="color:var(--blu)">📦 الـ Mapping التلقائي</strong><br><br>
-              <code>ecommerce.purchase.actionField.id</code> → <code>transaction_id</code><br>
-              <code>ecommerce.revenue</code> → <code>value</code><br>
-              <code>ecommerce.*.products[]</code> → <code>items[]</code><br>
-              <code>id</code> → <code>item_id</code><br>
-              <code>name</code> → <code>item_name</code><br>
-              <code>currencyCode</code> → <code>currency</code>
-            </div>
-          </div>
-        </div>
-
-        <!-- Audit Report Tab -->
-        <div class="opane" id="pane-audit">
-          <div style="display:flex;gap:8px;padding:0 0 16px;flex-wrap:wrap;">
-            <button class="dlbtn" onclick="printAuditReport()">🖨️ طباعة / PDF</button>
-            <button class="cpybtn" onclick="copyAuditReport()">📋 نسخ</button>
-          </div>
-          <div id="auditContent"></div>
-        </div>
-
-        <!-- Multi-Store Tab -->
-        <div class="opane" id="pane-stores">
-          <div class="infonote"
-            style="background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.2);margin-bottom:16px">
-            <strong style="color:var(--blu)">🏪 إدارة المتاجر</strong> — احفظ config كل عميل كـ Store منفصل وارجعله
-            بضغطة واحدة. مناسب للـ agencies اللي بتشتغل مع أكتر من عميل.
-          </div>
-          <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;">
-            <input id="storeNameInput" type="text" placeholder="اسم المتجر / العميل..." dir="rtl"
-              style="flex:1;min-width:180px;background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;color:var(--wht);font-family:var(--font-ui);font-size:13px;outline:none;">
-            <button onclick="saveStore()"
-              style="background:linear-gradient(135deg,var(--blu),#4f46e5);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-family:var(--font-ui);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;">
-              💾 احفظ المتجر الحالي
-            </button>
-          </div>
-          <div id="storesList"></div>
-        </div>
+        <!-- pane-bridge hidden (no tab) -->
+        <div style="display:none" id="pane-bridge"><div id="bridgeBody"></div></div>
 
         <div class="resetrow"><button class="brst" onclick="resetAll()">🔄 ابدأ من الأول</button></div>
       </div>
@@ -3312,6 +3505,12 @@
           <p style="font-size:13px;color:var(--mut);margin-top:4px;">Import or publish your pixel config directly to Google Tag Manager</p>
         </div>
 
+        <div id="gtmEmptyState" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;padding:60px 24px;">
+          <span class="material-symbols-outlined" style="font-size:64px;color:rgba(70,241,197,0.2);margin-bottom:20px;">inventory_2</span>
+          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;color:var(--wht);margin-bottom:10px;">GTM Container جاهز للتوليد</div>
+          <p style="color:var(--mut);font-size:14px;line-height:1.8;max-width:400px;margin-bottom:28px;">اختار المنصة والأحداث من Pixel Config عشان نولّدلك GTM Container كامل جاهز للرفع مباشرةً.</p>
+          <button onclick="switchAppView('pixels',document.getElementById('sbPixels'))" style="background:var(--acc);color:#00382b;border:none;border-radius:12px;padding:14px 28px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 20px rgba(70,241,197,0.3);">ابدأ من Pixel Config →</button>
+        </div>
         <div id="gtmViewContent">
           <!-- The generated pane-gtm will be injected here by switchAppView -->
         </div>
@@ -3396,8 +3595,13 @@
       // If going to GTM view — MOVE the live pane-gtm element into the view
       if(viewKey === 'gtmview') {
         var gtmViewContent = document.getElementById('gtmViewContent');
+        var gtmEmpty = document.getElementById('gtmEmptyState');
+        var outWrapEl = document.getElementById('outWrap');
         paneGtm = document.getElementById('pane-gtm');
-        if(paneGtm && document.getElementById('outWrap').classList.contains('on')) {
+        if (gtmEmpty) {
+          gtmEmpty.style.display = (outWrapEl && outWrapEl.classList.contains('on')) ? 'none' : 'flex';
+        }
+        if(paneGtm && outWrapEl && outWrapEl.classList.contains('on')) {
           if (!_gtmPaneOrigParent) _gtmPaneOrigParent = paneGtm.parentElement;
           // Make it visible (remove opane hidden state) and move it
           paneGtm.classList.add('on');
@@ -3848,28 +4052,53 @@
           }
         }
         document.getElementById('jsonBody').textContent = JSON.stringify(buildJSON(), null, 2);
-        document.getElementById('gtmBody').textContent = JSON.stringify(buildGTMContainer(), null, 2);
         document.getElementById('dlBody').textContent = buildDL();
         document.getElementById('guideSteps').innerHTML = buildGuide();
         document.getElementById('scoreContent').innerHTML = buildScore();
+        buildHealthCheck();
+        buildPlan();
         buildSummary();
         for (var i = 1; i <= 4; i++) document.getElementById('s' + i).classList.remove('on');
         document.getElementById('outWrap').classList.add('on');
+        var gtmEmpty = document.getElementById('gtmEmptyState');
+        if (gtmEmpty) gtmEmpty.style.display = 'none';
         updateProg(5);
         // show Salla Bridge tab only when CMS is salla
         var bridgeTab = document.getElementById('sallaBridgeTab');
         if (bridgeTab) bridgeTab.style.display = S.cms === 'salla' ? '' : 'none';
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        bindDownloads();
         // Update Overview page with active pixels
         refreshOverview();
-        // Update GTM/Variables views with generated content
-        var gtmViewContent = document.getElementById('gtmViewContent');
-        var paneGtm = document.getElementById('pane-gtm');
-        if(gtmViewContent && paneGtm) gtmViewContent.innerHTML = paneGtm.innerHTML;
-        var varsContent = document.getElementById('varsViewContent');
-        var paneDl = document.getElementById('pane-dl');
-        if(varsContent && paneDl) varsContent.innerHTML = paneDl.innerHTML;
+        // ── Lazy GTM build: defer heavy JSON serialization so UI stays responsive ──
+        var gtmBodyEl = document.getElementById('gtmBody');
+        if (gtmBodyEl) {
+          gtmBodyEl.textContent = '';
+          gtmBodyEl.innerHTML = '<div style="padding:40px;text-align:center;color:var(--mut);font-size:13px;">'
+            + '<span class="material-symbols-outlined" style="font-size:32px;display:block;margin-bottom:8px;animation:spin 1s linear infinite;">sync</span>'
+            + 'جاري بناء GTM Container...</div>';
+        }
+        var _lazyGtm = (typeof requestIdleCallback !== 'undefined') ? requestIdleCallback : function(fn){ setTimeout(fn, 30); };
+        _lazyGtm(function() {
+          try {
+            var gtmJson = buildGTMContainer();
+            var gtmStr  = JSON.stringify(gtmJson, null, 2);
+            if (gtmBodyEl) gtmBodyEl.textContent = gtmStr;
+            // Sync views after GTM build
+            var gtmViewContent = document.getElementById('gtmViewContent');
+            var paneGtm = document.getElementById('pane-gtm');
+            if (gtmViewContent && paneGtm && !paneGtm.closest('#gtmViewContent')) {
+              gtmViewContent.innerHTML = paneGtm.innerHTML;
+            }
+            var varsContent = document.getElementById('varsViewContent');
+            var paneDl = document.getElementById('pane-dl');
+            if (varsContent && paneDl && !paneDl.closest('#varsViewContent')) {
+              varsContent.innerHTML = paneDl.innerHTML;
+            }
+            bindDownloads();
+          } catch(e) { console.error('GTM build error:', e); }
+        });
+        // Bind downloads immediately for non-GTM buttons; GTM bind deferred above
+        bindDownloads();
       } catch (e) { console.error('generate() error:', e); }
     }
 
@@ -3904,7 +4133,6 @@
       }
       return {
         generated_by: 'Easy Track Easy Track · Pixel Config Generator',
-        schema_source: 'GA4 Recommended Events — developers.google.com/analytics/devguides/collection/ga4/reference/events',
         generated_at: new Date().toISOString().split('T')[0],
         lead: S.lead || {}, cms: S.cms, cms_name: CMS[S.cms].name, cms_notes: CMS[S.cms].note,
         platforms: platforms
@@ -4406,7 +4634,7 @@
       },
       zid: {
         // زد بتبعت events GA4-compatible بشكل كبير
-        note: '// ✅ زد بتدعم GTM Data Layer — Events بتتبعت تلقائياً\n// تأكد إن GTM Container ID اتحط في: لوحة التحكم → التسويق → Google Tag Manager\n// زد بتستخدم GA4 ecommerce schema تقريباً — الـ variables دي للتأكيد',
+        note: '// ✅ زد بتدعم GTM Data Layer — Events بتتبعت تلقائياً\n// تأكد إن GTM Container ID اتحط في: لوحة التحكم → التسويق → Google Tag Manager',
         vars: {
           currency: 'ecommerce.currency',
           value: 'ecommerce.value',
@@ -4437,7 +4665,7 @@
       var lines = [];
       lines.push('// ==============================================');
       lines.push('// GTM Data Layer Code — Easy Track');
-      lines.push('// GA4 Official Schema | ' + new Date().toISOString().split('T')[0]);
+      lines.push('// ' + new Date().toISOString().split('T')[0]);
       if (S.cms) lines.push('// CMS: ' + CMS[S.cms].name);
       lines.push('// ==============================================');
       lines.push('');
@@ -4497,73 +4725,449 @@
     // ===== BUILD GUIDE =====
     function buildGuide() {
       var cms = CMS[S.cms];
-      var gtmGuides = {
-        salla: '1️⃣ في سلة: <code>الإعدادات → التسويق → Google Tag Manager</code><br>2️⃣ حط الـ Container ID (GTM-XXXXXX) واحفظ.<br>3️⃣ سلة بتحقن Data Layer تلقائياً — مش محتاج Plugin إضافي.<br><br><strong>⚠️ مهم:</strong> سلة بتستخدم <code>ecommerce.revenue</code> مش <code>ecommerce.value</code> — الـ GTM Container جاهز للفرق ده.',
-        zid: '1️⃣ في زد: <code>لوحة التحكم → التسويق → Google Tag Manager</code><br>2️⃣ حط الـ Container ID (GTM-XXXXXX) واحفظ.<br>3️⃣ زد بتبعت GA4 ecommerce events تلقائياً بدون تعديل.<br><br><strong>✅ ميزة زد:</strong> الـ event names بتاعتها GA4-compatible تقريباً — الـ GTM Container هيشتغل out-of-the-box.',
-        woocommerce: 'ثبّت Plugin: <code>GTM4WP</code> من WordPress Plugin Directory.',
-        shopify: 'في <code>Online Store → Themes → Edit Code → theme.liquid</code>، أضف GTM snippet.',
-        custom: 'أضف GTM snippet في <code>&lt;head&gt;</code> وبعد <code>&lt;body&gt;</code> في كل صفحة.'
+      var cmsGuides = {
+        salla: {
+          title: 'ربط GTM بسلة',
+          color: '#e84393',
+          icon: '🛍️',
+          steps: [
+            { icon: 'settings', title: 'فتح إعدادات سلة', body: 'الإعدادات → التسويق → Google Tag Manager' },
+            { icon: 'content_paste', title: 'حط الـ Container ID', body: 'انسخ الـ Container ID من GTM (GTM-XXXXXX) وحطه في الحقل' },
+            { icon: 'save', title: 'احفظ وتأكد', body: 'اضغط حفظ — سلة هترفع GTM تلقائياً على كل الصفحات' },
+            { icon: 'info', title: 'ملاحظة مهمة', body: 'سلة بتستخدم <code>ecommerce.revenue</code> بدل <code>value</code> — الـ Container المولّد جاهز لده تلقائياً.<br><br><strong>Variable Mapping:</strong><br>• <code>ecommerce.revenue</code> → value<br>• <code>ecommerce.purchase.actionField.id</code> → transaction_id<br>• <code>ecommerce.purchase.products</code> → items' }
+          ]
+        },
+        zid: {
+          title: 'ربط GTM بزد',
+          color: '#4f6ef7',
+          icon: '⚡',
+          steps: [
+            { icon: 'settings', title: 'فتح لوحة التحكم', body: 'لوحة التحكم → التسويق → Google Tag Manager' },
+            { icon: 'content_paste', title: 'حط الـ Container ID', body: 'انسخ الـ Container ID (GTM-XXXXXX) وحطه في الحقل المخصص' },
+            { icon: 'save', title: 'احفظ التغييرات', body: 'زد بتحقن GTM تلقائياً على كل صفحات المتجر' },
+            { icon: 'check_circle', title: 'ميزة زد', body: 'زد بتبعت GA4-compatible events تلقائياً — الـ Container هيشتغل out-of-the-box بدون أي تعديل.<br><br><strong>Events جاهزة:</strong><br>• <code>view_item</code> · <code>add_to_cart</code><br>• <code>begin_checkout</code> · <code>purchase</code>' }
+          ]
+        }
       };
-      var pixGuides = {
-        meta: 'في GTM: ابحث في Template Gallery عن <code>Facebook Pixel</code>. Pixel ID: <code>' + (S.pixelIds.meta || 'YOUR_PIXEL_ID') + '</code>',
-        snapchat: 'في GTM: Custom HTML Tag بـ Snap Pixel base code. Pixel ID: <code>' + (S.pixelIds.snapchat || 'YOUR_PIXEL_ID') + '</code>',
-        tiktok: 'في GTM: ابحث في Template Gallery عن <code>TikTok Pixel</code>. Pixel ID: <code>' + (S.pixelIds.tiktok || 'YOUR_PIXEL_ID') + '</code>',
-        google: 'في GTM: Tag نوع <code>Google Ads Conversion Tracking</code>. ID: <code>' + (S.pixelIds.google || 'YOUR_PIXEL_ID') + '</code>',
-        twitter: 'في GTM: Custom HTML Tag بـ X Pixel base code. Pixel ID: <code>' + (S.pixelIds.twitter || 'YOUR_PIXEL_ID') + '</code>'
-      };
-      var steps = [];
-      steps.push({ t: 'تثبيت GTM على ' + cms.name, b: gtmGuides[S.cms] || '' });
 
-      // Salla/Zid specific note
-      if (S.cms === 'salla') {
-        steps.push({
-          t: '🛍️ سلة — Variable Mapping المهم', b: '<strong>سلة بتستخدم أسماء مختلفة في Data Layer:</strong><br><br>'
-            + '<code>ecommerce.revenue</code> → بدل value (في الـ Container اتعمل ليك تلقائياً)<br>'
-            + '<code>ecommerce.purchase.products</code> → بدل items<br>'
-            + '<code>ecommerce.purchase.actionField.id</code> → transaction_id<br><br>'
-            + '✅ الـ GTM Container اللي Generate ده جاهز بالـ paths دي مباشرة.'
-        });
+      var platGuides = {
+        meta: {
+          icon: '📘', name: 'Meta Pixel', color: '#1877F2',
+          steps: [
+            { icon: 'search', title: 'Template Gallery', body: 'في GTM: <strong>Tags → New → Discover more tag types</strong><br>ابحث عن "Facebook Pixel" Template' },
+            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.meta || 'YOUR_PIXEL_ID') + '</code><br>Business Manager → Events Manager → Pixel ID' },
+            { icon: 'tune', title: 'Events Setup', body: 'استخدم الـ Container المولّد — فيه كل الـ Tags والـ Triggers جاهزة<br>Purchase event لازم يبقى فيه <code>content_type: "product"</code>' }
+          ]
+        },
+        tiktok: {
+          icon: '🎵', name: 'TikTok Pixel', color: '#46f1c5',
+          steps: [
+            { icon: 'search', title: 'Template Gallery', body: 'Tags → New → Discover more tag types<br>ابحث عن "TikTok Pixel" Template' },
+            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.tiktok || 'YOUR_PIXEL_ID') + '</code>' },
+            { icon: 'tune', title: 'Deduplication', body: 'مهم جداً: أضف <code>event_id</code> لكل event عشان تتجنب الـ Duplicate conversions' }
+          ]
+        },
+        snapchat: {
+          icon: '👻', name: 'Snap Pixel', color: '#FFFC00',
+          steps: [
+            { icon: 'code', title: 'Custom HTML Tag', body: 'Tags → New → Custom HTML<br>استخدم الكود من الـ Container المولّد' },
+            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.snapchat || 'YOUR_PIXEL_ID') + '</code>' },
+            { icon: 'info', title: 'ملاحظة', body: 'Snapchat بتستخدم <code>price</code> بدل <code>value</code> — الـ Container جاهز لده' }
+          ]
+        },
+        google: {
+          icon: '🔍', name: 'Google Ads', color: '#4285F4',
+          steps: [
+            { icon: 'tag', title: 'Google Ads Tag', body: 'Tags → New → Google Ads Conversion Tracking' },
+            { icon: 'key', title: 'Conversion ID', body: 'ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.google || 'YOUR_CONVERSION_ID') + '</code><br>Google Ads → Goals → Conversions → Settings' },
+            { icon: 'info', title: 'Enhanced Conversions', body: 'فعّل Enhanced Conversions لتحسين الدقة — بيستخدم user_email من الـ Data Layer' }
+          ]
+        },
+        ga4: {
+          icon: '📊', name: 'Google Analytics 4', color: '#F9AB00',
+          steps: [
+            { icon: 'tag', title: 'GA4 Config Tag', body: 'Tags → New → Google Analytics: GA4 Configuration<br>Measurement ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.ga4 || 'G-XXXXXXXXXX') + '</code>' },
+            { icon: 'tune', title: 'Event Tags', body: 'الـ Container فيه Event Tags جاهزة لكل الأحداث المختارة مع الـ Variables الصح' },
+            { icon: 'troubleshoot', title: 'DebugView', body: 'استخدم GA4 DebugView للتحقق من الأحداث: Admin → DebugView' }
+          ]
+        }
+      };
+
+      var importStep = {
+        icon: 'upload_file', title: 'استيراد GTM Container',
+        body: '<strong>GTM → Admin → Import Container</strong><br>1. اختار ملف <code>gtm-container.json</code><br>2. اختار Workspace: Default<br>3. اختار <strong>Merge</strong> (مش Overwrite)<br>4. اضغط Confirm<br><br>هيضيف تلقائياً كل الـ Tags والـ Triggers والـ Variables'
+      };
+
+      var testStep = {
+        icon: 'bug_report', title: 'Test & Verify',
+        body: '1. <strong>GTM Preview Mode</strong>: Preview → Enter URL<br>2. تأكد إن كل الـ Events بتتبعت<br>3. افتح الـ Helper Extensions:<br>• ✅ Meta Pixel Helper<br>• ✅ TikTok Pixel Helper<br>• ✅ GA4 DebugView<br><br>4. بعد التأكد: <strong>Submit في GTM</strong>'
+      };
+
+      function renderStep(num, step, color) {
+        color = color || 'var(--acc)';
+        return '<div class="gcard" style="border-right:3px solid ' + color + '33;position:relative;">'
+          + '<div class="gnum" style="background:' + color + '20;border:1px solid ' + color + '40;color:' + color + ';font-size:13px;">' + num + '</div>'
+          + '<div class="gtxt">'
+          + '<div class="gtitl" style="display:flex;align-items:center;gap:8px;">'
+          + '<span class="material-symbols-outlined" style="font-size:16px;color:' + color + ';font-variation-settings:\'FILL\' 1;">' + (step.icon || 'radio_button_checked') + '</span>'
+          + step.title + '</div>'
+          + '<div class="gbody">' + step.body + '</div>'
+          + '</div></div>';
       }
-      if (S.cms === 'zid') {
-        steps.push({
-          t: '⚡ زد — Event Names المستخدمة', b: '<strong>زد بتبعت Events GA4-compatible:</strong><br><br>'
-            + 'الـ GTM Triggers في الـ Container بتستمع للـ events دي تلقائياً.<br><br>'
-            + '<code>view_item</code> · <code>add_to_cart</code> · <code>begin_checkout</code> · <code>purchase</code><br><br>'
-            + '✅ مش محتاج تعديل — الـ Container شغّال out-of-the-box.'
-        });
-      }
-      for (var i = 0; i < S.platforms.length; i++) {
-        var p = S.platforms[i];
-        steps.push({ t: 'ربط ' + PM[p].name + ' بـ GTM', b: pixGuides[p] || '' });
-      }
-      steps.push({ t: 'استيراد GTM Container', b: '<strong>GTM → Admin → Import Container</strong> → اختار ملف <code>gtm-container.json</code> → <strong>Merge</strong> → Confirm.<br>هيضيف تلقائياً كل الـ Tags والـ Triggers والـ Variables.' });
-      steps.push({ t: 'Test & Verify', b: 'استخدم <code>GTM Preview Mode</code> وبعدين:<br>✅ <code>Meta Pixel Helper</code> · ✅ <code>Snap Pixel Helper</code> · ✅ <code>TikTok Pixel Helper</code> · ✅ <code>GA4 DebugView</code><br><br>بعد التأكد: اضغط <strong>Submit</strong> في GTM.' });
+
       var html = '';
-      for (var si = 0; si < steps.length; si++) {
-        html += '<div class="gcard"><div class="gnum">' + (si + 1) + '</div><div class="gtxt"><div class="gtitl">' + steps[si].t + '</div><div class="gbody">' + steps[si].b + '</div></div></div>';
+      var stepNum = 1;
+
+      // CMS installation
+      var cmsG = cmsGuides[S.cms];
+      if (cmsG) {
+        html += '<div style="background:' + cmsG.color + '10;border:1px solid ' + cmsG.color + '30;border-radius:16px;padding:16px 18px;margin-bottom:20px;">'
+          + '<div style="font-weight:800;font-size:15px;color:var(--wht);margin-bottom:12px;">' + cmsG.icon + ' ' + cmsG.title + '</div>';
+        cmsG.steps.forEach(function(s) {
+          html += renderStep(stepNum++, s, cmsG.color);
+        });
+        html += '</div>';
       }
+
+      // Import step
+      html += renderStep(stepNum++, importStep, 'var(--acc)');
+
+      // Per-platform guides
+      S.platforms.forEach(function(p) {
+        var pg = platGuides[p];
+        if (!pg) return;
+        html += '<div style="background:' + pg.color + '10;border:1px solid ' + pg.color + '30;border-radius:16px;padding:16px 18px;margin-bottom:16px;">'
+          + '<div style="font-weight:800;font-size:15px;color:var(--wht);margin-bottom:12px;">' + pg.icon + ' ' + pg.name + ' Setup</div>';
+        pg.steps.forEach(function(s) {
+          html += renderStep(stepNum++, s, pg.color);
+        });
+        html += '</div>';
+      });
+
+      // Test step
+      html += renderStep(stepNum++, testStep, '#22c55e');
+
       return html;
     }
 
     // ===== BUILD SCORE =====
     function buildScore() {
-      var html = '<p style="color:var(--mut);font-size:13px;margin-bottom:16px">Score الـ Events من 1-10 بناءً على قيمتها للـ Algorithm. المصدر: <a href="https://developers.google.com/analytics/devguides/collection/ga4/reference/events" target="_blank" style="color:var(--gold)">GA4 Recommended Events</a>.</p>';
-      html += '<table class="sctable"><thead><tr><th>GA4 Event</th><th>Label</th><th>Platforms</th><th>Score</th></tr></thead><tbody>';
-      for (var ei = 0; ei < S.events.length; ei++) {
-        var evId = S.events[ei];
-        var ev = GA4[evId];
-        var plats = '';
-        for (var pi = 0; pi < S.platforms.length; pi++) {
-          var p = S.platforms[pi];
-          if (PMAP[p][evId]) plats += '<span class="ppill">' + PM[p].icon + ' ' + PM[p].name + '</span>';
+      var platReqs = {
+        meta: {
+          view_item:     { req: ['currency','value'], imp: 7,  tip: 'أضف content_ids و content_type للنتائج الأفضل' },
+          add_to_cart:   { req: ['currency','value'], imp: 8,  tip: 'content_ids مهم جداً لـ Catalog Ads' },
+          begin_checkout:{ req: ['currency','value'], imp: 9,  tip: 'num_items يحسّن الأداء' },
+          add_payment_info:{ req: ['currency','value'], imp: 7, tip: 'مهم لـ Payment funnel tracking' },
+          purchase:      { req: ['currency','value','transaction_id'], imp: 10, tip: 'content_type: product إلزامي للـ Purchase' },
+          search:        { req: [], imp: 4, tip: 'أضف search_string للدقة' },
+          add_to_wishlist:{ req: ['currency','value'], imp: 5, tip: 'مفيد لـ Retargeting' },
+          sign_up:       { req: [], imp: 6, tip: 'مهم لقياس Lead Quality' },
+          view_cart:     { req: ['currency','value'], imp: 5, tip: 'مفيد لـ Dynamic Ads' },
+          view_item_list:{ req: [], imp: 4, tip: 'مهم لـ Collection Ads' }
+        },
+        tiktok: {
+          view_item:     { req: ['currency','value'], imp: 6, tip: 'أضف contents array للـ Catalog' },
+          add_to_cart:   { req: ['currency','value'], imp: 8, tip: 'contents إلزامي لـ Dynamic Ads' },
+          begin_checkout:{ req: ['currency','value'], imp: 9, tip: 'مهم جداً للـ Purchase funnel' },
+          add_payment_info:{ req: ['currency','value'], imp: 7, tip: 'يساعد في تحسين Bid Strategy' },
+          purchase:      { req: ['currency','value','transaction_id'], imp: 10, tip: 'event_id مهم لـ Deduplication' },
+          search:        { req: [], imp: 3, tip: 'keyword مفيد للـ Search Ads' },
+          add_to_wishlist:{ req: ['currency','value'], imp: 5, tip: 'مفيد لـ Retargeting' },
+          sign_up:       { req: [], imp: 5, tip: 'مهم لـ Lead Gen campaigns' }
+        },
+        snapchat: {
+          view_item:     { req: ['currency','price'], imp: 6, tip: 'item_ids مهم لـ Dynamic Ads' },
+          add_to_cart:   { req: ['currency','price'], imp: 7, tip: 'item_ids إلزامي لـ Catalog' },
+          begin_checkout:{ req: ['currency','price'], imp: 8, tip: 'number_items مفيد' },
+          add_payment_info:{ req: ['currency','price'], imp: 7, tip: 'مهم لـ Conversion Optimization' },
+          purchase:      { req: ['currency','price','transaction_id'], imp: 10, tip: 'client_dedup_id للـ Deduplication' },
+          search:        { req: [], imp: 3, tip: 'search_string مفيد' },
+          add_to_wishlist:{ req: ['currency','price'], imp: 4, tip: 'مفيد لـ Retargeting' },
+          sign_up:       { req: [], imp: 5, tip: 'مهم لـ Lead Ads' }
+        },
+        google: {
+          view_item:     { req: ['currency','value'], imp: 5, tip: 'مش conversion — لكن مفيد للـ Smart Bidding' },
+          add_to_cart:   { req: ['currency','value'], imp: 7, tip: 'يساعد Target ROAS في التعلم' },
+          begin_checkout:{ req: ['currency','value'], imp: 8, tip: 'إلزامي لـ Checkout Abandonment' },
+          add_payment_info:{ req: ['currency','value'], imp: 7, tip: 'conversion مهم للـ Bid Strategy' },
+          purchase:      { req: ['currency','value','transaction_id'], imp: 10, tip: 'الـ Primary Conversion — إلزامي' },
+          sign_up:       { req: [], imp: 6, tip: 'مهم لـ Lead Gen campaigns' },
+          search:        { req: ['search_term'], imp: 3, tip: 'مفيد للـ Search term analysis' },
+          add_to_wishlist:{ req: ['currency','value'], imp: 4, tip: 'Secondary conversion مفيد' }
+        },
+        ga4: {
+          view_item:     { req: ['currency','value','items'], imp: 7, tip: 'items array مع item_id إلزامي' },
+          add_to_cart:   { req: ['currency','value','items'], imp: 8, tip: 'مهم جداً لـ Funnel Analysis' },
+          remove_from_cart:{ req: ['currency','value','items'], imp: 4, tip: 'يكمّل الـ Cart funnel' },
+          view_cart:     { req: ['currency','value','items'], imp: 5, tip: 'مهم لـ Cart abandonment analysis' },
+          begin_checkout:{ req: ['currency','value','items'], imp: 9, tip: 'إلزامي لـ Checkout funnel' },
+          add_shipping_info:{ req: ['currency','value','shipping_tier','items'], imp: 7, tip: 'يكشف Shipping abandonment' },
+          add_payment_info:{ req: ['currency','value','payment_type','items'], imp: 8, tip: 'يكشف Payment abandonment' },
+          purchase:      { req: ['transaction_id','currency','value','items'], imp: 10, tip: 'Primary goal — إلزامي دايماً' },
+          refund:        { req: ['transaction_id','currency','value'], imp: 5, tip: 'مهم لـ Revenue accuracy' },
+          search:        { req: ['search_term'], imp: 5, tip: 'مهم لـ Site search analysis' },
+          add_to_wishlist:{ req: ['currency','value','items'], imp: 4, tip: 'مفيد لـ Demand analysis' },
+          view_item_list:{ req: ['items'], imp: 5, tip: 'مهم لـ Product list performance' },
+          select_item:   { req: ['items'], imp: 5, tip: 'يقيس Click-Through Rate' },
+          sign_up:       { req: ['method'], imp: 6, tip: 'مهم لـ User acquisition' },
+          login:         { req: ['method'], imp: 3, tip: 'مفيد لـ User engagement' }
+        },
+        mixpanel: {
+          view_item:     { req: ['item_id','item_name'], imp: 6, tip: 'distinct_id مهم للـ User journey' },
+          add_to_cart:   { req: ['item_id','currency','value'], imp: 7, tip: 'مهم لـ Funnel analysis' },
+          begin_checkout:{ req: ['currency','value'], imp: 8, tip: 'أساسي لـ Conversion funnel' },
+          purchase:      { req: ['transaction_id','currency','value'], imp: 10, tip: 'Revenue tracking الأساسي' },
+          search:        { req: ['search_term'], imp: 4, tip: 'مهم لـ Search behavior analysis' },
+          sign_up:       { req: ['method'], imp: 7, tip: 'أساسي لـ User lifecycle' },
+          login:         { req: ['method'], imp: 5, tip: 'مهم لـ Retention analysis' }
         }
-        var sc = ev.score;
-        var cls = sc >= 8 ? 'h' : sc >= 4 ? 'm' : 'l';
-        html += '<tr><td><span class="evname">' + evId + '</span></td><td style="color:var(--wht);font-weight:700">' + ev.label + '</td><td>' + plats + '</td>'
-          + '<td><div class="sbarw"><div class="sbar"><div class="sfill ' + cls + '" style="width:' + (sc * 10) + '%"></div></div><span class="snum ' + cls + '">' + sc + '/10</span></div></td></tr>';
+      };
+
+      var platColors = { meta:'#1877F2', tiktok:'#46f1c5', snapchat:'#FFFC00', google:'#4285F4', ga4:'#F9AB00', mixpanel:'#7856FF' };
+      var platIcons  = { meta:'📘', tiktok:'🎵', snapchat:'👻', google:'🔍', ga4:'📊', mixpanel:'🔮' };
+      var platNames  = { meta:'Meta Pixel', tiktok:'TikTok Pixel', snapchat:'Snap Pixel', google:'Google Ads', ga4:'GA4', mixpanel:'Mixpanel' };
+
+      if (!S.events || !S.events.length) {
+        return '<div style="text-align:center;padding:60px;color:var(--mut)"><span class="material-symbols-outlined" style="font-size:48px;display:block;margin-bottom:12px;opacity:.3">star</span><p>اختار الأحداث من Pixel Config الأول.</p></div>';
       }
-      html += '</tbody></table>';
+
+      var activePlats = S.platforms.filter(function(p){ return platReqs[p]; });
+
+      // Summary header
+      var totalScore = 0, maxScore = 0;
+      S.events.forEach(function(evId){
+        activePlats.forEach(function(p){
+          var pr = platReqs[p] && platReqs[p][evId];
+          if (pr) { totalScore += pr.imp; maxScore += 10; }
+          else maxScore += 10;
+        });
+      });
+      var coveragePct = maxScore ? Math.round((totalScore / maxScore) * 100) : 0;
+
+      var html = '<div style="background:linear-gradient(135deg,rgba(70,241,197,0.08),rgba(70,241,197,0.03));border:1px solid rgba(70,241,197,0.2);border-radius:16px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">'
+        + '<div style="flex:1;min-width:200px;">'
+        + '<div style="font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--wht);margin-bottom:4px;">Tracking Coverage Score</div>'
+        + '<div style="font-size:13px;color:var(--mut);">بناءً على requirements كل منصة — ' + S.events.length + ' event · ' + activePlats.length + ' platform</div>'
+        + '</div>'
+        + '<div style="text-align:center;">'
+        + '<div style="font-family:var(--font-mono);font-size:42px;font-weight:700;color:' + (coveragePct >= 80 ? 'var(--acc)' : coveragePct >= 50 ? 'var(--amber)' : 'var(--red)') + ';line-height:1;">' + coveragePct + '%</div>'
+        + '<div style="font-size:11px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;">' + (coveragePct >= 80 ? '✅ Excellent' : coveragePct >= 50 ? '⚠️ Good' : '❌ Needs Work') + '</div>'
+        + '</div></div>';
+
+      // Per-event table
+      html += '<div style="display:flex;flex-direction:column;gap:16px;">';
+      S.events.forEach(function(evId) {
+        var ev = GA4[evId];
+        if (!ev) return;
+        var evScore = ev.score;
+        var scoreCls = evScore >= 8 ? '#46f1c5' : evScore >= 5 ? 'var(--amber)' : 'var(--mut)';
+
+        html += '<div style="background:var(--sur);border:1px solid rgba(255,255,255,0.06);border-radius:14px;overflow:hidden;">';
+        // Event header
+        html += '<div style="padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.04);">'
+          + '<div style="font-family:var(--font-mono);font-size:12px;background:rgba(70,241,197,0.08);color:var(--acc);padding:4px 10px;border-radius:6px;border:1px solid rgba(70,241,197,0.15);">' + evId + '</div>'
+          + '<div style="font-weight:700;color:var(--wht);font-size:14px;">' + ev.label + '</div>'
+          + '<div style="margin-right:auto;display:flex;align-items:center;gap:6px;">'
+          + '<span style="font-size:11px;color:var(--mut);">GA4 Score</span>'
+          + '<div style="background:rgba(255,255,255,0.06);border-radius:100px;width:80px;height:6px;overflow:hidden;"><div style="width:' + (evScore*10) + '%;height:100%;background:' + scoreCls + ';border-radius:100px;"></div></div>'
+          + '<span style="font-family:var(--font-mono);font-size:12px;font-weight:700;color:' + scoreCls + ';">' + evScore + '/10</span>'
+          + '</div></div>';
+
+        // Platform rows
+        html += '<div style="padding:12px 18px;display:flex;flex-direction:column;gap:8px;">';
+        activePlats.forEach(function(p) {
+          var pr = platReqs[p] && platReqs[p][evId];
+          var pMap = PMAP[p] && PMAP[p][evId];
+          var isSupported = !!pMap;
+          var imp = pr ? pr.imp : (isSupported ? 5 : 0);
+          var tip = pr ? pr.tip : (isSupported ? '' : 'هذه المنصة لا تدعم هذا الحدث');
+          var impColor = imp >= 8 ? '#46f1c5' : imp >= 5 ? 'var(--amber)' : imp > 0 ? 'var(--mut)' : '#ff5252';
+
+          html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,0.02);">'
+            + '<span style="font-size:15px;">' + (platIcons[p] || '📡') + '</span>'
+            + '<span style="font-size:12px;font-weight:600;color:var(--wht2);min-width:90px;">' + (platNames[p] || p) + '</span>'
+            + '<span style="font-size:11px;padding:2px 8px;border-radius:100px;background:' + (isSupported ? 'rgba(70,241,197,0.08)' : 'rgba(255,82,82,0.08)') + ';color:' + (isSupported ? 'var(--acc)' : '#ff5252') + ';border:1px solid ' + (isSupported ? 'rgba(70,241,197,0.2)' : 'rgba(255,82,82,0.2)') + ';">' + (isSupported ? '✓ ' + (pMap || evId) : '✗ غير مدعوم') + '</span>';
+
+          if (pr && pr.req && pr.req.length) {
+            html += '<span style="font-size:10px;color:var(--mut);font-family:var(--font-mono);">req: ' + pr.req.join(', ') + '</span>';
+          }
+          if (tip) {
+            html += '<span style="margin-right:auto;font-size:10px;color:var(--mut);font-style:italic;text-align:left;">💡 ' + tip + '</span>';
+          }
+          if (isSupported) {
+            html += '<div style="display:flex;align-items:center;gap:4px;margin-right:' + (tip?'0':'auto') + ';">'
+              + '<div style="background:rgba(255,255,255,0.06);border-radius:100px;width:50px;height:4px;overflow:hidden;"><div style="width:' + (imp*10) + '%;height:100%;background:' + impColor + ';border-radius:100px;"></div></div>'
+              + '<span style="font-family:var(--font-mono);font-size:10px;color:' + impColor + ';">' + imp + '</span>'
+              + '</div>';
+          }
+          html += '</div>';
+        });
+        html += '</div></div>';
+      });
+      html += '</div>';
       return html;
+    }
+
+    // ===== BUILD HEALTH CHECK =====
+    function buildHealthCheck() {
+      var platReqMap = {
+        meta:     { name:'Meta Pixel',    icon:'📘', color:'#1877F2',
+          events: { view_item:['currency','value'], add_to_cart:['currency','value'], begin_checkout:['currency','value'], purchase:['currency','value','transaction_id'], add_payment_info:['currency','value'] } },
+        tiktok:   { name:'TikTok Pixel',  icon:'🎵', color:'#46f1c5',
+          events: { view_item:['currency','value'], add_to_cart:['currency','value'], begin_checkout:['currency','value'], purchase:['currency','value','transaction_id'] } },
+        snapchat: { name:'Snap Pixel',    icon:'👻', color:'#FFFC00',
+          events: { view_item:['currency','price'], add_to_cart:['currency','price'], begin_checkout:['currency','price'], purchase:['currency','price','transaction_id'] } },
+        google:   { name:'Google Ads',    icon:'🔍', color:'#4285F4',
+          events: { view_item:['currency','value'], add_to_cart:['currency','value'], begin_checkout:['currency','value'], purchase:['currency','value','transaction_id'] } },
+        ga4:      { name:'GA4',           icon:'📊', color:'#F9AB00',
+          events: { view_item:['currency','value','items'], add_to_cart:['currency','value','items'], begin_checkout:['currency','value','items'], purchase:['transaction_id','currency','value','items'], add_shipping_info:['currency','value','shipping_tier'], add_payment_info:['currency','value','payment_type'] } },
+        mixpanel: { name:'Mixpanel',      icon:'🔮', color:'#7856FF',
+          events: { view_item:['item_id'], add_to_cart:['item_id','currency','value'], purchase:['transaction_id','currency','value'], sign_up:['method'] } }
+      };
+
+      var dlAvail = ['currency','value','transaction_id','items','search_term','shipping_tier','payment_type','method','item_id','item_name','affiliation','coupon','shipping','tax'];
+      var activePlats = S.platforms.filter(function(p){ return platReqMap[p]; });
+      if (!activePlats.length) return;
+
+      var html = '<div style="display:flex;flex-direction:column;gap:16px;">';
+
+      // Overall health score
+      var totalPassed = 0, totalChecks = 0;
+      activePlats.forEach(function(p) {
+        var pr = platReqMap[p];
+        S.events.forEach(function(evId) {
+          var reqs = pr.events[evId];
+          if (!reqs) return;
+          reqs.forEach(function(r) { totalChecks++; if (dlAvail.indexOf(r) !== -1) totalPassed++; });
+        });
+      });
+      var healthPct = totalChecks ? Math.round((totalPassed/totalChecks)*100) : 100;
+      var healthColor = healthPct >= 90 ? '#46f1c5' : healthPct >= 70 ? 'var(--amber)' : 'var(--red)';
+      var healthLabel = healthPct >= 90 ? '🟢 صحة ممتازة' : healthPct >= 70 ? '🟡 صحة جيدة' : '🔴 تحتاج تحسين';
+
+      html += '<div style="background:linear-gradient(135deg,rgba(70,241,197,0.08),transparent);border:1px solid rgba(70,241,197,0.15);border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">'
+        + '<div style="flex:1;">'
+        + '<div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--wht);">Pixel Health Score</div>'
+        + '<div style="font-size:12px;color:var(--mut);margin-top:4px;">' + healthLabel + ' — ' + totalPassed + '/' + totalChecks + ' parameter مغطى</div>'
+        + '</div>'
+        + '<div style="font-family:var(--font-mono);font-size:44px;font-weight:700;color:' + healthColor + ';line-height:1;">' + healthPct + '%</div>'
+        + '</div>';
+
+      // Per platform
+      activePlats.forEach(function(p) {
+        var pr = platReqMap[p];
+        var passed = 0, failed = [], total = 0;
+        var evIssues = [];
+
+        S.events.forEach(function(evId) {
+          var reqs = pr.events[evId];
+          if (!reqs) return;
+          var evFailed = [];
+          reqs.forEach(function(r) {
+            total++;
+            if (dlAvail.indexOf(r) !== -1) { passed++; }
+            else { failed.push(r); evFailed.push(r); }
+          });
+          if (evFailed.length) evIssues.push({ ev: evId, missing: evFailed });
+        });
+
+        var pct = total ? Math.round((passed/total)*100) : 100;
+        var pColor = pct >= 90 ? '#46f1c5' : pct >= 70 ? 'var(--amber)' : 'var(--red)';
+
+        html += '<div style="background:var(--sur);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:16px 18px;">';
+        html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">'
+          + '<span style="font-size:20px;">' + pr.icon + '</span>'
+          + '<span style="font-weight:700;font-size:15px;color:var(--wht);">' + pr.name + '</span>'
+          + '<div style="margin-right:auto;display:flex;align-items:center;gap:8px;">'
+          + '<div style="background:rgba(255,255,255,0.06);border-radius:100px;width:100px;height:6px;overflow:hidden;"><div style="width:' + pct + '%;height:100%;background:' + pColor + ';border-radius:100px;transition:width .5s;"></div></div>'
+          + '<span style="font-family:var(--font-mono);font-size:12px;color:' + pColor + ';font-weight:700;">' + pct + '%</span>'
+          + '</div></div>';
+
+        if (evIssues.length) {
+          evIssues.forEach(function(issue) {
+            html += '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 10px;background:rgba(255,82,82,0.04);border-radius:8px;margin-bottom:6px;border:1px solid rgba(255,82,82,0.1);">'
+              + '<span style="color:var(--red);font-size:12px;">⚠️</span>'
+              + '<div>'
+              + '<span style="font-family:var(--font-mono);font-size:11px;color:var(--acc);">' + issue.ev + '</span>'
+              + '<span style="font-size:11px;color:var(--mut);"> — missing: </span>'
+              + '<span style="font-family:var(--font-mono);font-size:11px;color:var(--red);">' + issue.missing.join(', ') + '</span>'
+              + '</div></div>';
+          });
+        } else {
+          html += '<div style="color:var(--acc);font-size:12px;">✅ كل الـ Parameters المطلوبة متوفرة</div>';
+        }
+        html += '</div>';
+      });
+
+      html += '</div>';
+      document.getElementById('healthConfigCheck').innerHTML = html;
+    }
+
+    // ===== BUILD TRACKING PLAN =====
+    function buildPlan() {
+      var planEl = document.getElementById('planContent');
+      if (!planEl) return;
+
+      var platColors = { meta:'#1877F2', tiktok:'#46f1c5', snapchat:'#FFFC00', google:'#4285F4', ga4:'#F9AB00', twitter:'#1D9BF0', mixpanel:'#7856FF' };
+      var platNames  = { meta:'Meta Pixel', tiktok:'TikTok', snapchat:'Snapchat', google:'Google Ads', ga4:'GA4', twitter:'X/Twitter', mixpanel:'Mixpanel' };
+
+      var html = '<div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">'
+        + '<div style="font-family:var(--font-display);font-weight:800;font-size:17px;color:var(--wht);">Tracking Plan</div>'
+        + '<div style="font-size:12px;color:var(--mut);">— ' + S.events.length + ' event · ' + S.platforms.length + ' platform · CMS: ' + (CMS[S.cms] ? CMS[S.cms].name : S.cms) + '</div>'
+        + '</div>';
+
+      // Summary chips
+      html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">';
+      S.platforms.forEach(function(p) {
+        html += '<span style="background:' + (platColors[p]||'var(--acc)') + '18;color:' + (platColors[p]||'var(--acc)') + ';border:1px solid ' + (platColors[p]||'var(--acc)') + '30;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700;">'
+          + (PM[p] ? PM[p].icon + ' ' + PM[p].name : p) + '</span>';
+      });
+      html += '</div>';
+
+      // Table
+      html += '<div style="overflow-x:auto;">'
+        + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+        + '<thead><tr style="background:rgba(255,255,255,0.03);">'
+        + '<th style="padding:12px 14px;text-align:right;color:var(--mut);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);">GA4 Event</th>'
+        + '<th style="padding:12px 14px;text-align:right;color:var(--mut);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);">الوصف</th>'
+        + '<th style="padding:12px 14px;text-align:right;color:var(--mut);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);">Parameters</th>'
+        + '<th style="padding:12px 14px;text-align:center;color:var(--mut);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);">المنصات</th>'
+        + '<th style="padding:12px 14px;text-align:center;color:var(--mut);font-weight:600;border-bottom:1px solid rgba(255,255,255,0.06);">Score</th>'
+        + '</tr></thead><tbody>';
+
+      S.events.forEach(function(evId, idx) {
+        var ev = GA4[evId];
+        if (!ev) return;
+        var sc = ev.score;
+        var scColor = sc >= 8 ? '#46f1c5' : sc >= 5 ? 'var(--amber)' : 'var(--mut)';
+        var rowBg = idx % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent';
+
+        // Which platforms support this event
+        var platCells = '';
+        S.platforms.forEach(function(p) {
+          var mapped = PMAP[p] && PMAP[p][evId];
+          platCells += '<span style="display:inline-block;margin:2px;padding:2px 6px;border-radius:4px;font-size:10px;background:' + (mapped ? (platColors[p]||'var(--acc)') + '20' : 'rgba(255,255,255,0.04)') + ';color:' + (mapped ? (platColors[p]||'var(--acc)') : 'rgba(255,255,255,0.15)') + ';font-weight:700;">'
+            + (PM[p] ? PM[p].icon : p) + '</span>';
+        });
+
+        // Required params
+        var params = ev.req.map(function(r) {
+          return '<span style="font-family:var(--font-mono);font-size:10px;background:rgba(70,241,197,0.06);color:var(--acc);padding:1px 5px;border-radius:3px;margin:1px;display:inline-block;">' + r + '</span>';
+        }).join('') + (ev.opt.length ? ev.opt.map(function(r) {
+          return '<span style="font-family:var(--font-mono);font-size:10px;background:rgba(255,255,255,0.04);color:var(--mut);padding:1px 5px;border-radius:3px;margin:1px;display:inline-block;">' + r + '</span>';
+        }).join('') : '');
+
+        html += '<tr style="background:' + rowBg + ';border-bottom:1px solid rgba(255,255,255,0.03);">'
+          + '<td style="padding:10px 14px;"><code style="color:var(--acc);font-size:11px;">' + evId + '</code></td>'
+          + '<td style="padding:10px 14px;color:var(--wht2);font-weight:600;">' + ev.label + '</td>'
+          + '<td style="padding:10px 14px;">' + params + '</td>'
+          + '<td style="padding:10px 14px;text-align:center;">' + platCells + '</td>'
+          + '<td style="padding:10px 14px;text-align:center;"><span style="font-family:var(--font-mono);font-weight:700;font-size:13px;color:' + scColor + ';">' + sc + '</span></td>'
+          + '</tr>';
+      });
+
+      html += '</tbody></table></div>';
+      planEl.innerHTML = html;
     }
 
     // ===== BUILD SUMMARY =====
@@ -4575,8 +5179,7 @@
         '<div class="sitem"><span class="slbl">Location</span><span class="sval">' + (S.lead && S.lead.location || '—') + '</span></div>' +
         '<div class="sitem"><span class="slbl">CMS</span><span class="sval">' + CMS[S.cms].name + '</span></div>' +
         '<div class="sitem"><span class="slbl">Platforms</span><span class="sval">' + platNames.join(' · ') + '</span></div>' +
-        '<div class="sitem"><span class="slbl">Events</span><span class="sval">' + S.events.length + ' events</span></div>' +
-        '<div class="sitem"><span class="slbl">Schema</span><span class="sval g">GA4 Official ✓</span></div>';
+        '<div class="sitem"><span class="slbl">Events</span><span class="sval">' + S.events.length + ' events</span></div>';
     }
 
     // ===== OUTPUT TABS =====
@@ -5071,8 +5674,7 @@
       var pills = [
         { lbl: 'CMS', val: cmsName, c: '#10b981' },
         { lbl: 'Platforms', val: totalPlat, c: '#0ea5e9' },
-        { lbl: 'Events', val: totalEvents, c: '#6366f1' },
-        { lbl: 'Schema', val: 'GA4 ✓', c: '#f59e0b' }
+        { lbl: 'Events', val: totalEvents, c: '#6366f1' }
       ];
       pills.forEach(function (p) {
         h += '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:12px;padding:14px 16px;">';
@@ -5970,6 +6572,49 @@
     var _dashLoaded = false;
     var _dashProjects = [];
 
+    /* ── History Panel ──────────────────────────────────────── */
+    var _historyLog = JSON.parse(localStorage.getItem('et_history') || '[]');
+
+    function addHistoryEntry(icon, name, meta, badge) {
+      var entry = { icon: icon, name: name, meta: meta, badge: badge, ts: Date.now() };
+      _historyLog.unshift(entry);
+      if (_historyLog.length > 50) _historyLog.length = 50;
+      try { localStorage.setItem('et_history', JSON.stringify(_historyLog)); } catch(e) {}
+      renderHistory();
+    }
+
+    function renderHistory() {
+      var list = document.getElementById('historyList');
+      var empty = document.getElementById('historyEmpty');
+      if (!list) return;
+      if (!_historyLog.length) { empty.style.display = ''; list.innerHTML = ''; return; }
+      empty.style.display = 'none';
+      list.innerHTML = _historyLog.map(function(e) {
+        var d = new Date(e.ts);
+        var timeStr = d.toLocaleDateString('ar-EG', { month: 'short', day: 'numeric' }) + ' · ' + d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        return '<div class="hp-item">'
+          + '<div class="hp-item-icon"><span class="material-symbols-outlined" style="font-size:18px;font-variation-settings:\'FILL\' 1;">' + (e.icon || 'dataset') + '</span></div>'
+          + '<div class="hp-item-info"><div class="hp-item-name">' + (e.name || '—') + '</div><div class="hp-item-meta">' + timeStr + (e.meta ? ' · ' + e.meta : '') + '</div></div>'
+          + (e.badge ? '<span class="hp-item-badge">' + e.badge + '</span>' : '')
+          + '</div>';
+      }).join('');
+    }
+
+    function toggleHistory() {
+      var panel = document.getElementById('historyPanel');
+      var overlay = document.getElementById('historyOverlay');
+      if (!panel || !overlay) return;
+      var isOpen = panel.classList.contains('open');
+      if (isOpen) {
+        panel.classList.remove('open');
+        overlay.classList.remove('open');
+      } else {
+        renderHistory();
+        panel.classList.add('open');
+        overlay.classList.add('open');
+      }
+    }
+
     function toggleDashboard() {
       var panel = document.getElementById('dashPanel');
       var overlay = document.getElementById('dashOverlay');
@@ -5981,6 +6626,86 @@
         panel.classList.add('open');
         overlay.classList.add('show');
         if (!_dashLoaded) { _dashLoaded = true; loadDashProjects(); }
+      }
+    }
+
+    function toggleSettings() {
+      var panel = document.getElementById('settingsPanel');
+      var overlay = document.getElementById('settingsOverlay');
+      if (!panel || !overlay) return;
+      var isOpen = panel.style.transform === 'translateX(0px)' || panel.style.transform === 'translateX(0)';
+      if (isOpen) {
+        panel.style.transform = 'translateX(-100%)';
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+      } else {
+        // Populate from Firebase user
+        try {
+          var user = firebase.auth().currentUser;
+          if (user) {
+            var nameEl = document.getElementById('settingsName');
+            var emailEl = document.getElementById('settingsEmail');
+            if (nameEl) nameEl.value = user.displayName || '';
+            if (emailEl) emailEl.value = user.email || '';
+          }
+        } catch(e) {}
+        // Load saved settings
+        try {
+          var saved = JSON.parse(localStorage.getItem('et_user_settings') || '{}');
+          if (saved.phone) document.getElementById('settingsPhone').value = saved.phone;
+          if (saved.cms) document.getElementById('settingsCms').value = saved.cms;
+          var planBadge = document.getElementById('settingsPlanBadge');
+          var planBadgeSrc = document.getElementById('userPlanBadge');
+          if (planBadge && planBadgeSrc) planBadge.textContent = planBadgeSrc.textContent || 'BASIC';
+        } catch(e) {}
+        panel.style.transform = 'translateX(0)';
+        overlay.style.opacity = '1';
+        overlay.style.pointerEvents = 'all';
+      }
+    }
+
+    function saveSettings() {
+      var phone = (document.getElementById('settingsPhone') || {}).value || '';
+      var cms = (document.getElementById('settingsCms') || {}).value || '';
+      var name = (document.getElementById('settingsName') || {}).value || '';
+      try {
+        localStorage.setItem('et_user_settings', JSON.stringify({ phone: phone, cms: cms, name: name }));
+      } catch(e) {}
+      // Save name to Firebase if changed
+      try {
+        var user = firebase.auth().currentUser;
+        if (user && name && name !== user.displayName) {
+          user.updateProfile({ displayName: name });
+        }
+      } catch(e) {}
+      // Show success toast
+      var toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed;bottom:24px;right:50%;transform:translateX(50%);background:#191c22;border:1px solid rgba(70,241,197,0.3);color:var(--acc);padding:12px 20px;border-radius:12px;font-size:13px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+      toast.textContent = '✅ تم حفظ الإعدادات';
+      document.body.appendChild(toast);
+      setTimeout(function(){ toast.remove(); }, 2500);
+      toggleSettings();
+    }
+
+    function showCmsGuide(cmsKey) {
+      // Switch to pixels view
+      switchAppView('pixels', document.getElementById('sbPixels'));
+      // If output is visible, switch to guide tab
+      var outWrap = document.getElementById('outWrap');
+      if (outWrap && outWrap.classList.contains('on')) {
+        var guidePaneBtn = document.querySelector('.otab[onclick*="guide"]');
+        if (guidePaneBtn) oTab('guide', guidePaneBtn);
+      } else {
+        // Show a modal/toast indicating user should generate first
+        var msg = cmsKey === 'salla'
+          ? '🛍️ اختار سلة من CMS وولّد الـ Config عشان تشوف الـ Setup Guide'
+          : '⚡ اختار زد من CMS وولّد الـ Config عشان تشوف الـ Setup Guide';
+        // Use a simple notification
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;bottom:24px;right:50%;transform:translateX(50%);background:#191c22;border:1px solid rgba(70,241,197,0.3);color:var(--wht2);padding:12px 20px;border-radius:12px;font-size:13px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(function(){ toast.remove(); }, 3000);
       }
     }
 
@@ -6175,6 +6900,19 @@
       var sbPlan = document.getElementById('sbUserPlan');
       if (sbName) sbName.textContent = user.name || user.email.split('@')[0];
       if (sbPlan) sbPlan.textContent = plan + ' Plan';
+
+      // Update overview user header
+      var ovName = document.getElementById('ovWelcomeName');
+      var ovPlan = document.getElementById('ovPlanText');
+      var ovAvatar = document.getElementById('ovUserAvatar');
+      var displayName = user.name || user.email.split('@')[0];
+      if (ovName) ovName.textContent = 'مرحباً، ' + displayName;
+      if (ovPlan) ovPlan.textContent = plan.toUpperCase();
+      // Show initials in avatar if no photo
+      if (ovAvatar) {
+        var initials = displayName ? displayName.charAt(0).toUpperCase() : '?';
+        ovAvatar.innerHTML = '<span style="font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--acc);">' + initials + '</span>';
+      }
 
       // Hide gate, show tool
       var g = document.getElementById('gate');
