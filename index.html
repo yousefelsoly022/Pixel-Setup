@@ -2088,12 +2088,10 @@
 
     /* ── GTM DIRECT PUBLISH UI ── */
     .gtm-layout {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 24px;
-      align-items: start;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-    @media(max-width:900px) { .gtm-layout { grid-template-columns:1fr; } }
     .gtm-publish-panel {
       background: var(--sur2);
       border: 1px solid rgba(255,255,255,.06);
@@ -2119,17 +2117,17 @@
     .gtm-conn-lbl { font-size:11px; color:var(--mut); }
     .gtm-conn-val { font-size:13px; font-weight:600; color:var(--wht2); }
     .gtm-connect-btn {
-      width:100%; padding:12px;
+      padding:12px 20px;
       background:var(--sur3); color:var(--wht);
       border:1px solid rgba(255,255,255,.1);
       border-radius:10px; font-family:var(--font-display);
       font-size:13px; font-weight:700;
       cursor:pointer; transition:all .2s;
       display:flex; align-items:center; justify-content:center;
-      gap:8px; margin-bottom:16px;
+      gap:8px;
     }
     .gtm-connect-btn:hover { background:var(--sur4); }
-    .gtm-select-wrap { margin-bottom:12px; }
+    .gtm-select-wrap { margin-bottom:0; }
     .gtm-select-lbl {
       font-size:11px; color:var(--mut); font-weight:600;
       font-family:var(--font-ui); margin-bottom:6px;
@@ -2146,13 +2144,13 @@
       background:rgba(70,241,197,.05);
       border:1px solid rgba(70,241,197,.12);
       border-radius:12px; padding:14px;
-      margin-bottom:16px; display:flex; gap:10px;
+      margin-bottom:0; margin-top:4px; display:flex; gap:10px;
     }
     .gtm-info-icon { color:var(--acc); flex-shrink:0; margin-top:1px; }
     .gtm-info-text { font-size:12px; color:var(--mut); line-height:1.7; }
     .gtm-info-text strong { color:var(--acc); }
     .gtm-deploy-btn {
-      width:100%; padding:13px;
+      padding:13px 20px;
       background:var(--sur3); color:var(--mut);
       border:1px solid rgba(255,255,255,.06);
       border-radius:10px; font-family:var(--font-display);
@@ -3326,10 +3324,6 @@
             <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1;">table_chart</span>
             Tracking Plan
           </button>
-          <button class="otab" id="tabProjects" onclick="oTab('projects',this)">
-            <span class="material-symbols-outlined" style="font-size:15px;font-variation-settings:'FILL' 1;">folder_open</span>
-            مشاريعي
-          </button>
         </div>
 
         <!-- pane-json hidden (download only, no tab) -->
@@ -3373,76 +3367,28 @@
           </div>
 
           <!-- GTM Layout: JSON + Publish Panel -->
-          <div class="gtm-layout">
-            <!-- Left: JSON Config -->
-            <div>
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-                <span class="material-symbols-outlined" style="color:var(--acc);font-size:20px;">dashboard_customize</span>
-                <span style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--wht);">Pixel Configuration</span>
+          <!-- JSON viewer only — Direct Publish has moved to the GTM Container sidebar view -->
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <span class="material-symbols-outlined" style="color:var(--acc);font-size:20px;">dashboard_customize</span>
+            <span style="font-family:var(--font-display);font-weight:700;font-size:16px;color:var(--wht);">Pixel Configuration</span>
+            <button onclick="switchAppView('gtmview',document.getElementById('sbGtm'))" style="margin-right:auto;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#00382b;border:none;border-radius:8px;padding:6px 14px;font-family:var(--font-ui);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;">
+              <span class="material-symbols-outlined" style="font-size:14px;">radar</span> Publish to GTM →
+            </button>
+          </div>
+          <div class="cwrap">
+            <div class="ctbar">
+              <div class="ctdots">
+                <div class="ctdot" style="background:#ff5f57"></div>
+                <div class="ctdot" style="background:#febc2e"></div>
+                <div class="ctdot" style="background:#28c840"></div>
               </div>
-              <div class="cwrap">
-                <div class="ctbar">
-                  <div class="ctdots">
-                    <div class="ctdot" style="background:#ff5f57"></div>
-                    <div class="ctdot" style="background:#febc2e"></div>
-                    <div class="ctdot" style="background:#28c840"></div>
-                  </div>
-                  <span class="clang">gtm-container.json</span>
-                  <div class="ctacts">
-                    <button class="dlbtn" id="dlGtm">⬇️ تحميل</button>
-                    <button class="cpybtn" id="cpyGtm">نسخ</button>
-                  </div>
-                </div>
-                <div class="cbody" id="gtmBody"></div>
+              <span class="clang">gtm-container.json</span>
+              <div class="ctacts">
+                <button class="dlbtn" id="dlGtm">⬇️ تحميل</button>
+                <button class="cpybtn" id="cpyGtm">نسخ</button>
               </div>
             </div>
-
-            <!-- Right: GTM Direct Publish -->
-            <div class="gtm-publish-panel">
-              <div class="gtm-publish-title">
-                <span class="material-symbols-outlined" style="color:var(--acc);font-size:20px;">radar</span>
-                GTM Direct Publish
-              </div>
-
-              <div class="gtm-conn-status">
-                <div class="gtm-conn-avatar">🔒</div>
-                <div>
-                  <div class="gtm-conn-lbl">Connection Status</div>
-                  <div class="gtm-conn-val" id="gtmConnStatus">Not Connected</div>
-                </div>
-              </div>
-
-              <button class="gtm-connect-btn" id="gtmConnectBtn" onclick="doGTMPublish()">
-                <span class="material-symbols-outlined" style="font-size:16px;">device_hub</span>
-                Connect Google Account
-              </button>
-
-              <div class="gtm-select-wrap">
-                <span class="gtm-select-lbl">Target Account</span>
-                <select class="gtm-select">
-                  <option>Select an account...</option>
-                </select>
-              </div>
-
-              <div class="gtm-select-wrap">
-                <span class="gtm-select-lbl">GTM Container</span>
-                <select class="gtm-select">
-                  <option>Select a container...</option>
-                </select>
-              </div>
-
-              <div class="gtm-info-box">
-                <span class="gtm-info-icon material-symbols-outlined" style="font-size:18px;">info</span>
-                <div class="gtm-info-text">
-                  Connecting your GTM account allows <strong>Easy Track</strong> to automatically create variables, triggers, and tags without manual JSON exports.
-                </div>
-              </div>
-
-              <button class="gtm-deploy-btn" id="pubGtm" onclick="doGTMPublish()">
-                <span class="material-symbols-outlined" style="font-size:18px;">sync</span>
-                Sync &amp; Deploy Changes
-              </button>
-            </div>
+            <div class="cbody" id="gtmBody"></div>
           </div>
 
         </div>
@@ -3478,9 +3424,6 @@
         <div class="opane" id="pane-score">
           <div id="scoreContent"></div>
         </div>
-        <div class="opane" id="pane-projects">
-          <div id="projectsList"></div>
-        </div>
         <div class="opane" id="pane-plan">
           <div style="display:flex;gap:8px;padding:12px 0 16px;flex-wrap:wrap;">
             <button class="dlbtn" onclick="downloadPlanExcel()">📥 تحميل Excel</button>
@@ -3500,21 +3443,70 @@
 
       <!-- ══════ GTM CONTAINER VIEW ══════ -->
       <div class="app-view" id="view-gtmview">
-        <div style="margin-bottom:24px;">
+        <div style="margin-bottom:20px;">
           <h2 style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--wht);letter-spacing:-.5px;">GTM Container</h2>
-          <p style="font-size:13px;color:var(--mut);margin-top:4px;">Import or publish your pixel config directly to Google Tag Manager</p>
+          <p style="font-size:13px;color:var(--mut);margin-top:4px;">Preview your config JSON and publish directly to Google Tag Manager</p>
         </div>
 
-        <div id="gtmEmptyState" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;text-align:center;padding:60px 24px;">
-          <span class="material-symbols-outlined" style="font-size:64px;color:rgba(70,241,197,0.2);margin-bottom:20px;">inventory_2</span>
-          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:22px;color:var(--wht);margin-bottom:10px;">GTM Container جاهز للتوليد</div>
-          <p style="color:var(--mut);font-size:14px;line-height:1.8;max-width:400px;margin-bottom:28px;">اختار المنصة والأحداث من Pixel Config عشان نولّدلك GTM Container كامل جاهز للرفع مباشرةً.</p>
-          <button onclick="switchAppView('pixels',document.getElementById('sbPixels'))" style="background:var(--acc);color:#00382b;border:none;border-radius:12px;padding:14px 28px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 20px rgba(70,241,197,0.3);">ابدأ من Pixel Config →</button>
-        </div>
-        <div id="gtmViewContent">
-          <!-- The generated pane-gtm will be injected here by switchAppView -->
-        </div>
+        <div class="gtm-layout">
 
+          <!-- TOP: GTM Direct Publish panel — always visible first -->
+          <div class="gtm-publish-panel">
+            <div class="gtm-publish-title">
+              <span class="material-symbols-outlined" style="color:var(--acc);font-size:20px;">radar</span>
+              GTM Direct Publish
+            </div>
+
+            <div class="gtm-conn-status">
+              <div class="gtm-conn-avatar">🔒</div>
+              <div>
+                <div class="gtm-conn-lbl">Connection Status</div>
+                <div class="gtm-conn-val" id="gtmConnStatus">Not Connected</div>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <button class="gtm-connect-btn" id="gtmConnectBtn" onclick="doGTMPublish()" style="flex:1;min-width:200px;">
+                <span class="material-symbols-outlined" style="font-size:16px;">device_hub</span>
+                Connect Google Account
+              </button>
+              <button class="gtm-deploy-btn" id="pubGtm" onclick="doGTMPublish()" style="flex:1;min-width:200px;">
+                <span class="material-symbols-outlined" style="font-size:18px;">sync</span>
+                Sync &amp; Deploy Changes
+              </button>
+            </div>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;">
+              <div class="gtm-select-wrap" style="flex:1;min-width:200px;">
+                <span class="gtm-select-lbl">Target Account</span>
+                <select class="gtm-select"><option>Select an account...</option></select>
+              </div>
+              <div class="gtm-select-wrap" style="flex:1;min-width:200px;">
+                <span class="gtm-select-lbl">GTM Container</span>
+                <select class="gtm-select"><option>Select a container...</option></select>
+              </div>
+            </div>
+
+            <div class="gtm-info-box">
+              <span class="gtm-info-icon material-symbols-outlined" style="font-size:18px;">info</span>
+              <div class="gtm-info-text">
+                Easy Track creates all Variables, Triggers, and Tags directly in your GTM Workspace — no JSON import needed.
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTTOM: JSON viewer -->
+          <div>
+            <div id="gtmEmptyState" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:280px;text-align:center;padding:40px 20px;">
+              <span class="material-symbols-outlined" style="font-size:56px;color:rgba(70,241,197,0.2);margin-bottom:16px;">inventory_2</span>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:20px;color:var(--wht);margin-bottom:8px;">GTM Container جاهز للتوليد</div>
+              <p style="color:var(--mut);font-size:13px;line-height:1.8;max-width:340px;margin-bottom:20px;">اختار المنصة والأحداث من Pixel Config عشان نولّدلك GTM Container كامل.</p>
+              <button onclick="switchAppView('pixels',document.getElementById('sbPixels'))" style="background:var(--acc);color:#00382b;border:none;border-radius:10px;padding:12px 24px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;cursor:pointer;">ابدأ من Pixel Config →</button>
+            </div>
+            <div id="gtmViewContent"></div>
+          </div>
+
+        </div>
       </div>
       <!-- END GTM CONTAINER VIEW -->
 
@@ -3566,13 +3558,13 @@
       document.querySelectorAll('#et-sidebar .sb-link').forEach(function(b){ b.classList.remove('active'); });
       if(btnEl) btnEl.classList.add('active');
 
-      // If going to GTM view — show cached content or empty state
+      // If going to GTM view — show cached JSON or empty state
       if(viewKey === 'gtmview') {
         var gtmViewContent = document.getElementById('gtmViewContent');
         var gtmEmpty = document.getElementById('gtmEmptyState');
         if (_cachedGtmStr) {
           if (gtmEmpty) gtmEmpty.style.display = 'none';
-          renderGtmSidebarView(gtmViewContent, _cachedGtmStr);
+          if (gtmViewContent) renderGtmSidebarView(gtmViewContent, _cachedGtmStr);
         } else {
           if (gtmEmpty) gtmEmpty.style.display = 'flex';
           if (gtmViewContent) gtmViewContent.innerHTML = '';
@@ -5324,7 +5316,6 @@
     function oTab(id, btn) {
       if (id === 'plan') buildTrackingPlan();
       if (id === 'health') { document.getElementById('healthResults').innerHTML = ''; }
-      if (id === 'projects') loadProjects();
       var tabs = document.querySelectorAll('.otab');
       var panes = document.querySelectorAll('.opane');
       for (var i = 0; i < tabs.length; i++)  tabs[i].classList.remove('on');
@@ -6284,90 +6275,112 @@
       }
 
       // ── execute ───────────────────────────────────────────────
+      // Uses GTM API v2 workspace endpoints to push entities one-by-one,
+      // then create_version + publish. This is the only reliable way since
+      // there is no bulk-import endpoint in GTM API v2.
       async function executeAction(mode, accountId, containerId, workspaceId) {
         var containerPath = 'accounts/' + accountId + '/containers/' + containerId;
         var wsPath = containerPath + '/workspaces/' + workspaceId;
 
-        // Helper: create version from workspace + optionally publish (fallback path)
-        async function runFallback(reason) {
-          spin('⏳ جاري إنشاء الـ Version من الـ Workspace...');
-          var fallbackRes = await gtmPost(wsPath + ':create_version', {
-            name: 'Easy Track — ' + new Date().toLocaleDateString('ar-EG'),
-            notes: 'أُنشئ من Easy Track Pixel Config Generator'
-          });
-          if (!fallbackRes.ok) {
-            overlay.remove();
-            alert('❌ فشل إنشاء الـ Version (' + fallbackRes.status + '):\n' + errMsg(fallbackRes));
-            return;
-          }
-          var fbVerId = fallbackRes.data.containerVersion && fallbackRes.data.containerVersion.containerVersionId;
-          if (mode === 'import') {
-            overlay.remove();
-            alert('✅ تم إنشاء Version جديد من الـ Workspace!\nID: ' + (fbVerId || '—'));
-            return;
-          }
-          if (!fbVerId) { overlay.remove(); alert('❌ مش قادر يجيب الـ Version ID'); return; }
-          spin('⏳ جاري النشر Live...');
-          var fbPubRes = await gtmPost(containerPath + '/versions/' + fbVerId + ':publish', {});
-          overlay.remove();
-          if (fbPubRes.ok) { alert('✅ تم النشر بنجاح!\nالـ Container اتنشر Live على GTM.'); }
-          else { alert('❌ فشل النشر (' + fbPubRes.status + '):\n' + errMsg(fbPubRes)); }
+        // Strip server-assigned / placeholder fields before sending to API
+        function clean(obj) {
+          var o = JSON.parse(JSON.stringify(obj));
+          delete o.accountId; delete o.containerId;
+          delete o.tagId; delete o.triggerId; delete o.variableId;
+          delete o.fingerprint; delete o.path;
+          delete o.parentFolderId; // skip folder assignment
+          return o;
         }
 
+        // Built-in GTM trigger IDs that must pass through unchanged
+        var BUILTIN = { 2147479553: true, 2147479572: true };
+
         try {
-          // Build the ContainerVersion body from the generated JSON
-          var versionBody = (gtmJson && gtmJson.containerVersion) ? gtmJson.containerVersion : gtmJson;
-          // Clone and inject real IDs so the import matches the target container
-          versionBody = JSON.parse(JSON.stringify(versionBody));
-          versionBody.accountId   = accountId;
-          versionBody.containerId = containerId;
-          if (versionBody.container) {
-            versionBody.container.accountId   = accountId;
-            versionBody.container.containerId = containerId;
+          var cv       = (gtmJson && gtmJson.containerVersion) ? gtmJson.containerVersion : gtmJson;
+          var tags     = cv.tag            || [];
+          var triggers = cv.trigger        || [];
+          var vars     = cv.variable       || [];
+          var builtIns = cv.builtInVariable || [];
+
+          // ── Step 1: Enable built-in variables ──────────────────
+          if (builtIns.length) {
+            spin('⏳ تفعيل Built-in Variables... (1/5)');
+            var btypes = builtIns.map(function(b){ return 'type=' + encodeURIComponent(b.type); }).join('&');
+            await gtmPost(wsPath + '/built_in_variables?' + btypes, {});
+            // continue even if some already exist (4xx)
           }
 
-          // ── Step A: import via the correct GTM API v2 endpoint ──
-          spin('⏳ جاري استيراد الـ Container...');
-          // Correct endpoint: POST accounts/{acct}/containers/{cont}/versions:import
-          // Body must be the containerVersion object (not the full export wrapper)
-          var importRes = await gtmPost(containerPath + '/versions:import', versionBody);
+          // ── Step 2: Create Data Layer variables ─────────────────
+          for (var vi = 0; vi < vars.length; vi++) {
+            spin('⏳ إنشاء Variables... (' + (vi + 1) + '/' + vars.length + ') — Step 2/5');
+            var vRes = await gtmPost(wsPath + '/variables', clean(vars[vi]));
+            if (!vRes.ok) console.warn('[GTM var] "' + vars[vi].name + '" →', vRes.status, errMsg(vRes));
+          }
 
-          if (!importRes.ok) {
-            // Any non-2xx from versions:import → fall back to create_version from workspace
-            // This covers: 400 (bad payload), 403 (permissions), 404/405 (endpoint mismatch)
-            console.warn('[GTM import] status', importRes.status, '— falling back to create_version:', errMsg(importRes));
-            await runFallback('import_failed_' + importRes.status);
+          // ── Step 3: Create triggers, capture new IDs ────────────
+          var trigIdMap = {}; // oldId (from JSON) → newId (from API)
+          for (var ti = 0; ti < triggers.length; ti++) {
+            spin('⏳ إنشاء Triggers... (' + (ti + 1) + '/' + triggers.length + ') — Step 3/5');
+            var oldTrigId = triggers[ti].triggerId;
+            var tRes = await gtmPost(wsPath + '/triggers', clean(triggers[ti]));
+            if (tRes.ok && tRes.data && tRes.data.triggerId) {
+              trigIdMap[oldTrigId] = tRes.data.triggerId;
+            } else {
+              console.warn('[GTM trig] "' + triggers[ti].name + '" →', tRes.status, errMsg(tRes));
+            }
+          }
+
+          // ── Step 4: Create tags (with remapped firingTriggerId) ──
+          function remapIds(arr) {
+            return (arr || []).map(function(id) {
+              return BUILTIN[id] ? id : (trigIdMap[id] || id);
+            });
+          }
+          for (var gi = 0; gi < tags.length; gi++) {
+            spin('⏳ إنشاء Tags... (' + (gi + 1) + '/' + tags.length + ') — Step 4/5');
+            var tagBody = clean(tags[gi]);
+            tagBody.firingTriggerId  = remapIds(tagBody.firingTriggerId);
+            tagBody.blockingTriggerId = remapIds(tagBody.blockingTriggerId);
+            var gRes = await gtmPost(wsPath + '/tags', tagBody);
+            if (!gRes.ok) console.warn('[GTM tag] "' + tags[gi].name + '" →', gRes.status, errMsg(gRes));
+          }
+
+          // ── Step 5: Create ContainerVersion from workspace ──────
+          spin('⏳ إنشاء Version... (5/5)');
+          var verRes = await gtmPost(wsPath + ':create_version', {
+            name: 'Easy Track — ' + new Date().toLocaleDateString('ar-EG'),
+            notes: 'Generated by Easy Track · ' + tags.length + ' Tags · ' + triggers.length + ' Triggers · ' + vars.length + ' Variables'
+          });
+          if (!verRes.ok) {
+            overlay.remove();
+            alert('❌ فشل إنشاء الـ Version (' + verRes.status + '):\n' + errMsg(verRes));
             return;
           }
 
-          // versions:import returns a ContainerVersion; extract the new version ID
-          var importedVerId = (importRes.data && importRes.data.containerVersionId)
-            || (importRes.data && importRes.data.containerVersion && importRes.data.containerVersion.containerVersionId);
+          var verId = verRes.data && verRes.data.containerVersion && verRes.data.containerVersion.containerVersionId;
 
           if (mode === 'import') {
             overlay.remove();
-            alert('✅ تم الاستيراد بنجاح!\nVersion ID: ' + (importedVerId || '—'));
+            alert('✅ تم الاستيراد بنجاح!\n' + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\nاتضافوا للـ Workspace. Version ID: ' + (verId || '—'));
             return;
           }
 
-          // ── Step B: publish the imported version ──
-          if (!importedVerId) {
-            // ID missing in response — fall back to creating a version the standard way
-            console.warn('[GTM import] no containerVersionId in response — falling back');
-            await runFallback('no_version_id');
+          // ── Step 6: Publish version live ────────────────────────
+          if (!verId) {
+            overlay.remove();
+            alert('❌ مش لاقي الـ Version ID في الرد:\n' + JSON.stringify(verRes.data).substring(0, 200));
             return;
           }
           spin('⏳ جاري النشر Live...');
-          var publishRes = await gtmPost(containerPath + '/versions/' + importedVerId + ':publish', {});
+          var pubRes = await gtmPost(containerPath + '/versions/' + verId + ':publish', {});
           overlay.remove();
-          if (publishRes.ok) {
-            alert('✅ تم النشر بنجاح!\nالـ Container اتنشر Live على GTM.');
+          if (pubRes.ok) {
+            alert('✅ تم النشر بنجاح!\n' + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\nاتنشروا Live على GTM.');
           } else {
-            alert('❌ فشل النشر (' + publishRes.status + '):\n' + errMsg(publishRes));
+            alert('❌ فشل النشر (' + pubRes.status + '):\n' + errMsg(pubRes));
           }
 
         } catch (execErr) {
-          // Always remove overlay so user is never stuck on infinite spinner
           overlay.remove();
           console.error('[executeAction]', execErr);
           alert('❌ خطأ غير متوقع:\n' + (execErr.message || String(execErr)));
