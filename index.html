@@ -6307,6 +6307,9 @@
         var vars     = cv.variable       || [];
         var builtIns = cv.builtInVariable || [];
 
+        // ── Failure tracking ──────────────────────────────────────
+        var failedVars = [], failedTrigs = [], failedTags = [];
+
         // ── Step 0a: Sync workspace FIRST (before any changes) ──────
         // CRITICAL: must sync BEFORE adding entities.
         // Syncing AFTER would revert our newly-added workspace changes.
@@ -6344,6 +6347,9 @@
         }
 
         // ── Step 2: Variables (create or update) ───────────────────
+        // Early-abort helper: if first entity returns 401/403 → token issue
+        function _isAuthErr(res) { return res.status === 401 || res.status === 403; }
+
         for (var vi = 0; vi < vars.length; vi++) {
           _setGtmProgress('⏳ Variables... (' + (vi+1) + '/' + vars.length + ')  —  Step 2/5', true);
           var vObj = clean(vars[vi]);
@@ -6356,7 +6362,17 @@
           } else {
             vRes = await _inlineGtmPost(wsPath + '/variables', vObj);
           }
-          if (!vRes.ok) console.warn('[GTM var]', vObj.name, vRes.status, _gtmErrMsg(vRes));
+          if (!vRes.ok) {
+            console.warn('[GTM var]', vObj.name, vRes.status, _gtmErrMsg(vRes));
+            failedVars.push(vObj.name + ' [' + vRes.status + ': ' + _gtmErrMsg(vRes) + ']');
+            if (vi === 0 && _isAuthErr(vRes)) {
+              _setGtmProgress('', false);
+              _setGtmResult('❌ خطأ في الصلاحيات (' + vRes.status + '):\n' + _gtmErrMsg(vRes) + '\n\nيبدو إن الـ Token منتهي أو ناقص الـ Scope.\nاعمل Disconnect ثم اتصل بحسابك Google من جديد.', true);
+              if (pubBtn) pubBtn.disabled = false;
+              if (conBtn) conBtn.disabled = false;
+              return;
+            }
+          }
           // Update map so subsequent renames see the new name
           if (vRes.ok && vRes.data && vRes.data.variableId) existingVarMap[vName] = vRes.data.variableId;
         }
@@ -6379,7 +6395,7 @@
             tRes = await _inlineGtmPost(wsPath + '/triggers', tObj);
             if (tRes.ok && tRes.data && tRes.data.triggerId) trigIdMap[oldTid] = tRes.data.triggerId;
           }
-          if (!tRes.ok) console.warn('[GTM trig]', tObj.name, tRes.status, _gtmErrMsg(tRes));
+          if (!tRes.ok) { console.warn('[GTM trig]', tObj.name, tRes.status, _gtmErrMsg(tRes)); failedTrigs.push(tObj.name + ' [' + tRes.status + ': ' + _gtmErrMsg(tRes) + ']'); }
           if (tRes.ok && tRes.data && tRes.data.triggerId) existingTrigMap[tName] = tRes.data.triggerId;
         }
 
@@ -6400,7 +6416,7 @@
           } else {
             gRes = await _inlineGtmPost(wsPath + '/tags', gObj);
           }
-          if (!gRes.ok) console.warn('[GTM tag]', gObj.name, gRes.status, _gtmErrMsg(gRes));
+          if (!gRes.ok) { console.warn('[GTM tag]', gObj.name, gRes.status, _gtmErrMsg(gRes)); failedTags.push(gObj.name + ' [' + gRes.status + ': ' + _gtmErrMsg(gRes) + ']'); }
         }
 
         // ── Import Draft: entities are now in workspace — DONE ──────
@@ -6463,12 +6479,20 @@
         _setGtmProgress('', false);
 
         if (pubRes.ok) {
-          _setGtmResult(
-            '✅ تم النشر بنجاح! 🎉\n'
-            + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\n'
-            + 'اتنشروا Live على GTM — Version ID: ' + verId,
-            false
-          );
+          var okTags  = tags.length     - failedTags.length;
+          var okTrigs = triggers.length - failedTrigs.length;
+          var okVars  = vars.length     - failedVars.length;
+          var hasErrs = failedVars.length || failedTrigs.length || failedTags.length;
+          var successMsg = '✅ تم النشر بنجاح! 🎉\n'
+            + okTags + ' Tag  ·  ' + okTrigs + ' Trigger  ·  ' + okVars + ' Variable\n'
+            + 'اتنشروا Live على GTM — Version ID: ' + verId;
+          if (hasErrs) {
+            successMsg += '\n\n⚠️ فشل إضافة بعض الـ Entities:';
+            if (failedVars.length)  successMsg += '\n— Variables: ' + failedVars.join(' | ');
+            if (failedTrigs.length) successMsg += '\n— Triggers:  ' + failedTrigs.join(' | ');
+            if (failedTags.length)  successMsg += '\n— Tags:      ' + failedTags.join(' | ');
+          }
+          _setGtmResult(successMsg, hasErrs ? true : false);
         } else {
           _setGtmResult('❌ فشل النشر (' + pubRes.status + '):\n' + _gtmErrMsg(pubRes), true);
         }
