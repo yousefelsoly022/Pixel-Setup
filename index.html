@@ -2966,9 +2966,9 @@
           <span class="material-symbols-outlined" style="font-size:18px;">inventory_2</span>
           <span>GTM Container</span>
         </button>
-        <button class="sb-link" id="sbVars" type="button" onclick="switchAppView('variables',this)">
-          <span class="material-symbols-outlined" style="font-size:18px;">code</span>
-          <span>Variables</span>
+        <button class="sb-link" id="sbProjects" type="button" onclick="switchAppView('projects',this)">
+          <span class="material-symbols-outlined" style="font-size:18px;">folder_open</span>
+          <span>My Projects</span>
         </button>
         <button class="sb-link" type="button" onclick="toggleSettings()">
           <span class="material-symbols-outlined" style="font-size:18px;">settings</span>
@@ -3058,44 +3058,44 @@
         <!-- Bento: Recent Publishes + Stats (shown after generate) -->
         <div id="overviewBento">
           <div class="ov-recent-card">
-            <div class="ov-recent-title">Recent Publishes</div>
+            <div class="ov-recent-title">ملخص الإعداد</div>
             <div class="ov-recent-item">
               <div class="ov-recent-dot green"></div>
               <div>
-                <div class="ov-recent-label" id="bentoPublish1">GTM Container Generated</div>
-                <div class="ov-recent-time" id="bentoPublish1Time">Just now • System</div>
+                <div class="ov-recent-label" id="bentoCmsLabel">—</div>
+                <div class="ov-recent-time" id="bentoCmsTime">المنصة المختارة</div>
               </div>
             </div>
             <div class="ov-recent-item">
               <div class="ov-recent-dot dim"></div>
               <div>
-                <div class="ov-recent-label">Pixel Config Ready</div>
-                <div class="ov-recent-time">Ready to deploy</div>
+                <div class="ov-recent-label" id="bentoPlatLabel">—</div>
+                <div class="ov-recent-time">منصات الإعلان والتحليل</div>
               </div>
             </div>
             <div class="ov-recent-item">
               <div class="ov-recent-dot dim"></div>
               <div>
-                <div class="ov-recent-label">DataLayer Code</div>
-                <div class="ov-recent-time">Export available</div>
+                <div class="ov-recent-label" id="bentoEventsLabel">—</div>
+                <div class="ov-recent-time">أحداث مُعدّة للتتبع</div>
               </div>
             </div>
-            <button style="width:100%;margin-top:16px;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,.08);color:var(--mut);background:transparent;font-family:var(--font-ui);font-size:13px;cursor:pointer;" onclick="switchAppView('gtmview',document.getElementById('sbGtm'))">Full GTM Container →</button>
+            <button style="width:100%;margin-top:16px;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,.08);color:var(--mut);background:transparent;font-family:var(--font-ui);font-size:13px;cursor:pointer;" onclick="switchAppView('gtmview',document.getElementById('sbGtm'))">عرض GTM Container →</button>
           </div>
           <div class="ov-stat-card" style="display:flex;flex-direction:column;gap:20px;">
             <div>
-              <div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;">Tracking Health</div>
-              <div style="font-size:40px;font-weight:900;font-family:var(--font-display);color:var(--wht);letter-spacing:-2px;">98.4%</div>
-              <div style="font-size:12px;color:var(--acc);margin-top:4px;">↑ Config Ready</div>
+              <div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;">Config Status</div>
+              <div style="font-size:40px;font-weight:900;font-family:var(--font-display);color:var(--acc);letter-spacing:-2px;" id="bentoConfigScore">—</div>
+              <div style="font-size:12px;color:var(--acc);margin-top:4px;" id="bentoConfigLabel">جاهز للرفع ✓</div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div style="background:var(--sur3);border-radius:12px;padding:14px;">
-                <div style="font-size:11px;color:var(--mut);margin-bottom:4px;">Active Tags</div>
+                <div style="font-size:11px;color:var(--mut);margin-bottom:4px;">منصات نشطة</div>
                 <div id="bentoTagCount" style="font-size:28px;font-weight:900;font-family:var(--font-display);color:var(--wht);">—</div>
               </div>
               <div style="background:var(--sur3);border-radius:12px;padding:14px;">
-                <div style="font-size:11px;color:var(--mut);margin-bottom:4px;">GTM Latency</div>
-                <div style="font-size:28px;font-weight:900;font-family:var(--font-display);color:var(--wht);">42ms</div>
+                <div style="font-size:11px;color:var(--mut);margin-bottom:4px;">أحداث</div>
+                <div id="bentoEventsCount" style="font-size:28px;font-weight:900;font-family:var(--font-display);color:var(--wht);">—</div>
               </div>
             </div>
           </div>
@@ -3280,7 +3280,7 @@
         <div class="phdr">
           <div class="pnum">Step 03</div>
           <div class="ptitle">إيه الـ Events اللي عايز تتتبعها؟</div>
-          <div class="psub">الـ Events معتمدة من Google GA4 Recommended Events</div>
+          <div class="psub">اختار الأحداث اللي عايز تتتبعها في متجرك</div>
         </div>
         <div class="cgrid" id="evGrid"></div>
         <div class="pacts">
@@ -3515,43 +3515,28 @@
           <!-- The generated pane-gtm will be injected here by switchAppView -->
         </div>
 
-        <!-- ── DIRECT PUBLISH SECTION ── -->
-        <h3 style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--wht);margin:32px 0 16px;">Direct Publish</h3>
-
-        <!-- ── STEP 1: CONNECT ── -->
-        <div style="background:var(--sur2);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:28px;margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
-            <div style="width:36px;height:36px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:800;color:#000;font-size:15px;flex-shrink:0;">1</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:var(--wht);">Connect Google Account</div>
-              <div style="font-size:12px;color:var(--mut);margin-top:2px;">Sign in with the Google account that owns your GTM container</div>
-            </div>
-            <div id="gtmConnStatus" style="margin-left:auto;font-size:12px;color:var(--mut);font-weight:600;"></div>
-          </div>
-          <button id="gtmConnectBtn" onclick="doGTMPublish()"
-            style="display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#000;border:none;border-radius:12px;padding:12px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:opacity .2s;">
-            <span class="material-symbols-outlined" style="font-size:18px;">device_hub</span>
-            Connect Google Account
-          </button>
-        </div>
-
       </div>
       <!-- END GTM CONTAINER VIEW -->
 
-      <!-- ══════ VARIABLES VIEW ══════ -->
-      <div class="app-view" id="view-variables">
-        <div style="margin-bottom:16px;">
-          <h2 style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--wht);letter-spacing:-.5px;">Variables &amp; DataLayer</h2>
-          <p style="font-size:13px;color:var(--mut);margin-top:4px;">DataLayer push code for your website</p>
+      <!-- ══════ MY PROJECTS VIEW ══════ -->
+      <div class="app-view" id="view-projects">
+        <div style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <h2 style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--wht);letter-spacing:-.5px;">My Projects</h2>
+            <p style="font-size:13px;color:var(--mut);margin-top:4px;">All your saved tracking configurations</p>
+          </div>
+          <button onclick="loadProjects()" style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:10px;padding:8px 16px;color:var(--mut);font-family:var(--font-ui);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:15px;">refresh</span> Refresh
+          </button>
         </div>
-        <div id="varsViewContent">
+        <div id="projectsViewList">
           <div style="text-align:center;padding:80px 20px;color:var(--mut);">
-            <span class="material-symbols-outlined" style="font-size:48px;opacity:.3;display:block;margin-bottom:12px;">code</span>
-            <p style="font-size:14px;">قم بإنشاء الـ Config أولاً من <button onclick="switchAppView('pixels',document.getElementById('sbPixels'))" style="color:var(--acc);background:none;border:none;font-size:14px;font-weight:600;cursor:pointer;">Pixel Config</button></p>
+            <span class="material-symbols-outlined" style="font-size:48px;opacity:.3;display:block;margin-bottom:12px;">folder_open</span>
+            <p style="font-size:14px;">جاري تحميل مشاريعك...</p>
           </div>
         </div>
       </div>
-      <!-- END VARIABLES VIEW -->
+      <!-- END MY PROJECTS VIEW -->
 
     </div>
   </div>
@@ -3561,23 +3546,12 @@
     var S = { cms: null, platforms: [], events: [], pixelIds: {}, lead: {} };
 
     // ===== APP VIEW SWITCHING =====
-    var APP_VIEWS = { overview:'view-overview', pixels:'view-pixels', gtmview:'view-gtmview', variables:'view-variables' };
+    var APP_VIEWS = { overview:'view-overview', pixels:'view-pixels', gtmview:'view-gtmview', projects:'view-projects' };
 
-    // Original parent containers — for restoring moved elements
-    var _gtmPaneOrigParent = null;
-    var _dlPaneOrigParent  = null;
+    // Cached GTM JSON string for sidebar view
+    var _cachedGtmStr = null;
 
     function switchAppView(viewKey, btnEl) {
-      // Restore any moved panes back to their original parent first
-      var paneGtm = document.getElementById('pane-gtm');
-      var paneDl  = document.getElementById('pane-dl');
-      if (_gtmPaneOrigParent && paneGtm && paneGtm.parentElement !== _gtmPaneOrigParent) {
-        _gtmPaneOrigParent.appendChild(paneGtm);
-      }
-      if (_dlPaneOrigParent && paneDl && paneDl.parentElement !== _dlPaneOrigParent) {
-        _dlPaneOrigParent.appendChild(paneDl);
-      }
-
       // Hide all views
       Object.values(APP_VIEWS).forEach(function(id){
         var el = document.getElementById(id);
@@ -3592,35 +3566,151 @@
       document.querySelectorAll('#et-sidebar .sb-link').forEach(function(b){ b.classList.remove('active'); });
       if(btnEl) btnEl.classList.add('active');
 
-      // If going to GTM view — MOVE the live pane-gtm element into the view
+      // If going to GTM view — show cached content or empty state
       if(viewKey === 'gtmview') {
         var gtmViewContent = document.getElementById('gtmViewContent');
         var gtmEmpty = document.getElementById('gtmEmptyState');
-        var outWrapEl = document.getElementById('outWrap');
-        paneGtm = document.getElementById('pane-gtm');
-        if (gtmEmpty) {
-          gtmEmpty.style.display = (outWrapEl && outWrapEl.classList.contains('on')) ? 'none' : 'flex';
-        }
-        if(paneGtm && outWrapEl && outWrapEl.classList.contains('on')) {
-          if (!_gtmPaneOrigParent) _gtmPaneOrigParent = paneGtm.parentElement;
-          // Make it visible (remove opane hidden state) and move it
-          paneGtm.classList.add('on');
-          gtmViewContent.innerHTML = '';
-          gtmViewContent.appendChild(paneGtm);
+        if (_cachedGtmStr) {
+          if (gtmEmpty) gtmEmpty.style.display = 'none';
+          renderGtmSidebarView(gtmViewContent, _cachedGtmStr);
+        } else {
+          if (gtmEmpty) gtmEmpty.style.display = 'flex';
+          if (gtmViewContent) gtmViewContent.innerHTML = '';
         }
       }
 
-      // If going to variables view — MOVE the live pane-dl element into the view
-      if(viewKey === 'variables') {
-        var varsContent = document.getElementById('varsViewContent');
-        paneDl = document.getElementById('pane-dl');
-        if(paneDl && document.getElementById('outWrap').classList.contains('on')) {
-          if (!_dlPaneOrigParent) _dlPaneOrigParent = paneDl.parentElement;
-          paneDl.classList.add('on');
-          varsContent.innerHTML = '';
-          varsContent.appendChild(paneDl);
-        }
+      // If going to My Projects view — load projects into the sidebar list
+      if(viewKey === 'projects') {
+        _loadProjectsIntoView();
       }
+    }
+
+    // Load projects into the My Projects sidebar view
+    async function _loadProjectsIntoView() {
+      var el = document.getElementById('projectsViewList');
+      if (!el) return;
+      el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--mut);font-family:monospace;font-size:12px;">⏳ جاري التحميل...</div>';
+
+      try {
+        var attempts = 0;
+        while (!db && attempts < 20) {
+          await new Promise(function(r){ setTimeout(r, 300); });
+          attempts++;
+        }
+        if (!db) {
+          el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--mut);font-size:13px;">⚠️ مش متصل بالسيرفر<br><span style="font-size:11px;color:var(--mut2);">تأكد من الإنترنت وحدّث الصفحة</span></div>';
+          return;
+        }
+        if (!currentUser || !currentUser.id) {
+          el.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--mut);">'
+            + '<span class="material-symbols-outlined" style="font-size:40px;opacity:.3;display:block;margin-bottom:10px;">lock</span>'
+            + '<p style="font-size:14px;">سجّل دخولك عشان تشوف مشاريعك</p></div>';
+          return;
+        }
+
+        var snap;
+        try {
+          snap = await db.collection('projects')
+            .where('client_id', '==', currentUser.id)
+            .orderBy('created_at', 'desc')
+            .limit(30)
+            .get();
+        } catch(ie) {
+          snap = await db.collection('projects')
+            .where('client_id', '==', currentUser.id)
+            .limit(30)
+            .get();
+        }
+
+        if (snap.empty) {
+          el.innerHTML = '<div style="text-align:center;padding:60px 20px;color:var(--mut);">'
+            + '<span class="material-symbols-outlined" style="font-size:40px;opacity:.3;display:block;margin-bottom:10px;">folder_open</span>'
+            + '<p style="font-size:14px;">مفيش مشاريع لحد دلوقتي</p>'
+            + '<p style="font-size:12px;margin-top:6px;">اعمل Generate أول مشروع من <button onclick="switchAppView(\'pixels\',document.getElementById(\'sbPixels\'))" style="color:var(--acc);background:none;border:none;font-size:12px;font-weight:600;cursor:pointer;">Pixel Config</button></p>'
+            + '</div>';
+          return;
+        }
+
+        var projects = [];
+        snap.forEach(function(doc){ var d = doc.data(); d.id = doc.id; projects.push(d); });
+        window._etProjectsSb = projects;
+
+        var html = '<div style="display:flex;flex-direction:column;gap:10px;">';
+        projects.forEach(function(p, i) {
+          var date = '—';
+          try {
+            if (p.created_at && typeof p.created_at.toDate === 'function') date = new Date(p.created_at.toDate()).toLocaleDateString('ar-EG');
+            else if (p.created_at && p.created_at.seconds) date = new Date(p.created_at.seconds * 1000).toLocaleDateString('ar-EG');
+            else if (p.created_at) date = new Date(p.created_at).toLocaleDateString('ar-EG');
+          } catch(de) {}
+          var platforms = (p.config && p.config.platforms) ? p.config.platforms.join(' · ') : (p.platforms || []).join(' · ') || '—';
+          var events    = (p.config && p.config.events)    ? p.config.events.length + ' events' : (p.events_count || 0) + ' events';
+          var cms       = (p.config && p.config.cms)       ? p.config.cms : (p.cms || '—');
+          html += '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:12px;padding:16px 18px;cursor:pointer;transition:border-color .15s;" '
+            + 'onmouseover="this.style.borderColor=\'rgba(70,241,197,.25)\'" '
+            + 'onmouseout="this.style.borderColor=\'rgba(255,255,255,.07)\'"'
+            + 'onclick="_loadProjectFromSb(' + i + ')">';
+          html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+          html += '<div style="font-weight:700;font-size:14px;color:var(--wht2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;">' + (p.client_name || p.name || 'Project #' + (i + 1)) + '</div>';
+          html += '<div style="font-family:monospace;font-size:10px;color:var(--mut2);white-space:nowrap;">' + date + '</div>';
+          html += '</div>';
+          html += '<div style="display:flex;gap:5px;flex-wrap:wrap;">';
+          html += '<span style="background:rgba(16,185,129,.08);color:var(--grn);font-size:10px;padding:2px 8px;border-radius:5px;font-family:monospace;border:1px solid rgba(16,185,129,.15);">' + cms + '</span>';
+          html += '<span style="background:var(--acc-dim);color:var(--acc);font-size:10px;padding:2px 8px;border-radius:5px;font-family:monospace;">' + platforms + '</span>';
+          html += '<span style="background:var(--sur3);color:var(--mut);font-size:10px;padding:2px 8px;border-radius:5px;font-family:monospace;">' + events + '</span>';
+          html += '</div>';
+          html += '<div style="margin-top:8px;font-size:11px;color:var(--acc);opacity:.6;">← Load project</div>';
+          html += '</div>';
+        });
+        html += '</div>';
+        el.innerHTML = html;
+
+      } catch(e) {
+        console.error('_loadProjectsIntoView error:', e);
+        el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--red);font-size:13px;">خطأ في تحميل المشاريع<br><span style="font-size:11px;color:var(--mut);">' + (e.message || '') + '</span></div>';
+      }
+    }
+
+    function _loadProjectFromSb(idx) {
+      var p = window._etProjectsSb && window._etProjectsSb[idx];
+      if (!p || !p.config) return;
+      // Reuse the same loadProject logic — proxy through the existing function
+      window._etProjects = window._etProjectsSb;
+      if (typeof loadProject === 'function') loadProject(idx);
+    }
+
+    function renderGtmSidebarView(container, jsonStr) {
+      if (!container) return;
+      container.dataset.filled = jsonStr.length + '';
+      var cms = window.S && S.cms ? (window.CMS && CMS[S.cms] ? CMS[S.cms].name : S.cms) : '—';
+      var plats = window.S && S.platforms ? S.platforms.map(function(p){ return window.PM && PM[p] ? PM[p].name : p; }).join(' · ') : '—';
+      var evCount = window.S && S.events ? S.events.length : 0;
+      var lead = window.S && S.lead && S.lead.name ? S.lead.name : '—';
+      container.innerHTML =
+        '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:20px;">'
+        + _pill('Client', lead, '#10b981')
+        + _pill('CMS', cms, '#6366f1')
+        + _pill('Platforms', plats, '#0ea5e9')
+        + _pill('Events', evCount + ' events', '#46f1c5')
+        + '</div>'
+        + '<div class="cwrap">'
+        + '<div class="ctbar"><div class="ctdots"><div class="ctdot" style="background:#ff5f57"></div><div class="ctdot" style="background:#febc2e"></div><div class="ctdot" style="background:#28c840"></div></div>'
+        + '<span class="clang">gtm-container.json</span>'
+        + '<div class="ctacts"><button class="cpybtn" onclick="(function(){try{navigator.clipboard.writeText(document.getElementById(\'gtmSbBody\').textContent);}catch(e){}})()">نسخ</button>'
+        + '<button class="dlbtn" onclick="(function(){var b=new Blob([document.getElementById(\'gtmSbBody\').textContent],{type:\'application/json\'});var a=document.createElement(\'a\');a.href=URL.createObjectURL(b);a.download=\'gtm-container.json\';a.click();})()">⬇️ تحميل</button></div></div>'
+        + '<div class="cbody" id="gtmSbBody" style="max-height:460px;overflow:auto;">' + _esc(jsonStr) + '</div>'
+        + '</div>';
+    }
+
+    function _pill(lbl, val, c) {
+      return '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:12px;padding:12px 14px;">'
+        + '<div style="font-size:10px;font-family:var(--font-mono);color:var(--mut);letter-spacing:1px;margin-bottom:3px;">' + lbl.toUpperCase() + '</div>'
+        + '<div style="font-size:14px;font-weight:800;color:' + c + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + val + '</div>'
+        + '</div>';
+    }
+
+    function _esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
     // ===== UPDATE OVERVIEW AFTER GENERATE =====
@@ -3652,12 +3742,30 @@
       });
       document.getElementById('overviewPixels').classList.add('show');
       document.getElementById('overviewBento').classList.add('show');
+
+      // Bento counts
       var tagEl = document.getElementById('bentoTagCount');
-      if(tagEl) tagEl.textContent = (S.platforms.length * S.events.length) || 0;
-      // publish label update
-      var cms = S.cms ? (CMS[S.cms] ? CMS[S.cms].name : S.cms) : '';
-      var pub1 = document.getElementById('bentoPublish1');
-      if(pub1 && cms) pub1.textContent = 'GTM Container — ' + cms;
+      if(tagEl) tagEl.textContent = S.platforms.length || 0;
+      var evCountEl = document.getElementById('bentoEventsCount');
+      if(evCountEl) evCountEl.textContent = S.events.length || 0;
+
+      // Config score (based on how complete the setup is)
+      var hasAllIds = S.platforms.every(function(p){ return S.pixelIds[p]; });
+      var configScore = hasAllIds ? '100%' : Math.round((Object.keys(S.pixelIds).filter(function(k){ return S.pixelIds[k]; }).length / Math.max(S.platforms.length, 1)) * 100) + '%';
+      var scoreEl = document.getElementById('bentoConfigScore');
+      if(scoreEl) scoreEl.textContent = configScore;
+      var labelEl = document.getElementById('bentoConfigLabel');
+      if(labelEl) labelEl.textContent = hasAllIds ? 'جاهز للرفع ✓' : 'أضف الـ Pixel IDs للإكمال';
+
+      // Dynamic Config Summary
+      var cms = S.cms ? (CMS[S.cms] ? CMS[S.cms].name : S.cms) : '—';
+      var platNames = S.platforms.map(function(p){ return PM[p] ? PM[p].name : p; });
+      var cmsLbl  = document.getElementById('bentoCmsLabel');
+      var platLbl = document.getElementById('bentoPlatLabel');
+      var evLbl   = document.getElementById('bentoEventsLabel');
+      if(cmsLbl)  cmsLbl.textContent  = cms;
+      if(platLbl) platLbl.textContent  = S.platforms.length + ' منصة' + (platNames.length ? ' — ' + platNames.join(' · ') : '');
+      if(evLbl)   evLbl.textContent    = S.events.length + ' حدث مُعدّ للتتبع';
     }
 
     // ===== DATA =====
@@ -4032,6 +4140,7 @@
     // ===== GENERATE =====
     function generate() {
       try {
+        // ── Step 1: Collect pixel IDs ──
         for (var i = 0; i < S.platforms.length; i++) {
           var p = S.platforms[i];
           if (p === 'google') {
@@ -4051,25 +4160,37 @@
             S.pixelIds[p] = el ? el.value.trim() : '';
           }
         }
-        document.getElementById('jsonBody').textContent = JSON.stringify(buildJSON(), null, 2);
-        document.getElementById('dlBody').textContent = buildDL();
-        document.getElementById('guideSteps').innerHTML = buildGuide();
-        document.getElementById('scoreContent').innerHTML = buildScore();
-        buildHealthCheck();
-        buildPlan();
-        buildSummary();
+
+        // ── Step 2: Show output panel & wire buttons FIRST so UI never stays blank ──
         for (var i = 1; i <= 4; i++) document.getElementById('s' + i).classList.remove('on');
         document.getElementById('outWrap').classList.add('on');
         var gtmEmpty = document.getElementById('gtmEmptyState');
         if (gtmEmpty) gtmEmpty.style.display = 'none';
         updateProg(5);
-        // show Salla Bridge tab only when CMS is salla
-        var bridgeTab = document.getElementById('sallaBridgeTab');
-        if (bridgeTab) bridgeTab.style.display = S.cms === 'salla' ? '' : 'none';
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        bindDownloads(); // wire early so buttons are always ready
+
+        // ── Step 3: Build each output panel individually — one crash won't block the rest ──
+        try { document.getElementById('jsonBody').textContent = JSON.stringify(buildJSON(), null, 2); }
+        catch(e) { console.error('buildJSON error:', e); }
+
+        try { document.getElementById('dlBody').textContent = buildDL(); }
+        catch(e) { console.error('buildDL error:', e); }
+
+        try { document.getElementById('guideSteps').innerHTML = buildGuide(); }
+        catch(e) { console.error('buildGuide error:', e); }
+
+        try { document.getElementById('scoreContent').innerHTML = buildScore(); }
+        catch(e) { console.error('buildScore error:', e); }
+
+        try { buildHealthCheck(); } catch(e) { console.error('buildHealthCheck error:', e); }
+        try { buildPlan();        } catch(e) { console.error('buildPlan error:', e); }
+        try { buildSummary();     } catch(e) { console.error('buildSummary error:', e); }
+
         // Update Overview page with active pixels
-        refreshOverview();
-        // ── Lazy GTM build: defer heavy JSON serialization so UI stays responsive ──
+        try { refreshOverview(); } catch(roe) { console.warn('refreshOverview error:', roe); }
+
+        // ── Step 4: Lazy GTM build — defer heavy JSON serialization so UI stays responsive ──
         var gtmBodyEl = document.getElementById('gtmBody');
         if (gtmBodyEl) {
           gtmBodyEl.textContent = '';
@@ -4077,29 +4198,42 @@
             + '<span class="material-symbols-outlined" style="font-size:32px;display:block;margin-bottom:8px;animation:spin 1s linear infinite;">sync</span>'
             + 'جاري بناء GTM Container...</div>';
         }
+        _cachedGtmStr = null; // reset cache while building
         var _lazyGtm = (typeof requestIdleCallback !== 'undefined') ? requestIdleCallback : function(fn){ setTimeout(fn, 30); };
         _lazyGtm(function() {
           try {
-            var gtmJson = buildGTMContainer();
-            var gtmStr  = JSON.stringify(gtmJson, null, 2);
+            var gtmResult = buildGTMContainer();
+            var gtmStr    = JSON.stringify(gtmResult, null, 2);
+            _cachedGtmStr = gtmStr; // cache for sidebar view + download
             if (gtmBodyEl) gtmBodyEl.textContent = gtmStr;
-            // Sync views after GTM build
-            var gtmViewContent = document.getElementById('gtmViewContent');
-            var paneGtm = document.getElementById('pane-gtm');
-            if (gtmViewContent && paneGtm && !paneGtm.closest('#gtmViewContent')) {
-              gtmViewContent.innerHTML = paneGtm.innerHTML;
+            // If sidebar GTM view is currently active, refresh it now
+            var gtmViewEl = document.getElementById('view-gtmview');
+            if (gtmViewEl && gtmViewEl.classList.contains('active')) {
+              var gtmViewContent2 = document.getElementById('gtmViewContent');
+              var gtmEmpty2 = document.getElementById('gtmEmptyState');
+              if (gtmEmpty2) gtmEmpty2.style.display = 'none';
+              if (gtmViewContent2) renderGtmSidebarView(gtmViewContent2, gtmStr);
             }
-            var varsContent = document.getElementById('varsViewContent');
-            var paneDl = document.getElementById('pane-dl');
-            if (varsContent && paneDl && !paneDl.closest('#varsViewContent')) {
-              varsContent.innerHTML = paneDl.innerHTML;
-            }
-            bindDownloads();
-          } catch(e) { console.error('GTM build error:', e); }
+            bindDownloads(); // re-wire after cache is ready
+          } catch(e) {
+            console.error('GTM build error:', e);
+            if (gtmBodyEl) gtmBodyEl.innerHTML =
+              '<div style="padding:24px;color:#f87171;font-family:monospace;font-size:12px;line-height:1.8;">'
+              + '<div style="font-size:14px;font-weight:700;margin-bottom:8px;">⚠️ خطأ في بناء الـ GTM Container</div>'
+              + '<div style="opacity:.85;">' + (e.message || String(e)) + '</div>'
+              + '<div style="margin-top:10px;font-size:11px;opacity:.5;">' + (e.stack ? e.stack.split('\n').slice(0,3).join('<br>') : '') + '</div>'
+              + '</div>';
+          }
         });
-        // Bind downloads immediately for non-GTM buttons; GTM bind deferred above
-        bindDownloads();
-      } catch (e) { console.error('generate() error:', e); }
+
+      } catch (e) {
+        console.error('generate() error:', e);
+        // Always show the output panel and wire buttons even on unexpected errors
+        try { document.getElementById('outWrap').classList.add('on'); } catch(x) {}
+        try { bindDownloads(); } catch(x) {}
+        var errEl = document.getElementById('gtmBody');
+        if (errEl) errEl.innerHTML = '<div style="padding:20px;color:#f87171;font-size:12px;font-family:monospace;">⚠️ خطأ في التوليد: ' + (e.message || String(e)) + '</div>';
+      }
     }
 
     // ===== BUILD JSON =====
@@ -4734,7 +4868,7 @@
             { icon: 'settings', title: 'فتح إعدادات سلة', body: 'الإعدادات → التسويق → Google Tag Manager' },
             { icon: 'content_paste', title: 'حط الـ Container ID', body: 'انسخ الـ Container ID من GTM (GTM-XXXXXX) وحطه في الحقل' },
             { icon: 'save', title: 'احفظ وتأكد', body: 'اضغط حفظ — سلة هترفع GTM تلقائياً على كل الصفحات' },
-            { icon: 'info', title: 'ملاحظة مهمة', body: 'سلة بتستخدم <code>ecommerce.revenue</code> بدل <code>value</code> — الـ Container المولّد جاهز لده تلقائياً.<br><br><strong>Variable Mapping:</strong><br>• <code>ecommerce.revenue</code> → value<br>• <code>ecommerce.purchase.actionField.id</code> → transaction_id<br>• <code>ecommerce.purchase.products</code> → items' }
+            { icon: 'check_circle', title: 'جاهز!', body: 'الـ GTM Container المولّد متوافق بالكامل مع سلة — بمجرد الرفع هيشتغل تلقائياً بدون أي تعديل إضافي.' }
           ]
         },
         zid: {
@@ -4745,7 +4879,7 @@
             { icon: 'settings', title: 'فتح لوحة التحكم', body: 'لوحة التحكم → التسويق → Google Tag Manager' },
             { icon: 'content_paste', title: 'حط الـ Container ID', body: 'انسخ الـ Container ID (GTM-XXXXXX) وحطه في الحقل المخصص' },
             { icon: 'save', title: 'احفظ التغييرات', body: 'زد بتحقن GTM تلقائياً على كل صفحات المتجر' },
-            { icon: 'check_circle', title: 'ميزة زد', body: 'زد بتبعت GA4-compatible events تلقائياً — الـ Container هيشتغل out-of-the-box بدون أي تعديل.<br><br><strong>Events جاهزة:</strong><br>• <code>view_item</code> · <code>add_to_cart</code><br>• <code>begin_checkout</code> · <code>purchase</code>' }
+            { icon: 'check_circle', title: 'جاهز!', body: 'زد بتبعت الأحداث تلقائياً — الـ GTM Container المولّد هيشتغل فوراً بدون أي تعديل إضافي.' }
           ]
         }
       };
@@ -4754,48 +4888,48 @@
         meta: {
           icon: '📘', name: 'Meta Pixel', color: '#1877F2',
           steps: [
-            { icon: 'search', title: 'Template Gallery', body: 'في GTM: <strong>Tags → New → Discover more tag types</strong><br>ابحث عن "Facebook Pixel" Template' },
-            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.meta || 'YOUR_PIXEL_ID') + '</code><br>Business Manager → Events Manager → Pixel ID' },
-            { icon: 'tune', title: 'Events Setup', body: 'استخدم الـ Container المولّد — فيه كل الـ Tags والـ Triggers جاهزة<br>Purchase event لازم يبقى فيه <code>content_type: "product"</code>' }
+            { icon: 'upload_file', title: 'ارفع الـ Container', body: 'نزّل ملف GTM Container من تاب "GTM Container"، ثم في GTM: <strong>Admin → Import Container → Merge</strong>' },
+            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.meta || 'YOUR_PIXEL_ID') + '</code><br>هتلاقيه في: Business Manager → Events Manager' },
+            { icon: 'check_circle', title: 'جاهز!', body: 'الـ Container فيه كل الـ Tags والأحداث جاهزة ومربوطة — بس ارفعه واختبره من GTM Preview' }
           ]
         },
         tiktok: {
           icon: '🎵', name: 'TikTok Pixel', color: '#46f1c5',
           steps: [
-            { icon: 'search', title: 'Template Gallery', body: 'Tags → New → Discover more tag types<br>ابحث عن "TikTok Pixel" Template' },
-            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.tiktok || 'YOUR_PIXEL_ID') + '</code>' },
-            { icon: 'tune', title: 'Deduplication', body: 'مهم جداً: أضف <code>event_id</code> لكل event عشان تتجنب الـ Duplicate conversions' }
+            { icon: 'upload_file', title: 'ارفع الـ Container', body: 'نزّل ملف GTM Container وارفعه: <strong>Admin → Import Container → Merge</strong>' },
+            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.tiktok || 'YOUR_PIXEL_ID') + '</code><br>TikTok Ads Manager → Assets → Events' },
+            { icon: 'check_circle', title: 'جاهز!', body: 'الـ Container فيه كل أحداث TikTok جاهزة — اختبرها من GTM Preview قبل النشر' }
           ]
         },
         snapchat: {
           icon: '👻', name: 'Snap Pixel', color: '#FFFC00',
           steps: [
-            { icon: 'code', title: 'Custom HTML Tag', body: 'Tags → New → Custom HTML<br>استخدم الكود من الـ Container المولّد' },
-            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.snapchat || 'YOUR_PIXEL_ID') + '</code>' },
-            { icon: 'info', title: 'ملاحظة', body: 'Snapchat بتستخدم <code>price</code> بدل <code>value</code> — الـ Container جاهز لده' }
+            { icon: 'upload_file', title: 'ارفع الـ Container', body: 'نزّل ملف GTM Container وارفعه: <strong>Admin → Import Container → Merge</strong>' },
+            { icon: 'key', title: 'Pixel ID', body: 'Pixel ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.snapchat || 'YOUR_PIXEL_ID') + '</code><br>Snapchat Ads Manager → Assets → Snap Pixel' },
+            { icon: 'check_circle', title: 'جاهز!', body: 'الـ Container المولّد جاهز لـ Snapchat بالكامل — اختبره من GTM Preview' }
           ]
         },
         google: {
           icon: '🔍', name: 'Google Ads', color: '#4285F4',
           steps: [
-            { icon: 'tag', title: 'Google Ads Tag', body: 'Tags → New → Google Ads Conversion Tracking' },
-            { icon: 'key', title: 'Conversion ID', body: 'ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.google || 'YOUR_CONVERSION_ID') + '</code><br>Google Ads → Goals → Conversions → Settings' },
-            { icon: 'info', title: 'Enhanced Conversions', body: 'فعّل Enhanced Conversions لتحسين الدقة — بيستخدم user_email من الـ Data Layer' }
+            { icon: 'upload_file', title: 'ارفع الـ Container', body: 'نزّل ملف GTM Container وارفعه: <strong>Admin → Import Container → Merge</strong>' },
+            { icon: 'key', title: 'Conversion ID', body: 'ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.google || 'YOUR_CONVERSION_ID') + '</code><br>هتلاقيه في: Google Ads → Goals → Conversions' },
+            { icon: 'check_circle', title: 'جاهز!', body: 'الـ Container فيه Tags جاهزة لتتبع الـ Conversions — اختبرها من GTM Preview' }
           ]
         },
         ga4: {
           icon: '📊', name: 'Google Analytics 4', color: '#F9AB00',
           steps: [
-            { icon: 'tag', title: 'GA4 Config Tag', body: 'Tags → New → Google Analytics: GA4 Configuration<br>Measurement ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.ga4 || 'G-XXXXXXXXXX') + '</code>' },
-            { icon: 'tune', title: 'Event Tags', body: 'الـ Container فيه Event Tags جاهزة لكل الأحداث المختارة مع الـ Variables الصح' },
-            { icon: 'troubleshoot', title: 'DebugView', body: 'استخدم GA4 DebugView للتحقق من الأحداث: Admin → DebugView' }
+            { icon: 'upload_file', title: 'ارفع الـ Container', body: 'نزّل ملف GTM Container وارفعه: <strong>Admin → Import Container → Merge</strong>' },
+            { icon: 'key', title: 'Measurement ID', body: 'ID: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:2px 8px;border-radius:4px;">' + (S.pixelIds.ga4 || 'G-XXXXXXXXXX') + '</code><br>هتلاقيه في: GA4 Admin → Data Streams' },
+            { icon: 'check_circle', title: 'جاهز!', body: 'الـ Container فيه كل أحداث التحليلات جاهزة — اختبرها من GTM Preview' }
           ]
         }
       };
 
       var importStep = {
         icon: 'upload_file', title: 'استيراد GTM Container',
-        body: '<strong>GTM → Admin → Import Container</strong><br>1. اختار ملف <code>gtm-container.json</code><br>2. اختار Workspace: Default<br>3. اختار <strong>Merge</strong> (مش Overwrite)<br>4. اضغط Confirm<br><br>هيضيف تلقائياً كل الـ Tags والـ Triggers والـ Variables'
+        body: '<strong>GTM → Admin → Import Container</strong><br>1. اختار ملف الـ Container اللي نزّلته<br>2. اختار Workspace: Default<br>3. اختار <strong>Merge</strong> (مش Overwrite)<br>4. اضغط Confirm<br><br>هيضيف تلقائياً كل الإعدادات الجاهزة'
       };
 
       var testStep = {
@@ -5189,12 +5323,8 @@
 
     function oTab(id, btn) {
       if (id === 'plan') buildTrackingPlan();
-      if (id === 'consent') buildConsent();
       if (id === 'health') { document.getElementById('healthResults').innerHTML = ''; }
       if (id === 'projects') loadProjects();
-      if (id === 'bridge') buildSallaBridge();
-      if (id === 'audit') buildAuditReport();
-      if (id === 'stores') renderStoresList();
       var tabs = document.querySelectorAll('.otab');
       var panes = document.querySelectorAll('.opane');
       for (var i = 0; i < tabs.length; i++)  tabs[i].classList.remove('on');
@@ -5346,7 +5476,7 @@
           + '<div><div style="font-size:10px;color:var(--mut);font-family:monospace;letter-spacing:1px;margin-bottom:2px;">❌ ناقص</div><div style="font-size:18px;font-weight:700;color:var(--red);">' + totalMiss + '</div></div>'
           + '<div><div style="font-size:10px;color:var(--mut);font-family:monospace;letter-spacing:1px;margin-bottom:2px;">GTM</div>'
           + '<div style="font-size:18px;font-weight:700;color:' + (hasGTM ? 'var(--grn)' : 'var(--red)') + ';">' + (hasGTM ? '✅' : '❌') + '</div></div>'
-          + '<div><div style="font-size:10px;color:var(--mut);font-family:monospace;letter-spacing:1px;margin-bottom:2px;">Consent v2</div>'
+          + '<div><div style="font-size:10px;color:var(--mut);font-family:monospace;letter-spacing:1px;margin-bottom:2px;">Privacy</div>'
           + '<div style="font-size:18px;font-weight:700;color:' + (hasConsent ? 'var(--grn)' : 'var(--red)') + ';">' + (hasConsent ? '✅' : '❌') + '</div></div>'
           + '</div>' + h;
 
@@ -5355,7 +5485,7 @@
           h += '<div class="infonote grn" style="margin-top:4px">📦 GTM Container ID: <code>' + results.gtm.detectedId + '</code></div>';
         }
         if (!hasConsent) {
-          h += '<div class="infonote" style="background:rgba(248,113,113,.06);border-color:rgba(248,113,113,.2);margin-top:8px">⚠️ <strong style="color:var(--red)">Consent Mode v2 مش موجود</strong> — Google بيطلبه من مارس 2024. اضغط تاب <strong>🍪 Consent v2</strong> للكود الجاهز.</div>';
+          h += '<div class="infonote" style="background:rgba(248,113,113,.06);border-color:rgba(248,113,113,.2);margin-top:8px">⚠️ <strong style="color:var(--red)">Privacy Consent مش موجود</strong> — Google بيطلبه من مارس 2024 لتشغيل الإعلانات بشكل صحيح.</div>';
         }
 
         resEl.innerHTML = h;
@@ -5874,13 +6004,18 @@
     var _gtmSecondaryApp = null;
 
     async function doGTMPublish() {
-      var gtmText = (document.getElementById('gtmBody') || {}).textContent || '';
-      if (!gtmText.trim()) {
-        alert('\u26a0\ufe0f اعمل Generate للـ Config الأول من Pixel Config ثم ارجع هنا');
-        return;
+      // Use the cached GTM string — avoids race conditions with the lazy-build loader
+      if (!_cachedGtmStr || !_cachedGtmStr.trim()) {
+        // Fallback: try reading from the DOM in case the cache is somehow missing
+        var _fallbackText = (document.getElementById('gtmBody') || {}).textContent || '';
+        if (!_fallbackText.trim() || _fallbackText.trim().charAt(0) !== '{') {
+          alert('\u26a0\ufe0f اعمل Generate للـ Config الأول من Pixel Config ثم ارجع هنا\n(لو عملت Generate بالفعل، انتظر ثانية وحاول تاني)');
+          return;
+        }
+        _cachedGtmStr = _fallbackText;
       }
       var gtmJson;
-      try { gtmJson = JSON.parse(gtmText); }
+      try { gtmJson = JSON.parse(_cachedGtmStr); }
       catch (e) { alert('\u274c GTM JSON غير صحيح \u2014 اعمل Generate من جديد'); return; }
 
       var btnConnect = document.getElementById('gtmConnectBtn');
@@ -5961,23 +6096,43 @@
 
       // ── helpers ───────────────────────────────────────────────
       async function gtmGet(path) {
-        var r = await fetch('https://tagmanager.googleapis.com/tagmanager/v2/' + path, {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
-        var text = await r.text();
-        try { return { ok: r.ok, status: r.status, data: JSON.parse(text) }; }
-        catch (e) { return { ok: false, status: r.status, data: null, raw: text.substring(0, 400) }; }
+        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timer = controller ? setTimeout(function(){ controller.abort(); }, 15000) : null;
+        try {
+          var r = await fetch('https://tagmanager.googleapis.com/tagmanager/v2/' + path, {
+            headers: { 'Authorization': 'Bearer ' + token },
+            signal: controller ? controller.signal : undefined
+          });
+          clearTimeout(timer);
+          var text = await r.text();
+          try { return { ok: r.ok, status: r.status, data: JSON.parse(text) }; }
+          catch (e) { return { ok: false, status: r.status, data: null, raw: text.substring(0, 400) }; }
+        } catch(fetchErr) {
+          clearTimeout(timer);
+          var isTimeout = fetchErr.name === 'AbortError';
+          return { ok: false, status: isTimeout ? 408 : 0, data: null, raw: isTimeout ? 'انتهى الوقت — تأكد من اتصالك وحاول تاني' : (fetchErr.message || String(fetchErr)) };
+        }
       }
 
       async function gtmPost(path, body) {
-        var r = await fetch('https://tagmanager.googleapis.com/tagmanager/v2/' + path, {
-          method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        var text = await r.text();
-        try { return { ok: r.ok, status: r.status, data: JSON.parse(text) }; }
-        catch (e) { return { ok: false, status: r.status, data: null, raw: text.substring(0, 400) }; }
+        var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var timer = controller ? setTimeout(function(){ controller.abort(); }, 20000) : null;
+        try {
+          var r = await fetch('https://tagmanager.googleapis.com/tagmanager/v2/' + path, {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+            signal: controller ? controller.signal : undefined
+          });
+          clearTimeout(timer);
+          var text = await r.text();
+          try { return { ok: r.ok, status: r.status, data: JSON.parse(text) }; }
+          catch (e) { return { ok: false, status: r.status, data: null, raw: text.substring(0, 400) }; }
+        } catch(fetchErr) {
+          clearTimeout(timer);
+          var isTimeout = fetchErr.name === 'AbortError';
+          return { ok: false, status: isTimeout ? 408 : 0, data: null, raw: isTimeout ? 'انتهى الوقت (20 ثانية) — تأكد من اتصالك بالإنترنت وحاول تاني' : (fetchErr.message || String(fetchErr)) };
+        }
       }
 
       function errMsg(res) {
@@ -6130,52 +6285,92 @@
 
       // ── execute ───────────────────────────────────────────────
       async function executeAction(mode, accountId, containerId, workspaceId) {
-        var basePath = 'accounts/' + accountId + '/containers/' + containerId + '/workspaces/' + workspaceId;
+        var containerPath = 'accounts/' + accountId + '/containers/' + containerId;
+        var wsPath = containerPath + '/workspaces/' + workspaceId;
 
-        // Step A: import container JSON into workspace
-        spin('⏳ جاري استيراد الـ Container...');
-        var importRes = await gtmPost(basePath + ':import_container', {
-          containerConfigJSON: JSON.stringify(gtmJson)
-        });
-        if (!importRes.ok) {
+        // Helper: create version from workspace + optionally publish (fallback path)
+        async function runFallback(reason) {
+          spin('⏳ جاري إنشاء الـ Version من الـ Workspace...');
+          var fallbackRes = await gtmPost(wsPath + ':create_version', {
+            name: 'Easy Track — ' + new Date().toLocaleDateString('ar-EG'),
+            notes: 'أُنشئ من Easy Track Pixel Config Generator'
+          });
+          if (!fallbackRes.ok) {
+            overlay.remove();
+            alert('❌ فشل إنشاء الـ Version (' + fallbackRes.status + '):\n' + errMsg(fallbackRes));
+            return;
+          }
+          var fbVerId = fallbackRes.data.containerVersion && fallbackRes.data.containerVersion.containerVersionId;
+          if (mode === 'import') {
+            overlay.remove();
+            alert('✅ تم إنشاء Version جديد من الـ Workspace!\nID: ' + (fbVerId || '—'));
+            return;
+          }
+          if (!fbVerId) { overlay.remove(); alert('❌ مش قادر يجيب الـ Version ID'); return; }
+          spin('⏳ جاري النشر Live...');
+          var fbPubRes = await gtmPost(containerPath + '/versions/' + fbVerId + ':publish', {});
           overlay.remove();
-          alert('❌ فشل الاستيراد (' + importRes.status + '):\n' + errMsg(importRes));
-          return;
+          if (fbPubRes.ok) { alert('✅ تم النشر بنجاح!\nالـ Container اتنشر Live على GTM.'); }
+          else { alert('❌ فشل النشر (' + fbPubRes.status + '):\n' + errMsg(fbPubRes)); }
         }
 
-        if (mode === 'import') {
-          overlay.remove();
-          alert('✅ تم الاستيراد بنجاح في الـ Workspace!\nالتغييرات جاهزة للمراجعة في GTM.');
-          return;
-        }
+        try {
+          // Build the ContainerVersion body from the generated JSON
+          var versionBody = (gtmJson && gtmJson.containerVersion) ? gtmJson.containerVersion : gtmJson;
+          // Clone and inject real IDs so the import matches the target container
+          versionBody = JSON.parse(JSON.stringify(versionBody));
+          versionBody.accountId   = accountId;
+          versionBody.containerId = containerId;
+          if (versionBody.container) {
+            versionBody.container.accountId   = accountId;
+            versionBody.container.containerId = containerId;
+          }
 
-        // Step B: create a version from the workspace
-        spin('⏳ جاري إنشاء الـ Version...');
-        var versionRes = await gtmPost(basePath + '/create_version', {
-          name: 'Easy Track — ' + new Date().toLocaleDateString('ar-EG'),
-          notes: 'نُشر من Easy Track Pixel Config Generator'
-        });
-        if (!versionRes.ok) {
-          overlay.remove();
-          alert('❌ فشل إنشاء الـ Version (' + versionRes.status + '):\n' + errMsg(versionRes));
-          return;
-        }
-        var versionId = versionRes.data.containerVersion && versionRes.data.containerVersion.containerVersionId;
-        if (!versionId) {
-          overlay.remove();
-          alert('❌ مش قادر يجيب الـ Version ID من الرد:\n' + JSON.stringify(versionRes.data).substring(0, 300));
-          return;
-        }
+          // ── Step A: import via the correct GTM API v2 endpoint ──
+          spin('⏳ جاري استيراد الـ Container...');
+          // Correct endpoint: POST accounts/{acct}/containers/{cont}/versions:import
+          // Body must be the containerVersion object (not the full export wrapper)
+          var importRes = await gtmPost(containerPath + '/versions:import', versionBody);
 
-        // Step C: publish the version
-        spin('⏳ جاري النشر Live...');
-        var publishPath = 'accounts/' + accountId + '/containers/' + containerId + '/versions/' + versionId + ':publish';
-        var publishRes = await gtmPost(publishPath, {});
-        overlay.remove();
-        if (publishRes.ok) {
-          alert('✅ تم النشر بنجاح!\nالـ Container اتنشر Live على GTM.');
-        } else {
-          alert('❌ فشل النشر (' + publishRes.status + '):\n' + errMsg(publishRes));
+          if (!importRes.ok) {
+            // Any non-2xx from versions:import → fall back to create_version from workspace
+            // This covers: 400 (bad payload), 403 (permissions), 404/405 (endpoint mismatch)
+            console.warn('[GTM import] status', importRes.status, '— falling back to create_version:', errMsg(importRes));
+            await runFallback('import_failed_' + importRes.status);
+            return;
+          }
+
+          // versions:import returns a ContainerVersion; extract the new version ID
+          var importedVerId = (importRes.data && importRes.data.containerVersionId)
+            || (importRes.data && importRes.data.containerVersion && importRes.data.containerVersion.containerVersionId);
+
+          if (mode === 'import') {
+            overlay.remove();
+            alert('✅ تم الاستيراد بنجاح!\nVersion ID: ' + (importedVerId || '—'));
+            return;
+          }
+
+          // ── Step B: publish the imported version ──
+          if (!importedVerId) {
+            // ID missing in response — fall back to creating a version the standard way
+            console.warn('[GTM import] no containerVersionId in response — falling back');
+            await runFallback('no_version_id');
+            return;
+          }
+          spin('⏳ جاري النشر Live...');
+          var publishRes = await gtmPost(containerPath + '/versions/' + importedVerId + ':publish', {});
+          overlay.remove();
+          if (publishRes.ok) {
+            alert('✅ تم النشر بنجاح!\nالـ Container اتنشر Live على GTM.');
+          } else {
+            alert('❌ فشل النشر (' + publishRes.status + '):\n' + errMsg(publishRes));
+          }
+
+        } catch (execErr) {
+          // Always remove overlay so user is never stuck on infinite spinner
+          overlay.remove();
+          console.error('[executeAction]', execErr);
+          alert('❌ خطأ غير متوقع:\n' + (execErr.message || String(execErr)));
         }
       }
 
@@ -6187,15 +6382,33 @@
       var clientName = ((S.lead && S.lead.name) || 'client').replace(/\s+/g, '-');
       var today = new Date().toISOString().split('T')[0];
 
-      document.getElementById('dlJson').onclick = function () {
+      function wire(id, fn) {
+        var el = document.getElementById(id);
+        if (el) el.onclick = fn;
+      }
+
+      wire('dlGtm', function () {
+        var content = _cachedGtmStr;
+        if (!content || !content.trim() || content.trim().charAt(0) !== '{') {
+          alert('⏳ الـ GTM Container لسه بيتبني — انتظر ثانية وحاول تاني.');
+          return;
+        }
+        dlFile(content, 'gtm-container-' + clientName + '-' + today + '.json', 'application/json');
+      });
+      wire('cpyGtm', function () {
+        var content = _cachedGtmStr || document.getElementById('gtmBody').textContent;
+        if (!content || !content.trim() || content.trim().charAt(0) !== '{') { alert('⏳ الـ GTM Container لسه بيتبني.'); return; }
+        navigator.clipboard.writeText(content).then(function() {
+          var btn = document.getElementById('cpyGtm');
+          if(btn){ var orig = btn.textContent; btn.textContent = '✅ تم'; setTimeout(function(){ btn.textContent = orig; }, 2000); }
+        });
+      });
+      // kept for backward compat (elements may not exist after tab removal)
+      wire('dlJson', function () {
         dlFile(document.getElementById('jsonBody').textContent, 'pixel-config-' + clientName + '-' + today + '.json', 'application/json');
-      };
-      document.getElementById('dlGtm').onclick = function () {
-        dlFile(document.getElementById('gtmBody').textContent, 'gtm-container-' + clientName + '-' + today + '.json', 'application/json');
-      };
-      document.getElementById('cpyJson').onclick = function () { copyEl('jsonBody', this); };
-      document.getElementById('cpyGtm').onclick = function () { copyEl('gtmBody', this); };
-      document.getElementById('cpyDl').onclick = function () { copyEl('dlBody', this); };
+      });
+      wire('cpyJson', function () { copyEl('jsonBody', this); });
+      wire('cpyDl',   function () { copyEl('dlBody',   this); });
     }
 
     function dlFile(text, name, type) {
