@@ -6307,7 +6307,14 @@
         var vars     = cv.variable       || [];
         var builtIns = cv.builtInVariable || [];
 
-        // ── Step 0: Load existing entities (for overwrite/rename resolution) ──
+        // ── Step 0a: Sync workspace FIRST (before any changes) ──────
+        // CRITICAL: must sync BEFORE adding entities.
+        // Syncing AFTER would revert our newly-added workspace changes.
+        _setGtmProgress('⏳ مزامنة الـ Workspace مع الـ Container...', true);
+        await _inlineGtmPost(wsPath + ':sync', {});
+        // (ignore sync conflicts — they'll be overwritten by our entities below)
+
+        // ── Step 0b: Load existing entities (for overwrite/rename resolution) ──
         _setGtmProgress('⏳ تحميل الـ Entities الحالية من الـ Workspace...', true);
         var existingVarMap  = {}; // name → variableId
         var existingTrigMap = {}; // name → triggerId
@@ -6419,13 +6426,8 @@
         _setGtmProgress('⏳ إنشاء Version... (5/5)', true);
         var verRes = await _inlineGtmPost(wsPath + ':create_version', verBody);
 
-        // Handle syncError: workspace out of sync with live container → sync then retry
-        if (verRes.ok && verRes.data && verRes.data.syncStatus && verRes.data.syncStatus.syncError) {
-          _setGtmProgress('⏳ مزامنة الـ Workspace... (حل Conflicts)', true);
-          await _inlineGtmPost(wsPath + ':sync', {}); // sync with default MERGE policy
-          _setGtmProgress('⏳ إعادة إنشاء الـ Version... (5/5)', true);
-          verRes = await _inlineGtmPost(wsPath + ':create_version', verBody);
-        }
+        // NOTE: We do NOT sync here — syncing after adding entities would revert them.
+        // The workspace was already synced at Step 0a before any changes were made.
         _setGtmProgress('', false);
 
         if (!verRes.ok) {
@@ -6434,9 +6436,14 @@
           if (conBtn) conBtn.disabled = false;
           return;
         }
-        // Still syncError after retry?
+        // syncError after pre-sync means unresolvable conflict — report clearly
         if (verRes.data && verRes.data.syncStatus && verRes.data.syncStatus.syncError) {
-          _setGtmResult('❌ يوجد Sync Conflict في الـ Workspace — افتح GTM وحل الـ Conflicts يدوياً ثم حاول تاني.', true);
+          _setGtmResult(
+            '❌ يوجد Sync Conflict لم يتم حله.\n'
+            + 'الـ Entities أُضيفت للـ Workspace بنجاح، لكن لم يمكن إنشاء الـ Version.\n'
+            + 'افتح GTM → Workspace → حل الـ Conflicts يدوياً ثم انشر.',
+            true
+          );
           if (pubBtn) pubBtn.disabled = false;
           if (conBtn) conBtn.disabled = false;
           return;
