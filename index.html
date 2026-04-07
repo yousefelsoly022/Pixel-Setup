@@ -3495,8 +3495,10 @@
                 <div class="gtm-select-wrap">
                   <span class="gtm-select-lbl">Publish Mode</span>
                   <select class="gtm-select" id="gtmModeSelect">
-                    <option value="publish">🚀 Publish Live</option>
-                    <option value="import">✏️ Import as Draft</option>
+                    <option value="publish_overwrite">🚀 Publish — Merge (Overwrite conflicts)</option>
+                    <option value="publish_rename">🚀 Publish — Merge (Rename new)</option>
+                    <option value="import_overwrite">✏️ Draft — Merge (Overwrite conflicts)</option>
+                    <option value="import_rename">✏️ Draft — Merge (Rename new)</option>
                   </select>
                 </div>
               </div>
@@ -6061,6 +6063,24 @@
       }
     }
 
+    async function _inlineGtmPut(path, body) {
+      var token = _gtmInlineState.token;
+      var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 20000) : null;
+      try {
+        var r = await fetch('https://tagmanager.googleapis.com/tagmanager/v2/' + path,
+          { method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined });
+        clearTimeout(timer);
+        var txt = await r.text();
+        try { return { ok: r.ok, status: r.status, data: JSON.parse(txt) }; }
+        catch(e) { return { ok: false, status: r.status, data: null, raw: txt.substring(0, 400) }; }
+      } catch(fe) {
+        clearTimeout(timer);
+        return { ok: false, status: fe.name === 'AbortError' ? 408 : 0, data: null, raw: fe.message || String(fe) };
+      }
+    }
+
     function _gtmErrMsg(res) {
       if (res && res.data && res.data.error) return res.data.error.message || JSON.stringify(res.data.error);
       if (res && res.raw) return res.raw;
@@ -6258,9 +6278,12 @@
       try { gtmJson = JSON.parse(_cachedGtmStr); }
       catch (e) { _setGtmResult('❌ GTM JSON غير صحيح — اعمل Generate من جديد', true); return; }
 
-      var mode    = (document.getElementById('gtmModeSelect') || {}).value || 'publish';
-      var pubBtn  = document.getElementById('pubGtm');
-      var conBtn  = document.getElementById('gtmConnectBtn');
+      var modeVal   = (document.getElementById('gtmModeSelect') || {}).value || 'publish_overwrite';
+      var isPublish = modeVal.startsWith('publish');
+      var doRename  = modeVal.endsWith('rename'); // false = overwrite conflicts, true = rename new
+
+      var pubBtn = document.getElementById('pubGtm');
+      var conBtn = document.getElementById('gtmConnectBtn');
       if (pubBtn) pubBtn.disabled = true;
       if (conBtn) conBtn.disabled = true;
       var old = document.getElementById('gtmResultMsg');
@@ -6269,6 +6292,7 @@
       var containerPath = 'accounts/' + s.accountId + '/containers/' + s.containerId;
       var wsPath        = containerPath + '/workspaces/' + s.workspaceId;
 
+      // Strip server-assigned fields before sending to API
       function clean(obj) {
         var o = JSON.parse(JSON.stringify(obj));
         ['accountId','containerId','tagId','triggerId','variableId','fingerprint','path','parentFolderId'].forEach(function(k){ delete o[k]; });
@@ -6277,55 +6301,131 @@
       var BUILTIN = { 2147479553: true, 2147479572: true };
 
       try {
-        var cv       = (gtmJson.containerVersion) ? gtmJson.containerVersion : gtmJson;
+        var cv       = gtmJson.containerVersion ? gtmJson.containerVersion : gtmJson;
         var tags     = cv.tag            || [];
         var triggers = cv.trigger        || [];
         var vars     = cv.variable       || [];
         var builtIns = cv.builtInVariable || [];
 
-        // Step 1: Enable built-in variables
+        // ── Step 0: Load existing entities (for overwrite/rename resolution) ──
+        _setGtmProgress('⏳ تحميل الـ Entities الحالية من الـ Workspace...', true);
+        var existingVarMap  = {}; // name → variableId
+        var existingTrigMap = {}; // name → triggerId
+        var existingTagMap  = {}; // name → tagId
+
+        var evRes = await _inlineGtmGet(wsPath + '/variables');
+        var etRes = await _inlineGtmGet(wsPath + '/triggers');
+        var egRes = await _inlineGtmGet(wsPath + '/tags');
+        (evRes.data && evRes.data.variable  || []).forEach(function(v){ existingVarMap[v.name]  = v.variableId; });
+        (etRes.data && etRes.data.trigger   || []).forEach(function(t){ existingTrigMap[t.name] = t.triggerId; });
+        (egRes.data && egRes.data.tag       || []).forEach(function(g){ existingTagMap[g.name]  = g.tagId; });
+
+        // Name resolver: if rename mode, append suffix to avoid collision
+        function resolvedName(name, existsMap) {
+          if (!doRename) return name; // overwrite mode — use original name
+          var safeName = name;
+          var suffix = 1;
+          while (existsMap[safeName]) { safeName = name + ' (' + suffix + ')'; suffix++; }
+          return safeName;
+        }
+
+        // ── Step 1: Enable built-in variables ──────────────────────
         if (builtIns.length) {
           _setGtmProgress('⏳ تفعيل Built-in Variables... (1/5)', true);
           var btypes = builtIns.map(function(b){ return 'type=' + encodeURIComponent(b.type); }).join('&');
           await _inlineGtmPost(wsPath + '/built_in_variables?' + btypes, {});
         }
 
-        // Step 2: Create variables
+        // ── Step 2: Variables (create or update) ───────────────────
         for (var vi = 0; vi < vars.length; vi++) {
-          _setGtmProgress('⏳ إنشاء Variables... (' + (vi+1) + '/' + vars.length + ')  —  Step 2/5', true);
-          var vRes = await _inlineGtmPost(wsPath + '/variables', clean(vars[vi]));
-          if (!vRes.ok) console.warn('[GTM var]', vars[vi].name, vRes.status, _gtmErrMsg(vRes));
+          _setGtmProgress('⏳ Variables... (' + (vi+1) + '/' + vars.length + ')  —  Step 2/5', true);
+          var vObj = clean(vars[vi]);
+          var vName = resolvedName(vObj.name, existingVarMap);
+          vObj.name = vName;
+          var existingVid = !doRename && existingVarMap[vObj.name];
+          var vRes;
+          if (existingVid) {
+            vRes = await _inlineGtmPut(wsPath + '/variables/' + existingVid, vObj);
+          } else {
+            vRes = await _inlineGtmPost(wsPath + '/variables', vObj);
+          }
+          if (!vRes.ok) console.warn('[GTM var]', vObj.name, vRes.status, _gtmErrMsg(vRes));
+          // Update map so subsequent renames see the new name
+          if (vRes.ok && vRes.data && vRes.data.variableId) existingVarMap[vName] = vRes.data.variableId;
         }
 
-        // Step 3: Create triggers (capture new IDs)
+        // ── Step 3: Triggers (create or update, capture new IDs) ───
         var trigIdMap = {};
         for (var ti = 0; ti < triggers.length; ti++) {
-          _setGtmProgress('⏳ إنشاء Triggers... (' + (ti+1) + '/' + triggers.length + ')  —  Step 3/5', true);
-          var oldId = triggers[ti].triggerId;
-          var tRes  = await _inlineGtmPost(wsPath + '/triggers', clean(triggers[ti]));
-          if (tRes.ok && tRes.data && tRes.data.triggerId) trigIdMap[oldId] = tRes.data.triggerId;
-          else console.warn('[GTM trig]', triggers[ti].name, tRes.status, _gtmErrMsg(tRes));
+          _setGtmProgress('⏳ Triggers... (' + (ti+1) + '/' + triggers.length + ')  —  Step 3/5', true);
+          var tObj   = clean(triggers[ti]);
+          var oldTid = triggers[ti].triggerId;
+          var tName  = resolvedName(tObj.name, existingTrigMap);
+          tObj.name  = tName;
+          var existingTid = !doRename && existingTrigMap[tObj.name];
+          var tRes;
+          if (existingTid) {
+            tRes = await _inlineGtmPut(wsPath + '/triggers/' + existingTid, tObj);
+            // Overwrite: map old JSON id → existing workspace id
+            trigIdMap[oldTid] = existingTid;
+          } else {
+            tRes = await _inlineGtmPost(wsPath + '/triggers', tObj);
+            if (tRes.ok && tRes.data && tRes.data.triggerId) trigIdMap[oldTid] = tRes.data.triggerId;
+          }
+          if (!tRes.ok) console.warn('[GTM trig]', tObj.name, tRes.status, _gtmErrMsg(tRes));
+          if (tRes.ok && tRes.data && tRes.data.triggerId) existingTrigMap[tName] = tRes.data.triggerId;
         }
 
-        // Step 4: Create tags (remap trigger IDs)
+        // ── Step 4: Tags (create or update, remap trigger IDs) ─────
         function remapIds(arr) {
           return (arr || []).map(function(id){ return BUILTIN[id] ? id : (trigIdMap[id] || id); });
         }
         for (var gi = 0; gi < tags.length; gi++) {
-          _setGtmProgress('⏳ إنشاء Tags... (' + (gi+1) + '/' + tags.length + ')  —  Step 4/5', true);
-          var tb = clean(tags[gi]);
-          tb.firingTriggerId   = remapIds(tb.firingTriggerId);
-          tb.blockingTriggerId = remapIds(tb.blockingTriggerId);
-          var gRes = await _inlineGtmPost(wsPath + '/tags', tb);
-          if (!gRes.ok) console.warn('[GTM tag]', tags[gi].name, gRes.status, _gtmErrMsg(gRes));
+          _setGtmProgress('⏳ Tags... (' + (gi+1) + '/' + tags.length + ')  —  Step 4/5', true);
+          var gObj = clean(tags[gi]);
+          gObj.name = resolvedName(gObj.name, existingTagMap);
+          gObj.firingTriggerId   = remapIds(gObj.firingTriggerId);
+          gObj.blockingTriggerId = remapIds(gObj.blockingTriggerId);
+          var existingGid = !doRename && existingTagMap[gObj.name];
+          var gRes;
+          if (existingGid) {
+            gRes = await _inlineGtmPut(wsPath + '/tags/' + existingGid, gObj);
+          } else {
+            gRes = await _inlineGtmPost(wsPath + '/tags', gObj);
+          }
+          if (!gRes.ok) console.warn('[GTM tag]', gObj.name, gRes.status, _gtmErrMsg(gRes));
         }
 
-        // Step 5: Create version
-        _setGtmProgress('⏳ إنشاء Version... (5/5)', true);
-        var verRes = await _inlineGtmPost(wsPath + ':create_version', {
+        // ── Import Draft: entities are now in workspace — DONE ──────
+        // No create_version needed: the workspace IS the draft.
+        if (!isPublish) {
+          _setGtmProgress('', false);
+          _setGtmResult(
+            '✅ تم الاستيراد في الـ Workspace بنجاح!\n'
+            + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\n'
+            + 'افتح GTM وهتلاقي التغييرات في الـ Workspace جاهزة للمراجعة.',
+            false
+          );
+          if (pubBtn) pubBtn.disabled = false;
+          if (conBtn) conBtn.disabled = false;
+          return;
+        }
+
+        // ── Step 5: Create Version ───────────────────────────────────
+        var verBody = {
           name:  'Easy Track — ' + new Date().toLocaleDateString('ar-EG'),
           notes: 'Generated by Easy Track · ' + tags.length + ' Tags · ' + triggers.length + ' Triggers · ' + vars.length + ' Variables'
-        });
+        };
+        _setGtmProgress('⏳ إنشاء Version... (5/5)', true);
+        var verRes = await _inlineGtmPost(wsPath + ':create_version', verBody);
+
+        // Handle syncError: workspace out of sync with live container → sync then retry
+        if (verRes.ok && verRes.data && verRes.data.syncStatus && verRes.data.syncStatus.syncError) {
+          _setGtmProgress('⏳ مزامنة الـ Workspace... (حل Conflicts)', true);
+          await _inlineGtmPost(wsPath + ':sync', {}); // sync with default MERGE policy
+          _setGtmProgress('⏳ إعادة إنشاء الـ Version... (5/5)', true);
+          verRes = await _inlineGtmPost(wsPath + ':create_version', verBody);
+        }
         _setGtmProgress('', false);
 
         if (!verRes.ok) {
@@ -6334,29 +6434,34 @@
           if (conBtn) conBtn.disabled = false;
           return;
         }
+        // Still syncError after retry?
+        if (verRes.data && verRes.data.syncStatus && verRes.data.syncStatus.syncError) {
+          _setGtmResult('❌ يوجد Sync Conflict في الـ Workspace — افتح GTM وحل الـ Conflicts يدوياً ثم حاول تاني.', true);
+          if (pubBtn) pubBtn.disabled = false;
+          if (conBtn) conBtn.disabled = false;
+          return;
+        }
 
         var verId = verRes.data && verRes.data.containerVersion && verRes.data.containerVersion.containerVersionId;
-
-        if (mode === 'import') {
-          _setGtmResult('✅ تم الاستيراد بنجاح!\n' + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\nVersion ID: ' + (verId || '—'), false);
-          if (pubBtn) pubBtn.disabled = false;
-          if (conBtn) conBtn.disabled = false;
-          return;
-        }
-
-        // Step 6: Publish live
         if (!verId) {
-          _setGtmResult('❌ مش لاقي الـ Version ID:\n' + JSON.stringify(verRes.data).substring(0,200), true);
+          _setGtmResult('❌ مش لاقي الـ Version ID في الرد:\n' + JSON.stringify(verRes.data).substring(0,300), true);
           if (pubBtn) pubBtn.disabled = false;
           if (conBtn) conBtn.disabled = false;
           return;
         }
+
+        // ── Step 6: Publish Live ─────────────────────────────────────
         _setGtmProgress('⏳ جاري النشر Live...', true);
         var pubRes = await _inlineGtmPost(containerPath + '/versions/' + verId + ':publish', {});
         _setGtmProgress('', false);
 
         if (pubRes.ok) {
-          _setGtmResult('✅ تم النشر بنجاح! 🎉\n' + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\nاتنشروا Live على GTM — Version ID: ' + verId, false);
+          _setGtmResult(
+            '✅ تم النشر بنجاح! 🎉\n'
+            + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\n'
+            + 'اتنشروا Live على GTM — Version ID: ' + verId,
+            false
+          );
         } else {
           _setGtmResult('❌ فشل النشر (' + pubRes.status + '):\n' + _gtmErrMsg(pubRes), true);
         }
