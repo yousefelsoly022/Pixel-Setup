@@ -3452,47 +3452,76 @@
 
           <!-- TOP: GTM Direct Publish panel — always visible first -->
           <div class="gtm-publish-panel">
+
             <div class="gtm-publish-title">
               <span class="material-symbols-outlined" style="color:var(--acc);font-size:20px;">radar</span>
               GTM Direct Publish
             </div>
 
+            <!-- Connection status row -->
             <div class="gtm-conn-status">
-              <div class="gtm-conn-avatar">🔒</div>
-              <div>
+              <div class="gtm-conn-avatar" id="gtmConnAvatar">🔒</div>
+              <div style="flex:1;min-width:0;">
                 <div class="gtm-conn-lbl">Connection Status</div>
                 <div class="gtm-conn-val" id="gtmConnStatus">Not Connected</div>
               </div>
-            </div>
-
-            <div style="display:flex;gap:12px;flex-wrap:wrap;">
-              <button class="gtm-connect-btn" id="gtmConnectBtn" onclick="doGTMPublish()" style="flex:1;min-width:200px;">
+              <button class="gtm-connect-btn" id="gtmConnectBtn" onclick="gtmConnect()" style="flex-shrink:0;">
                 <span class="material-symbols-outlined" style="font-size:16px;">device_hub</span>
                 Connect Google Account
               </button>
-              <button class="gtm-deploy-btn" id="pubGtm" onclick="doGTMPublish()" style="flex:1;min-width:200px;">
-                <span class="material-symbols-outlined" style="font-size:18px;">sync</span>
-                Sync &amp; Deploy Changes
-              </button>
             </div>
 
-            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;">
-              <div class="gtm-select-wrap" style="flex:1;min-width:200px;">
-                <span class="gtm-select-lbl">Target Account</span>
-                <select class="gtm-select"><option>Select an account...</option></select>
-              </div>
-              <div class="gtm-select-wrap" style="flex:1;min-width:200px;">
-                <span class="gtm-select-lbl">GTM Container</span>
-                <select class="gtm-select"><option>Select a container...</option></select>
+            <!-- Dropdowns (shown after connect) -->
+            <div id="gtmSelects" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                <div class="gtm-select-wrap">
+                  <span class="gtm-select-lbl">Target Account</span>
+                  <select class="gtm-select" id="gtmAccSelect" onchange="gtmOnAccountChange(this.value)">
+                    <option value="">جاري التحميل...</option>
+                  </select>
+                </div>
+                <div class="gtm-select-wrap">
+                  <span class="gtm-select-lbl">GTM Container</span>
+                  <select class="gtm-select" id="gtmConSelect" onchange="gtmOnContainerChange(this.value)" disabled>
+                    <option value="">اختار Account أولاً</option>
+                  </select>
+                </div>
+                <div class="gtm-select-wrap">
+                  <span class="gtm-select-lbl">Workspace</span>
+                  <select class="gtm-select" id="gtmWsSelect" onchange="gtmOnWorkspaceChange(this.value)" disabled>
+                    <option value="">اختار Container أولاً</option>
+                  </select>
+                </div>
+                <div class="gtm-select-wrap">
+                  <span class="gtm-select-lbl">Publish Mode</span>
+                  <select class="gtm-select" id="gtmModeSelect">
+                    <option value="publish">🚀 Publish Live</option>
+                    <option value="import">✏️ Import as Draft</option>
+                  </select>
+                </div>
               </div>
             </div>
 
+            <!-- Progress area (shown during deploy) -->
+            <div id="gtmProgress" style="display:none;border-radius:12px;padding:12px 16px;margin-bottom:12px;border:1px solid rgba(70,241,197,.2);background:rgba(70,241,197,.05);">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div id="gtmProgressSpinner" style="width:16px;height:16px;border:2px solid rgba(70,241,197,.3);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;"></div>
+                <div id="gtmProgressText" style="font-size:13px;color:var(--acc);font-weight:600;line-height:1.4;"></div>
+              </div>
+            </div>
+
+            <!-- Info box -->
             <div class="gtm-info-box">
               <span class="gtm-info-icon material-symbols-outlined" style="font-size:18px;">info</span>
-              <div class="gtm-info-text">
-                Easy Track creates all Variables, Triggers, and Tags directly in your GTM Workspace — no JSON import needed.
-              </div>
+              <div class="gtm-info-text">Easy Track creates Variables, Triggers &amp; Tags directly in your GTM Workspace — no JSON import needed.</div>
             </div>
+
+            <!-- Deploy button -->
+            <button class="gtm-deploy-btn" id="pubGtm" onclick="gtmDeploy()" style="width:100%;margin-top:12px;" disabled>
+              <span class="material-symbols-outlined" style="font-size:18px;">sync</span>
+              Sync &amp; Deploy Changes
+            </button>
+
           </div>
 
           <!-- BOTTOM: JSON viewer -->
@@ -5994,6 +6023,355 @@
     // ===== GTM DIRECT PUBLISH =====
     var _gtmSecondaryApp = null;
 
+    // ── Inline GTM state (used by the panel dropdowns — no popup) ──
+    var _gtmInlineState = { token: null, accountId: null, containerId: null, workspaceId: null };
+
+    async function _inlineGtmGet(path) {
+      var token = _gtmInlineState.token;
+      var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 15000) : null;
+      try {
+        var r = await fetch('https://tagmanager.googleapis.com/tagmanager/v2/' + path,
+          { headers: { 'Authorization': 'Bearer ' + token }, signal: ctrl ? ctrl.signal : undefined });
+        clearTimeout(timer);
+        var txt = await r.text();
+        try { return { ok: r.ok, status: r.status, data: JSON.parse(txt) }; }
+        catch(e) { return { ok: false, status: r.status, data: null, raw: txt.substring(0, 400) }; }
+      } catch(fe) {
+        clearTimeout(timer);
+        return { ok: false, status: fe.name === 'AbortError' ? 408 : 0, data: null, raw: fe.message || String(fe) };
+      }
+    }
+
+    async function _inlineGtmPost(path, body) {
+      var token = _gtmInlineState.token;
+      var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 20000) : null;
+      try {
+        var r = await fetch('https://tagmanager.googleapis.com/tagmanager/v2/' + path,
+          { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined });
+        clearTimeout(timer);
+        var txt = await r.text();
+        try { return { ok: r.ok, status: r.status, data: JSON.parse(txt) }; }
+        catch(e) { return { ok: false, status: r.status, data: null, raw: txt.substring(0, 400) }; }
+      } catch(fe) {
+        clearTimeout(timer);
+        return { ok: false, status: fe.name === 'AbortError' ? 408 : 0, data: null, raw: fe.message || String(fe) };
+      }
+    }
+
+    function _gtmErrMsg(res) {
+      if (res && res.data && res.data.error) return res.data.error.message || JSON.stringify(res.data.error);
+      if (res && res.raw) return res.raw;
+      return JSON.stringify(res && res.data);
+    }
+
+    function _setGtmProgress(msg, show) {
+      var el  = document.getElementById('gtmProgress');
+      var txt = document.getElementById('gtmProgressText');
+      if (!el) return;
+      if (show === false) { el.style.display = 'none'; return; }
+      el.style.display = 'block';
+      if (txt) txt.textContent = msg || '';
+    }
+
+    function _setGtmResult(msg, isError) {
+      var old = document.getElementById('gtmResultMsg');
+      if (old) old.remove();
+      var div = document.createElement('div');
+      div.id = 'gtmResultMsg';
+      div.style.cssText = 'margin-top:10px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;line-height:1.5;white-space:pre-line;'
+        + (isError
+          ? 'background:rgba(255,180,171,.08);border:1px solid rgba(255,180,171,.3);color:#ffb4ab;'
+          : 'background:rgba(70,241,197,.08);border:1px solid rgba(70,241,197,.25);color:var(--acc);');
+      div.textContent = msg;
+      var deployBtn = document.getElementById('pubGtm');
+      if (deployBtn && deployBtn.parentNode) deployBtn.parentNode.insertBefore(div, deployBtn.nextSibling);
+    }
+
+    // ── Called by "Connect Google Account" button ──────────────────
+    async function gtmConnect() {
+      var btnConnect = document.getElementById('gtmConnectBtn');
+      var statusEl   = document.getElementById('gtmConnStatus');
+      var avatarEl   = document.getElementById('gtmConnAvatar');
+
+      if (btnConnect) {
+        btnConnect.disabled = true;
+        btnConnect.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">sync</span> جاري الاتصال...';
+      }
+
+      try {
+        if (!_gtmSecondaryApp) {
+          var existingApp = firebase.apps.find(function(a){ return a.name === 'gtm-oauth'; });
+          _gtmSecondaryApp = existingApp || firebase.initializeApp(FB_CONFIG, 'gtm-oauth');
+        }
+        var gtmAuth  = _gtmSecondaryApp.auth();
+        var provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/tagmanager.readonly');
+        provider.addScope('https://www.googleapis.com/auth/tagmanager.edit.containerversions');
+        provider.addScope('https://www.googleapis.com/auth/tagmanager.publish');
+        provider.setCustomParameters({ prompt: 'consent select_account' });
+
+        var result = await gtmAuth.signInWithPopup(provider);
+        var token  = result.credential && result.credential.accessToken;
+
+        if (!token) {
+          if (statusEl) statusEl.textContent = '❌ لا يوجد Access Token';
+          if (btnConnect) { btnConnect.disabled = false; btnConnect.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">device_hub</span> Connect Google Account'; }
+          return;
+        }
+
+        _gtmInlineState.token = token;
+        var email = (result.user && result.user.email) ? result.user.email : '';
+        if (statusEl) statusEl.textContent = (email ? '✅ متصل: ' + email : '✅ متصل');
+        if (avatarEl) avatarEl.textContent = '🔓';
+        if (btnConnect) { btnConnect.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">check_circle</span> ' + (email || 'متصل'); btnConnect.disabled = true; }
+
+        // Load accounts into inline dropdown
+        await _gtmLoadAccounts();
+
+      } catch (e) {
+        if (btnConnect) { btnConnect.disabled = false; btnConnect.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">device_hub</span> Connect Google Account'; }
+        if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') return;
+        var msg = e.message || e.code || String(e);
+        if (e.code === 'auth/unauthorized-domain') msg = 'الدومين مش مضاف في Firebase → Authorized domains → أضف: ' + location.hostname;
+        else if (e.code === 'auth/popup-blocked')  msg = 'البراوزر بلوك الـ Popup — اسمح بالـ Popups لهذا الموقع ثم حاول تاني';
+        else if (e.code === 'auth/operation-not-allowed') msg = 'Google Sign-In مش مفعّل في Firebase → Authentication → Sign-in method';
+        if (statusEl) statusEl.textContent = '❌ فشل الاتصال';
+        _setGtmResult('❌ فشل الاتصال بـ Google:\n' + msg, true);
+      }
+    }
+
+    async function _gtmLoadAccounts() {
+      _setGtmProgress('⏳ جاري تحميل الـ GTM Accounts...', true);
+      var res = await _inlineGtmGet('accounts');
+      _setGtmProgress('', false);
+      if (!res.ok) { _setGtmResult('❌ فشل جلب الـ Accounts: ' + _gtmErrMsg(res), true); return; }
+      var accounts = (res.data && res.data.account) || [];
+      if (!accounts.length) { _setGtmResult('⚠️ مش لاقي أي GTM Account مربوط بالـ Google Account ده', true); return; }
+
+      var sel = document.getElementById('gtmAccSelect');
+      if (sel) {
+        sel.innerHTML = '<option value="">اختار Account...</option>';
+        accounts.forEach(function(a) {
+          var opt = document.createElement('option');
+          opt.value = a.accountId;
+          opt.textContent = a.name + '  (ID: ' + a.accountId + ')';
+          sel.appendChild(opt);
+        });
+      }
+      var selectsEl = document.getElementById('gtmSelects');
+      if (selectsEl) selectsEl.style.display = 'block';
+    }
+
+    // ── Called when account dropdown changes ───────────────────────
+    async function gtmOnAccountChange(accountId) {
+      _gtmInlineState.accountId  = accountId || null;
+      _gtmInlineState.containerId = null;
+      _gtmInlineState.workspaceId = null;
+
+      var conSel = document.getElementById('gtmConSelect');
+      var wsSel  = document.getElementById('gtmWsSelect');
+      var pubBtn = document.getElementById('pubGtm');
+      if (conSel) { conSel.innerHTML = '<option value="">اختار Container...</option>'; conSel.disabled = true; }
+      if (wsSel)  { wsSel.innerHTML  = '<option value="">اختار Container أولاً</option>'; wsSel.disabled = true; }
+      if (pubBtn) { pubBtn.disabled = true; pubBtn.classList.remove('ready'); }
+      if (!accountId) return;
+
+      _setGtmProgress('⏳ جاري تحميل الـ Containers...', true);
+      var res = await _inlineGtmGet('accounts/' + accountId + '/containers');
+      _setGtmProgress('', false);
+      if (!res.ok) { _setGtmResult('❌ فشل جلب الـ Containers: ' + _gtmErrMsg(res), true); return; }
+      var containers = (res.data && res.data.container) || [];
+      if (!containers.length) { _setGtmResult('⚠️ مش لاقي أي Container في الـ Account ده', true); return; }
+
+      if (conSel) {
+        conSel.innerHTML = '<option value="">اختار Container...</option>';
+        containers.forEach(function(c) {
+          var opt = document.createElement('option');
+          opt.value = c.containerId;
+          opt.textContent = c.name + '  (' + (c.publicId || c.containerId) + ')';
+          conSel.appendChild(opt);
+        });
+        conSel.disabled = false;
+      }
+    }
+
+    // ── Called when container dropdown changes ──────────────────────
+    async function gtmOnContainerChange(containerId) {
+      _gtmInlineState.containerId = containerId || null;
+      _gtmInlineState.workspaceId = null;
+
+      var wsSel  = document.getElementById('gtmWsSelect');
+      var pubBtn = document.getElementById('pubGtm');
+      if (wsSel)  { wsSel.innerHTML = '<option value="">اختار Workspace...</option>'; wsSel.disabled = true; }
+      if (pubBtn) { pubBtn.disabled = true; pubBtn.classList.remove('ready'); }
+      if (!containerId || !_gtmInlineState.accountId) return;
+
+      _setGtmProgress('⏳ جاري تحميل الـ Workspaces...', true);
+      var res = await _inlineGtmGet('accounts/' + _gtmInlineState.accountId + '/containers/' + containerId + '/workspaces');
+      _setGtmProgress('', false);
+      if (!res.ok) { _setGtmResult('❌ فشل جلب الـ Workspaces: ' + _gtmErrMsg(res), true); return; }
+      var workspaces = (res.data && res.data.workspace) || [];
+      if (!workspaces.length) { _setGtmResult('⚠️ مش لاقي أي Workspace في الـ Container ده', true); return; }
+
+      if (wsSel) {
+        wsSel.innerHTML = '<option value="">اختار Workspace...</option>';
+        workspaces.forEach(function(w) {
+          var opt = document.createElement('option');
+          opt.value = w.workspaceId;
+          opt.textContent = w.name + (w.description ? '  — ' + w.description : '');
+          wsSel.appendChild(opt);
+        });
+        wsSel.disabled = false;
+      }
+    }
+
+    // ── Called when workspace dropdown changes ──────────────────────
+    function gtmOnWorkspaceChange(workspaceId) {
+      _gtmInlineState.workspaceId = workspaceId || null;
+      var pubBtn = document.getElementById('pubGtm');
+      if (pubBtn) {
+        pubBtn.disabled = !workspaceId;
+        if (workspaceId) pubBtn.classList.add('ready');
+        else pubBtn.classList.remove('ready');
+      }
+    }
+
+    // ── Called by "Sync & Deploy Changes" button ────────────────────
+    async function gtmDeploy() {
+      var s = _gtmInlineState;
+      if (!s.token)       { _setGtmResult('⚠️ اتصل بـ Google Account أولاً', true); return; }
+      if (!s.accountId)   { _setGtmResult('⚠️ اختار الـ GTM Account', true); return; }
+      if (!s.containerId) { _setGtmResult('⚠️ اختار الـ Container', true); return; }
+      if (!s.workspaceId) { _setGtmResult('⚠️ اختار الـ Workspace', true); return; }
+
+      if (!_cachedGtmStr || !_cachedGtmStr.trim()) {
+        var fb = (document.getElementById('gtmBody') || {}).textContent || '';
+        if (!fb.trim() || fb.trim().charAt(0) !== '{') {
+          _setGtmResult('⚠️ اعمل Generate للـ Config الأول من Pixel Config ثم ارجع هنا', true); return;
+        }
+        _cachedGtmStr = fb;
+      }
+      var gtmJson;
+      try { gtmJson = JSON.parse(_cachedGtmStr); }
+      catch (e) { _setGtmResult('❌ GTM JSON غير صحيح — اعمل Generate من جديد', true); return; }
+
+      var mode    = (document.getElementById('gtmModeSelect') || {}).value || 'publish';
+      var pubBtn  = document.getElementById('pubGtm');
+      var conBtn  = document.getElementById('gtmConnectBtn');
+      if (pubBtn) pubBtn.disabled = true;
+      if (conBtn) conBtn.disabled = true;
+      var old = document.getElementById('gtmResultMsg');
+      if (old) old.remove();
+
+      var containerPath = 'accounts/' + s.accountId + '/containers/' + s.containerId;
+      var wsPath        = containerPath + '/workspaces/' + s.workspaceId;
+
+      function clean(obj) {
+        var o = JSON.parse(JSON.stringify(obj));
+        ['accountId','containerId','tagId','triggerId','variableId','fingerprint','path','parentFolderId'].forEach(function(k){ delete o[k]; });
+        return o;
+      }
+      var BUILTIN = { 2147479553: true, 2147479572: true };
+
+      try {
+        var cv       = (gtmJson.containerVersion) ? gtmJson.containerVersion : gtmJson;
+        var tags     = cv.tag            || [];
+        var triggers = cv.trigger        || [];
+        var vars     = cv.variable       || [];
+        var builtIns = cv.builtInVariable || [];
+
+        // Step 1: Enable built-in variables
+        if (builtIns.length) {
+          _setGtmProgress('⏳ تفعيل Built-in Variables... (1/5)', true);
+          var btypes = builtIns.map(function(b){ return 'type=' + encodeURIComponent(b.type); }).join('&');
+          await _inlineGtmPost(wsPath + '/built_in_variables?' + btypes, {});
+        }
+
+        // Step 2: Create variables
+        for (var vi = 0; vi < vars.length; vi++) {
+          _setGtmProgress('⏳ إنشاء Variables... (' + (vi+1) + '/' + vars.length + ')  —  Step 2/5', true);
+          var vRes = await _inlineGtmPost(wsPath + '/variables', clean(vars[vi]));
+          if (!vRes.ok) console.warn('[GTM var]', vars[vi].name, vRes.status, _gtmErrMsg(vRes));
+        }
+
+        // Step 3: Create triggers (capture new IDs)
+        var trigIdMap = {};
+        for (var ti = 0; ti < triggers.length; ti++) {
+          _setGtmProgress('⏳ إنشاء Triggers... (' + (ti+1) + '/' + triggers.length + ')  —  Step 3/5', true);
+          var oldId = triggers[ti].triggerId;
+          var tRes  = await _inlineGtmPost(wsPath + '/triggers', clean(triggers[ti]));
+          if (tRes.ok && tRes.data && tRes.data.triggerId) trigIdMap[oldId] = tRes.data.triggerId;
+          else console.warn('[GTM trig]', triggers[ti].name, tRes.status, _gtmErrMsg(tRes));
+        }
+
+        // Step 4: Create tags (remap trigger IDs)
+        function remapIds(arr) {
+          return (arr || []).map(function(id){ return BUILTIN[id] ? id : (trigIdMap[id] || id); });
+        }
+        for (var gi = 0; gi < tags.length; gi++) {
+          _setGtmProgress('⏳ إنشاء Tags... (' + (gi+1) + '/' + tags.length + ')  —  Step 4/5', true);
+          var tb = clean(tags[gi]);
+          tb.firingTriggerId   = remapIds(tb.firingTriggerId);
+          tb.blockingTriggerId = remapIds(tb.blockingTriggerId);
+          var gRes = await _inlineGtmPost(wsPath + '/tags', tb);
+          if (!gRes.ok) console.warn('[GTM tag]', tags[gi].name, gRes.status, _gtmErrMsg(gRes));
+        }
+
+        // Step 5: Create version
+        _setGtmProgress('⏳ إنشاء Version... (5/5)', true);
+        var verRes = await _inlineGtmPost(wsPath + ':create_version', {
+          name:  'Easy Track — ' + new Date().toLocaleDateString('ar-EG'),
+          notes: 'Generated by Easy Track · ' + tags.length + ' Tags · ' + triggers.length + ' Triggers · ' + vars.length + ' Variables'
+        });
+        _setGtmProgress('', false);
+
+        if (!verRes.ok) {
+          _setGtmResult('❌ فشل إنشاء الـ Version (' + verRes.status + '):\n' + _gtmErrMsg(verRes), true);
+          if (pubBtn) pubBtn.disabled = false;
+          if (conBtn) conBtn.disabled = false;
+          return;
+        }
+
+        var verId = verRes.data && verRes.data.containerVersion && verRes.data.containerVersion.containerVersionId;
+
+        if (mode === 'import') {
+          _setGtmResult('✅ تم الاستيراد بنجاح!\n' + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\nVersion ID: ' + (verId || '—'), false);
+          if (pubBtn) pubBtn.disabled = false;
+          if (conBtn) conBtn.disabled = false;
+          return;
+        }
+
+        // Step 6: Publish live
+        if (!verId) {
+          _setGtmResult('❌ مش لاقي الـ Version ID:\n' + JSON.stringify(verRes.data).substring(0,200), true);
+          if (pubBtn) pubBtn.disabled = false;
+          if (conBtn) conBtn.disabled = false;
+          return;
+        }
+        _setGtmProgress('⏳ جاري النشر Live...', true);
+        var pubRes = await _inlineGtmPost(containerPath + '/versions/' + verId + ':publish', {});
+        _setGtmProgress('', false);
+
+        if (pubRes.ok) {
+          _setGtmResult('✅ تم النشر بنجاح! 🎉\n' + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\nاتنشروا Live على GTM — Version ID: ' + verId, false);
+        } else {
+          _setGtmResult('❌ فشل النشر (' + pubRes.status + '):\n' + _gtmErrMsg(pubRes), true);
+        }
+
+      } catch (execErr) {
+        _setGtmProgress('', false);
+        console.error('[gtmDeploy]', execErr);
+        _setGtmResult('❌ خطأ غير متوقع:\n' + (execErr.message || String(execErr)), true);
+      }
+
+      if (pubBtn) pubBtn.disabled = false;
+      if (conBtn) conBtn.disabled = false;
+    }
+
+    // ── Legacy function (kept for reference, no longer called by UI) ──
     async function doGTMPublish() {
       // Use the cached GTM string — avoids race conditions with the lazy-build loader
       if (!_cachedGtmStr || !_cachedGtmStr.trim()) {
@@ -6080,9 +6458,10 @@
     }
 
     // No longer needed (popup replaces redirect)
-    async function checkGTMRedirectResult() { /* popup-based \u2014 no redirect needed */ }
+    async function checkGTMRedirectResult() { /* popup-based — no redirect needed */ }
 
-    // GTM picker: Account → Container → Workspace → Publish or Edit
+    // ⚠️ Legacy popup picker — superseded by inline panel (gtmConnect / gtmDeploy).
+    // Kept for reference only; no longer called by any UI element.
     async function showGTMContainerPicker(token, gtmJson) {
 
       // ── helpers ───────────────────────────────────────────────
