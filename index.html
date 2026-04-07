@@ -6129,6 +6129,7 @@
         var gtmAuth  = _gtmSecondaryApp.auth();
         var provider = new firebase.auth.GoogleAuthProvider();
         provider.addScope('https://www.googleapis.com/auth/tagmanager.readonly');
+        provider.addScope('https://www.googleapis.com/auth/tagmanager.edit.containers');
         provider.addScope('https://www.googleapis.com/auth/tagmanager.edit.containerversions');
         provider.addScope('https://www.googleapis.com/auth/tagmanager.publish');
         provider.setCustomParameters({ prompt: 'consent select_account' });
@@ -6550,6 +6551,7 @@
 
         var provider = new firebase.auth.GoogleAuthProvider();
         provider.addScope('https://www.googleapis.com/auth/tagmanager.readonly');
+        provider.addScope('https://www.googleapis.com/auth/tagmanager.edit.containers');
         provider.addScope('https://www.googleapis.com/auth/tagmanager.edit.containerversions');
         provider.addScope('https://www.googleapis.com/auth/tagmanager.publish');
         provider.setCustomParameters({ prompt: 'consent select_account' });
