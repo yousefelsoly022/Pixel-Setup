@@ -2968,6 +2968,10 @@
           <span class="material-symbols-outlined" style="font-size:18px;">folder_open</span>
           <span>My Projects</span>
         </button>
+        <button class="sb-link" id="sbHealth" type="button" onclick="switchAppView('health',this)">
+          <span class="material-symbols-outlined" style="font-size:18px;">monitor_heart</span>
+          <span>Health Monitor</span>
+        </button>
         <button class="sb-link" type="button" onclick="toggleSettings()">
           <span class="material-symbols-outlined" style="font-size:18px;">settings</span>
           <span>Settings</span>
@@ -3056,43 +3060,43 @@
         <!-- Bento: Recent Publishes + Stats (shown after generate) -->
         <div id="overviewBento">
           <div class="ov-recent-card">
-            <div class="ov-recent-title">ملخص الإعداد</div>
+            <div class="ov-recent-title">Setup Summary</div>
             <div class="ov-recent-item">
               <div class="ov-recent-dot green"></div>
               <div>
                 <div class="ov-recent-label" id="bentoCmsLabel">—</div>
-                <div class="ov-recent-time" id="bentoCmsTime">المنصة المختارة</div>
+                <div class="ov-recent-time" id="bentoCmsTime">Selected Platform</div>
               </div>
             </div>
             <div class="ov-recent-item">
               <div class="ov-recent-dot dim"></div>
               <div>
                 <div class="ov-recent-label" id="bentoPlatLabel">—</div>
-                <div class="ov-recent-time">منصات الإعلان والتحليل</div>
+                <div class="ov-recent-time">Ad & Analytics Platforms</div>
               </div>
             </div>
             <div class="ov-recent-item">
               <div class="ov-recent-dot dim"></div>
               <div>
                 <div class="ov-recent-label" id="bentoEventsLabel">—</div>
-                <div class="ov-recent-time">أحداث مُعدّة للتتبع</div>
+                <div class="ov-recent-time">Tracked Events</div>
               </div>
             </div>
-            <button style="width:100%;margin-top:16px;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,.08);color:var(--mut);background:transparent;font-family:var(--font-ui);font-size:13px;cursor:pointer;" onclick="switchAppView('gtmview',document.getElementById('sbGtm'))">عرض GTM Container →</button>
+            <button style="width:100%;margin-top:16px;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,.08);color:var(--mut);background:transparent;font-family:var(--font-ui);font-size:13px;cursor:pointer;" onclick="switchAppView('gtmview',document.getElementById('sbGtm'))">View GTM Container →</button>
           </div>
           <div class="ov-stat-card" style="display:flex;flex-direction:column;gap:20px;">
             <div>
               <div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:6px;text-transform:uppercase;">Config Status</div>
               <div style="font-size:40px;font-weight:900;font-family:var(--font-display);color:var(--acc);letter-spacing:-2px;" id="bentoConfigScore">—</div>
-              <div style="font-size:12px;color:var(--acc);margin-top:4px;" id="bentoConfigLabel">جاهز للرفع ✓</div>
+              <div style="font-size:12px;color:var(--acc);margin-top:4px;" id="bentoConfigLabel">Ready to Deploy ✓</div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div style="background:var(--sur3);border-radius:12px;padding:14px;">
-                <div style="font-size:11px;color:var(--mut);margin-bottom:4px;">منصات نشطة</div>
+                <div style="font-size:11px;color:var(--mut);margin-bottom:4px;">Active Platforms</div>
                 <div id="bentoTagCount" style="font-size:28px;font-weight:900;font-family:var(--font-display);color:var(--wht);">—</div>
               </div>
               <div style="background:var(--sur3);border-radius:12px;padding:14px;">
-                <div style="font-size:11px;color:var(--mut);margin-bottom:4px;">أحداث</div>
+                <div style="font-size:11px;color:var(--mut);margin-bottom:4px;">Events</div>
                 <div id="bentoEventsCount" style="font-size:28px;font-weight:900;font-family:var(--font-display);color:var(--wht);">—</div>
               </div>
             </div>
@@ -3508,7 +3512,7 @@
             <div id="gtmProgress" style="display:none;border-radius:12px;padding:12px 16px;margin-bottom:12px;border:1px solid rgba(70,241,197,.2);background:rgba(70,241,197,.05);">
               <div style="display:flex;align-items:center;gap:10px;">
                 <div id="gtmProgressSpinner" style="width:16px;height:16px;border:2px solid rgba(70,241,197,.3);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;"></div>
-                <div id="gtmProgressText" style="font-size:13px;color:var(--acc);font-weight:600;line-height:1.4;"></div>
+                <div id="gtmProgressText" dir="auto" style="font-size:13px;color:var(--acc);font-weight:600;line-height:1.4;direction:rtl;unicode-bidi:isolate;text-align:right;"></div>
               </div>
             </div>
 
@@ -3518,8 +3522,14 @@
               <div class="gtm-info-text">Easy Track creates Variables, Triggers &amp; Tags directly in your GTM Workspace — no JSON import needed.</div>
             </div>
 
+            <!-- Preview Payload button -->
+            <button id="previewPayloadBtn" onclick="gtmPreviewPayload()" style="width:100%;margin-top:12px;padding:11px 16px;border-radius:12px;border:1.5px solid rgba(173,198,255,.25);background:rgba(173,198,255,.06);color:#adc6ff;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s;" onmouseover="this.style.background='rgba(173,198,255,.12)'" onmouseout="this.style.background='rgba(173,198,255,.06)'">
+              <span class="material-symbols-outlined" style="font-size:17px;">preview</span>
+              Preview Payload
+            </button>
+
             <!-- Deploy button -->
-            <button class="gtm-deploy-btn" id="pubGtm" onclick="gtmDeploy()" style="width:100%;margin-top:12px;" disabled>
+            <button class="gtm-deploy-btn" id="pubGtm" onclick="gtmDeploy()" style="width:100%;margin-top:10px;" disabled>
               <span class="material-symbols-outlined" style="font-size:18px;">sync</span>
               Sync &amp; Deploy Changes
             </button>
@@ -3561,6 +3571,63 @@
       </div>
       <!-- END MY PROJECTS VIEW -->
 
+      <!-- ══════ HEALTH MONITOR VIEW ══════ -->
+      <div class="app-view" id="view-health">
+
+        <!-- Header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+          <div>
+            <h2 style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--wht);letter-spacing:-.5px;display:flex;align-items:center;gap:10px;">
+              <span class="material-symbols-outlined" style="color:#46f1c5;font-size:22px;">monitor_heart</span>
+              Health Monitor
+            </h2>
+            <p style="font-size:13px;color:var(--mut);margin-top:4px;">Tracking setup health &amp; deployment history</p>
+          </div>
+          <button onclick="renderHealthDashboard()" style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:10px;padding:8px 16px;color:var(--mut);font-family:var(--font-ui);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:15px;">refresh</span> Refresh
+          </button>
+        </div>
+
+        <!-- URL Scanner -->
+        <div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:16px;padding:20px;margin-bottom:24px;">
+          <div style="font-size:13px;font-weight:700;color:var(--wht);margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+            <span class="material-symbols-outlined" style="font-size:17px;color:#adc6ff;">travel_explore</span>
+            Pixel Scanner
+          </div>
+          <div style="font-size:12px;color:var(--mut);margin-bottom:14px;">Enter any website URL to detect all tracking pixels installed on it</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <input id="hmScanUrl" type="url" placeholder="https://example.com" style="flex:1;min-width:220px;background:var(--sur3);border:1px solid var(--bdr2);border-radius:10px;padding:10px 14px;color:var(--wht);font-family:var(--font-ui);font-size:13px;outline:none;" onkeydown="if(event.key==='Enter')hmScanSite()"/>
+            <button onclick="hmScanSite()" id="hmScanBtn" style="padding:10px 22px;border-radius:10px;border:none;background:#adc6ff;color:#001a42;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+              <span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan
+            </button>
+          </div>
+          <div id="hmScanResult" style="margin-top:14px;display:none;"></div>
+        </div>
+
+        <!-- Top Stats Row -->
+        <div id="hm-stats-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;"></div>
+
+        <!-- Platform Health -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:11px;font-weight:700;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Platform Health</div>
+          <div id="hm-platforms" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
+        </div>
+
+        <!-- Deploy History + Error Log side by side -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Deploy History</div>
+            <div id="hm-history" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Error Log</div>
+            <div id="hm-errors" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+      </div>
+      <!-- END HEALTH MONITOR VIEW -->
+
     </div>
   </div>
 
@@ -3569,7 +3636,7 @@
     var S = { cms: null, platforms: [], events: [], pixelIds: {}, lead: {} };
 
     // ===== APP VIEW SWITCHING =====
-    var APP_VIEWS = { overview:'view-overview', pixels:'view-pixels', gtmview:'view-gtmview', projects:'view-projects' };
+    var APP_VIEWS = { overview:'view-overview', pixels:'view-pixels', gtmview:'view-gtmview', projects:'view-projects', health:'view-health' };
 
     // Cached GTM JSON string for sidebar view
     var _cachedGtmStr = null;
@@ -3588,6 +3655,9 @@
       // Update sidebar active state
       document.querySelectorAll('#et-sidebar .sb-link').forEach(function(b){ b.classList.remove('active'); });
       if(btnEl) btnEl.classList.add('active');
+
+      // If going to Health Monitor — render dashboard
+      if(viewKey === 'health') { renderHealthDashboard(); }
 
       // If going to GTM view — show cached JSON or empty state
       if(viewKey === 'gtmview') {
@@ -3751,8 +3821,9 @@
       grid.innerHTML = '';
       S.platforms.forEach(function(p){
         var m = platMeta[p] || { name:p, icon:'📡', color:'var(--acc)', bar:80 };
-        var pid = (S.pixelIds[p] && S.pixelIds[p].id) ? (S.pixelIds[p].id.substring(0,6)+'...') : 'ID: —';
-        var isActive = !!(S.pixelIds[p] && S.pixelIds[p].id);
+        var rawId   = (typeof S.pixelIds[p] === 'object' ? S.pixelIds[p].id : S.pixelIds[p]) || '';
+        var isActive = !!(rawId && rawId.trim());
+        var pid     = isActive ? (rawId.length > 10 ? rawId.substring(0,10)+'...' : rawId) : '—';
         grid.innerHTML += '<div class="ov-pixel-card">'
           + '<div class="ov-pixel-top">'
           +   '<div class="ov-pixel-icon" style="background:' + m.color + '22;">' + m.icon + '</div>'
@@ -3778,7 +3849,7 @@
       var scoreEl = document.getElementById('bentoConfigScore');
       if(scoreEl) scoreEl.textContent = configScore;
       var labelEl = document.getElementById('bentoConfigLabel');
-      if(labelEl) labelEl.textContent = hasAllIds ? 'جاهز للرفع ✓' : 'أضف الـ Pixel IDs للإكمال';
+      if(labelEl) labelEl.textContent = hasAllIds ? 'Ready to Deploy ✓' : 'Add Pixel IDs to complete setup';
 
       // Dynamic Config Summary
       var cms = S.cms ? (CMS[S.cms] ? CMS[S.cms].name : S.cms) : '—';
@@ -6087,13 +6158,20 @@
       return JSON.stringify(res && res.data);
     }
 
+    // Wraps English words/numbers inside Arabic strings with FSI/PDI unicode chars
+    // so they stay LTR without flipping the whole line direction.
+    function _bidi(str) {
+      if (!str) return str;
+      return str.replace(/[A-Za-z0-9][\w\-\.\/\(\):@#]*/g, function(m){ return '\u2068' + m + '\u2069'; });
+    }
+
     function _setGtmProgress(msg, show) {
       var el  = document.getElementById('gtmProgress');
       var txt = document.getElementById('gtmProgressText');
       if (!el) return;
       if (show === false) { el.style.display = 'none'; return; }
       el.style.display = 'block';
-      if (txt) txt.textContent = msg || '';
+      if (txt) txt.textContent = _bidi(msg) || '';
     }
 
     function _setGtmResult(msg, isError) {
@@ -6101,11 +6179,12 @@
       if (old) old.remove();
       var div = document.createElement('div');
       div.id = 'gtmResultMsg';
-      div.style.cssText = 'margin-top:10px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;line-height:1.5;white-space:pre-line;'
+      div.style.cssText = 'margin-top:10px;padding:12px 14px;border-radius:10px;font-size:13px;font-weight:600;line-height:1.5;white-space:pre-line;direction:rtl;unicode-bidi:isolate;text-align:right;'
         + (isError
           ? 'background:rgba(255,180,171,.08);border:1px solid rgba(255,180,171,.3);color:#ffb4ab;'
           : 'background:rgba(70,241,197,.08);border:1px solid rgba(70,241,197,.25);color:var(--acc);');
-      div.textContent = msg;
+      div.setAttribute('dir', 'auto');
+      div.textContent = _bidi(msg);
       var deployBtn = document.getElementById('pubGtm');
       if (deployBtn && deployBtn.parentNode) deployBtn.parentNode.insertBefore(div, deployBtn.nextSibling);
     }
@@ -6501,8 +6580,13 @@
             if (failedTags.length)  successMsg += '\n— Tags:      ' + failedTags.join(' | ');
           }
           _setGtmResult(successMsg, hasErrs ? true : false);
+          // Log to Health Monitor
+          hmLogDeploy({ ts: Date.now(), tags: okTags, triggers: okTrigs, vars: okVars, versionId: verId, ok: true,
+            errors: failedVars.concat(failedTrigs).concat(failedTags) });
         } else {
           _setGtmResult('❌ فشل النشر (' + pubRes.status + '):\n' + _gtmErrMsg(pubRes), true);
+          hmLogDeploy({ ts: Date.now(), tags: 0, triggers: 0, vars: 0, versionId: null, ok: false,
+            errors: ['Publish failed: ' + _gtmErrMsg(pubRes)] });
         }
 
       } catch (execErr) {
@@ -7817,7 +7901,431 @@
       }
     })();
 
+  // ══════ PIXEL SCANNER ══════
+  var HM_PLATFORMS_DEF = [
+    { key:'meta',      name:'Meta Pixel',      icon:'👥', color:'#1877F2',
+      patterns: [ /fbq\s*\(\s*['"]init['"]\s*,\s*['"](\d{10,})['"]/g,
+                  /facebook\.com\/tr\?id=(\d{10,})/g ],
+      detect: function(h){ return h.indexOf('connect.facebook.net') > -1 || h.indexOf('facebook.com/tr') > -1; } },
+    { key:'ga4',       name:'Google Analytics (GA4)', icon:'📊', color:'#E37400',
+      patterns: [ /gtag\s*\(\s*['"]config['"]\s*,\s*['"]( G-[A-Z0-9]+)['"]/g,
+                  /gtag\s*\(\s*['"]config['"]\s*,\s*['"](G-[A-Z0-9]+)['"]/g,
+                  /[?&]id=(G-[A-Z0-9]+)/g ],
+      detect: function(h){ return h.indexOf('G-') > -1 && h.indexOf('gtag') > -1; } },
+    { key:'google',    name:'Google Ads',       icon:'🎯', color:'#4285F4',
+      patterns: [ /gtag\s*\(\s*['"]config['"]\s*,\s*['"]( AW-[0-9]+)['"]/g,
+                  /gtag\s*\(\s*['"]config['"]\s*,\s*['"](AW-[0-9]+)['"]/g,
+                  /[?&]id=(AW-[0-9]+)/g ],
+      detect: function(h){ return h.indexOf('AW-') > -1; } },
+    { key:'gtm',       name:'Google Tag Manager', icon:'📦', color:'#246FDB',
+      patterns: [ /GTM-([A-Z0-9]+)/g ],
+      detect: function(h){ return h.indexOf('googletagmanager.com/gtm') > -1; } },
+    { key:'tiktok',    name:'TikTok Pixel',     icon:'🎵', color:'#010101',
+      patterns: [ /ttq\.load\s*\(\s*['"]([A-Z0-9]{16,})['"]/g,
+                  /tiktok['"]\s*,\s*['"]([A-Z0-9]{16,})['"]/g ],
+      detect: function(h){ return h.indexOf('analytics.tiktok.com') > -1 || h.indexOf('ttq') > -1; } },
+    { key:'snapchat',  name:'Snapchat Pixel',   icon:'👻', color:'#FFFC00',
+      patterns: [ /snaptr\s*\(\s*['"]init['"]\s*,\s*['"]([a-f0-9-]{30,})['"]/g ],
+      detect: function(h){ return h.indexOf('sc-static.net') > -1 || h.indexOf('snaptr') > -1; } },
+    { key:'twitter',   name:'X (Twitter) Pixel', icon:'𝕏', color:'#000000',
+      patterns: [ /twq\s*\(\s*['"]init['"]\s*,\s*['"]([a-z0-9]+)['"]/g,
+                  /twq\s*\(\s*['"]event['"]\s*,\s*['"]([a-z0-9]+)['"]/g ],
+      detect: function(h){ return h.indexOf('ads-twitter.com') > -1 || h.indexOf('static.ads-twitter') > -1; } },
+    { key:'linkedin',  name:'LinkedIn Insight', icon:'💼', color:'#0A66C2',
+      patterns: [ /_linkedin_partner_id\s*=\s*['"]?(\d+)['"]?/g,
+                  /linkedin_partner_id['"]\s*:\s*['"]?(\d+)['"]?/g ],
+      detect: function(h){ return h.indexOf('snap.licdn.com') > -1 || h.indexOf('linkedin') > -1; } },
+    { key:'mixpanel',  name:'Mixpanel',         icon:'📈', color:'#7856FF',
+      patterns: [ /mixpanel\.init\s*\(\s*['"]([a-f0-9]{32})['"]/g ],
+      detect: function(h){ return h.indexOf('mixpanel') > -1; } },
+  ];
+
+  function hmExtractIds(html, patterns) {
+    var ids = [];
+    patterns.forEach(function(rx) {
+      var re = new RegExp(rx.source, rx.flags);
+      var m;
+      while ((m = re.exec(html)) !== null) {
+        var id = m[1].trim();
+        if (id && ids.indexOf(id) === -1) ids.push(id);
+      }
+    });
+    return ids;
+  }
+
+  async function hmScanSite() {
+    var urlInput = document.getElementById('hmScanUrl');
+    var resultEl = document.getElementById('hmScanResult');
+    var btn      = document.getElementById('hmScanBtn');
+    if (!urlInput || !resultEl) return;
+
+    var url = urlInput.value.trim();
+    if (!url) { urlInput.focus(); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;animation:spin .7s linear infinite;display:inline-block;">sync</span> Scanning...';
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = '<div style="color:var(--mut);font-size:13px;">⏳ Fetching page...</div>';
+
+    try {
+      var resp = await fetch('/api/scan-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: url })
+      });
+      var data = await resp.json();
+
+      if (!resp.ok || data.error) {
+        resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Failed to fetch page: ' + _esc(data.error || 'Unknown error') + '</div>';
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
+        return;
+      }
+
+      var html = data.html || '';
+      var found = [];
+      var missing = [];
+      var configured = S.pixelIds || {};
+
+      HM_PLATFORMS_DEF.forEach(function(plat) {
+        var detected = plat.detect(html);
+        var ids = hmExtractIds(html, plat.patterns);
+        var configuredId = typeof configured[plat.key] === 'object' ? configured[plat.key].id : configured[plat.key];
+        configuredId = (configuredId || '').trim();
+
+        if (detected || ids.length) {
+          var match = ids.length && configuredId && ids.indexOf(configuredId) > -1;
+          var mismatch = ids.length && configuredId && !match;
+          found.push({ plat: plat, ids: ids, match: match, mismatch: mismatch, configuredId: configuredId });
+        } else if (configuredId) {
+          missing.push({ plat: plat, configuredId: configuredId });
+        }
+      });
+
+      // Build result HTML
+      var html2 = '<div style="margin-bottom:10px;font-size:12px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;">'
+        + 'Detected on ' + _esc(data.url || url) + ' — ' + found.length + ' pixel(s) found</div>';
+
+      if (!found.length && !missing.length) {
+        html2 += '<div style="color:var(--mut);font-size:13px;">No known tracking pixels detected on this page.</div>';
+      }
+
+      found.forEach(function(f) {
+        var statusColor = f.match ? '#46f1c5' : f.mismatch ? '#ffb4ab' : '#adc6ff';
+        var statusLabel = f.match ? '✓ ID Match' : f.mismatch ? '⚠ ID Mismatch' : '● Detected';
+        html2 += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur3);border-radius:10px;margin-bottom:6px;flex-wrap:wrap;gap:8px;">'
+          + '<div style="display:flex;align-items:center;gap:8px;">'
+          +   '<span style="font-size:18px;">' + f.plat.icon + '</span>'
+          +   '<div>'
+          +     '<div style="font-size:13px;font-weight:700;color:var(--wht);">' + f.plat.name + '</div>'
+          +     '<div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);">'
+          +       (f.ids.length ? f.ids.join(', ') : 'ID not extracted') + '</div>'
+          +   '</div>'
+          + '</div>'
+          + '<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + statusColor + '22;color:' + statusColor + ';border:1px solid ' + statusColor + '44;">'
+          +   statusLabel + '</span>'
+          + '</div>';
+      });
+
+      if (missing.length) {
+        html2 += '<div style="margin-top:10px;margin-bottom:6px;font-size:12px;font-weight:700;color:#ffb4ab;letter-spacing:1px;text-transform:uppercase;">Configured but NOT found on page</div>';
+        missing.forEach(function(m) {
+          html2 += '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,180,171,.05);border:1px solid rgba(255,180,171,.2);border-radius:10px;margin-bottom:6px;">'
+            + '<span style="font-size:18px;">' + m.plat.icon + '</span>'
+            + '<div>'
+            +   '<div style="font-size:13px;font-weight:700;color:#ffb4ab;">' + m.plat.name + '</div>'
+            +   '<div style="font-size:11px;color:var(--mut);">Expected ID: ' + _esc(m.configuredId) + ' — not detected on page</div>'
+            + '</div>'
+            + '</div>';
+        });
+      }
+
+      resultEl.innerHTML = html2;
+
+    } catch(e) {
+      resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Error: ' + _esc(e.message) + '</div>';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
+  }
+
+  // ══════ HEALTH MONITOR ══════
+  var HM_HISTORY_KEY = 'et_deploy_history';
+  var HM_MAX_HISTORY = 20;
+
+  // Called at end of every deploy — logs result to localStorage
+  function hmLogDeploy(entry) {
+    // entry: { ts, tags, triggers, vars, versionId, ok, errors: [] }
+    try {
+      var hist = JSON.parse(localStorage.getItem(HM_HISTORY_KEY) || '[]');
+      hist.unshift(entry);
+      if (hist.length > HM_MAX_HISTORY) hist = hist.slice(0, HM_MAX_HISTORY);
+      localStorage.setItem(HM_HISTORY_KEY, JSON.stringify(hist));
+    } catch(e) {}
+  }
+
+  function renderHealthDashboard() {
+    // ── Config Score ──────────────────────────────────────────
+    var platforms  = S.platforms || [];
+    var pixelIds   = S.pixelIds  || {};
+    var events     = S.events    || [];
+    var activePlat = platforms.filter(function(p){ var v = typeof pixelIds[p]==='object'?pixelIds[p].id:pixelIds[p]; return !!(v&&v.trim()); });
+    var score      = platforms.length ? Math.round((activePlat.length / platforms.length) * 100) : 0;
+    var hist       = [];
+    try { hist = JSON.parse(localStorage.getItem(HM_HISTORY_KEY) || '[]'); } catch(e){}
+    var lastDeploy = hist[0] || null;
+    var totalDeploys = hist.length;
+    var successCount = hist.filter(function(h){ return h.ok; }).length;
+
+    // ── Stats Row ─────────────────────────────────────────────
+    var statsEl = document.getElementById('hm-stats-row');
+    if (statsEl) {
+      var scoreColor = score === 100 ? '#46f1c5' : score >= 50 ? '#adc6ff' : '#ffb4ab';
+      statsEl.innerHTML =
+        _hmStat('donut_large',   score + '%',        'Config Score',     scoreColor) +
+        _hmStat('ads_click',     platforms.length,   'Platforms',        '#adc6ff') +
+        _hmStat('bolt',          events.length,      'Events',           '#d4d4ff') +
+        _hmStat('rocket_launch', totalDeploys,       'Total Deploys',    '#46f1c5') +
+        _hmStat('check_circle',  successCount,       'Successful',       '#46f1c5') +
+        _hmStat('schedule',      lastDeploy ? _hmTimeAgo(lastDeploy.ts) : 'Never', 'Last Deploy', '#bacac2');
+    }
+
+    // ── Platform Health ───────────────────────────────────────
+    var platEl = document.getElementById('hm-platforms');
+    if (platEl) {
+      if (!platforms.length) {
+        platEl.innerHTML = '<div style="color:var(--mut);font-size:13px;padding:20px;">No platforms configured yet. Start from Pixel Config.</div>';
+      } else {
+        platEl.innerHTML = platforms.map(function(p) {
+          var m = (typeof platMeta !== 'undefined' && platMeta[p]) || { name: p, icon: '📡', color: 'var(--acc)' };
+          var rawId = typeof pixelIds[p]==='object' ? pixelIds[p].id : pixelIds[p];
+          var isActive = !!(rawId && rawId.trim());
+          var evCount  = events.filter(function(e){ return S.platforms.indexOf(p) > -1; }).length;
+          return '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:14px;padding:16px;">'
+            + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+            +   '<div style="display:flex;align-items:center;gap:8px;">'
+            +     '<span style="font-size:20px;">' + m.icon + '</span>'
+            +     '<span style="font-weight:700;font-size:13px;color:var(--wht);">' + m.name + '</span>'
+            +   '</div>'
+            +   '<span style="font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;'
+            +   (isActive ? 'background:rgba(70,241,197,.12);color:#46f1c5;border:1px solid rgba(70,241,197,.3);' : 'background:rgba(255,180,171,.08);color:#ffb4ab;border:1px solid rgba(255,180,171,.25);')
+            +   '">' + (isActive ? 'ACTIVE' : 'PENDING') + '</span>'
+            + '</div>'
+            + '<div style="font-size:11px;color:var(--mut);margin-bottom:4px;">Pixel ID</div>'
+            + '<div style="font-size:12px;color:var(--wht);font-family:var(--font-mono);background:var(--sur3);border-radius:8px;padding:6px 10px;word-break:break-all;">'
+            +   (rawId && rawId.trim() ? (rawId.length > 20 ? rawId.substring(0,20)+'...' : rawId) : '—')
+            + '</div>'
+            + '</div>';
+        }).join('');
+      }
+    }
+
+    // ── Deploy History ────────────────────────────────────────
+    var histEl = document.getElementById('hm-history');
+    if (histEl) {
+      if (!hist.length) {
+        histEl.innerHTML = '<div style="color:var(--mut);font-size:13px;padding:16px;background:var(--sur2);border-radius:12px;text-align:center;">No deployments yet</div>';
+      } else {
+        histEl.innerHTML = hist.slice(0,8).map(function(h) {
+          var ok = h.ok;
+          return '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:12px;padding:12px 14px;">'
+            + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'
+            +   '<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;'
+            +   (ok ? 'background:rgba(70,241,197,.1);color:#46f1c5;' : 'background:rgba(255,180,171,.1);color:#ffb4ab;')
+            +   '">' + (ok ? '✓ SUCCESS' : '✗ FAILED') + '</span>'
+            +   '<span style="font-size:11px;color:var(--mut);">' + _hmTimeAgo(h.ts) + '</span>'
+            + '</div>'
+            + '<div style="font-size:11px;color:var(--mut);">'
+            +   (h.tags||0) + ' Tags · ' + (h.triggers||0) + ' Triggers · ' + (h.vars||0) + ' Vars'
+            +   (h.versionId ? ' · <span style="color:#adc6ff;">v' + h.versionId + '</span>' : '')
+            + '</div>'
+            + '</div>';
+        }).join('');
+      }
+    }
+
+    // ── Error Log ─────────────────────────────────────────────
+    var errEl = document.getElementById('hm-errors');
+    if (errEl) {
+      var allErrors = [];
+      hist.forEach(function(h){
+        if (h.errors && h.errors.length) {
+          h.errors.forEach(function(e){ allErrors.push({ ts: h.ts, msg: e }); });
+        }
+      });
+      if (!allErrors.length) {
+        errEl.innerHTML = '<div style="color:#46f1c5;font-size:13px;padding:16px;background:rgba(70,241,197,.05);border:1px solid rgba(70,241,197,.15);border-radius:12px;text-align:center;">✓ No errors recorded</div>';
+      } else {
+        errEl.innerHTML = allErrors.slice(0,8).map(function(e){
+          return '<div style="background:rgba(255,180,171,.05);border:1px solid rgba(255,180,171,.15);border-radius:12px;padding:12px 14px;">'
+            + '<div style="font-size:10px;color:var(--mut);margin-bottom:4px;">' + _hmTimeAgo(e.ts) + '</div>'
+            + '<div style="font-size:11px;color:#ffb4ab;line-height:1.5;word-break:break-word;">' + _esc(e.msg) + '</div>'
+            + '</div>';
+        }).join('');
+      }
+    }
+  }
+
+  function _hmStat(icon, value, label, color) {
+    return '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:14px;padding:16px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+      +   '<span class="material-symbols-outlined" style="font-size:16px;color:' + color + ';">' + icon + '</span>'
+      +   '<span style="font-size:11px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.8px;">' + label + '</span>'
+      + '</div>'
+      + '<div style="font-size:28px;font-weight:900;font-family:var(--font-display);color:' + color + ';letter-spacing:-1px;">' + value + '</div>'
+      + '</div>';
+  }
+
+  function _hmTimeAgo(ts) {
+    if (!ts) return '—';
+    var diff = Math.floor((Date.now() - ts) / 1000);
+    if (diff < 60)  return diff + 's ago';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    return Math.floor(diff/86400) + 'd ago';
+  }
+
+  // ══════ PAYLOAD TESTER ══════
+  var _payloadData = { vars: [], trigs: [], tags: [], raw: '' };
+  var _activePayloadTab = 'vars';
+
+  function gtmPreviewPayload() {
+    var src = (typeof _cachedGtmStr !== 'undefined' && _cachedGtmStr) || '';
+    if (!src.trim()) {
+      alert('اعمل Generate للـ Config الأول من Pixel Config ثم ارجع هنا');
+      return;
+    }
+    var gtmJson;
+    try { gtmJson = JSON.parse(src); } catch(e) { alert('GTM JSON غير صحيح'); return; }
+    var cv = gtmJson.containerVersion ? gtmJson.containerVersion : gtmJson;
+    _payloadData.vars  = cv.variable       || [];
+    _payloadData.trigs = cv.trigger        || [];
+    _payloadData.tags  = cv.tag            || [];
+    _payloadData.raw   = JSON.stringify(cv, null, 2);
+
+    var total = _payloadData.vars.length + _payloadData.trigs.length + _payloadData.tags.length;
+    document.getElementById('payloadBadge').textContent =
+      _payloadData.tags.length + ' Tags · ' + _payloadData.trigs.length + ' Triggers · ' + _payloadData.vars.length + ' Variables';
+
+    showPayloadTab('vars');
+    document.getElementById('payloadModal').style.display = 'flex';
+  }
+
+  function showPayloadTab(tab) {
+    _activePayloadTab = tab;
+    var tabs = ['vars','trigs','tags','raw'];
+    tabs.forEach(function(t) {
+      var btn = document.getElementById('ptab-' + t);
+      if (!btn) return;
+      if (t === tab) {
+        btn.style.cssText = 'padding:8px 16px;border-radius:8px 8px 0 0;border:none;font-size:13px;font-weight:700;cursor:pointer;background:rgba(70,241,197,.1);color:#46f1c5;border-bottom:2px solid #46f1c5;';
+      } else {
+        btn.style.cssText = 'padding:8px 16px;border-radius:8px 8px 0 0;border:none;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:#6b7280;';
+      }
+    });
+    var content = document.getElementById('payloadTabContent');
+    if (!content) return;
+
+    if (tab === 'raw') {
+      content.innerHTML = '<pre style="margin:0;font-family:monospace;font-size:12px;color:#bacac2;line-height:1.6;white-space:pre-wrap;word-break:break-all;">' + _esc(_payloadData.raw) + '</pre>';
+      return;
+    }
+
+    var items = tab === 'vars' ? _payloadData.vars : tab === 'trigs' ? _payloadData.trigs : _payloadData.tags;
+    var typeKey = tab === 'vars' ? 'type' : tab === 'trigs' ? 'type' : 'type';
+    var icon = tab === 'vars' ? 'code' : tab === 'trigs' ? 'bolt' : 'label';
+    var color = tab === 'vars' ? '#adc6ff' : tab === 'trigs' ? '#d4d4ff' : '#46f1c5';
+
+    if (!items.length) {
+      content.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:14px;">لا يوجد ' + (tab === 'vars' ? 'Variables' : tab === 'trigs' ? 'Triggers' : 'Tags') + ' في الـ Config الحالي</div>';
+      return;
+    }
+
+    var html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+    items.forEach(function(item, i) {
+      var name = item.name || '(بدون اسم)';
+      var type = item.type || '—';
+      var jsonStr = JSON.stringify(item, null, 2);
+      html += '<div style="border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;">'
+        + '<div onclick="togglePayloadItem(\'pi' + tab + i + '\')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:rgba(255,255,255,.03);">'
+        +   '<div style="display:flex;align-items:center;gap:10px;">'
+        +     '<span class="material-symbols-outlined" style="font-size:16px;color:' + color + ';">' + icon + '</span>'
+        +     '<span style="font-weight:700;font-size:13px;color:#e1e2eb;">' + _esc(name) + '</span>'
+        +   '</div>'
+        +   '<div style="display:flex;align-items:center;gap:8px;">'
+        +     '<span style="font-size:11px;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.06);color:#6b7280;">' + _esc(type) + '</span>'
+        +     '<span class="material-symbols-outlined" style="font-size:16px;color:#6b7280;">expand_more</span>'
+        +   '</div>'
+        + '</div>'
+        + '<pre id="pi' + tab + i + '" style="display:none;margin:0;padding:14px 16px;font-family:monospace;font-size:11.5px;color:#bacac2;line-height:1.6;border-top:1px solid rgba(255,255,255,.05);background:#0b0e14;white-space:pre-wrap;word-break:break-all;">'
+        + _esc(jsonStr) + '</pre>'
+        + '</div>';
+    });
+    html += '</div>';
+    content.innerHTML = html;
+  }
+
+  function togglePayloadItem(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function copyPayloadRaw() {
+    try {
+      navigator.clipboard.writeText(_payloadData.raw);
+      var btn = event.currentTarget;
+      var orig = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:15px;">check</span> Copied!';
+      setTimeout(function(){ btn.innerHTML = orig; }, 1800);
+    } catch(e) { alert('Copy failed'); }
+  }
+
+  function _esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   </script>
+
+  <!-- ══════ PAYLOAD TESTER MODAL ══════ -->
+  <div id="payloadModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#15181f;border:1.5px solid rgba(70,241,197,.2);border-radius:20px;width:100%;max-width:760px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);">
+
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.06);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="material-symbols-outlined" style="color:#adc6ff;font-size:20px;">preview</span>
+          <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:16px;color:#e1e2eb;">Payload Preview</span>
+          <span id="payloadBadge" style="font-size:11px;font-weight:700;padding:2px 10px;border-radius:20px;background:rgba(70,241,197,.1);color:#46f1c5;border:1px solid rgba(70,241,197,.2);"></span>
+        </div>
+        <button onclick="document.getElementById('payloadModal').style.display='none'" style="background:rgba(255,255,255,.05);border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;color:#bacac2;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display:flex;gap:4px;padding:12px 22px 0;border-bottom:1px solid rgba(255,255,255,.06);">
+        <button id="ptab-vars" onclick="showPayloadTab('vars')" style="padding:8px 16px;border-radius:8px 8px 0 0;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;">Variables</button>
+        <button id="ptab-trigs" onclick="showPayloadTab('trigs')" style="padding:8px 16px;border-radius:8px 8px 0 0;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;">Triggers</button>
+        <button id="ptab-tags" onclick="showPayloadTab('tags')" style="padding:8px 16px;border-radius:8px 8px 0 0;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;">Tags</button>
+        <button id="ptab-raw" onclick="showPayloadTab('raw')" style="padding:8px 16px;border-radius:8px 8px 0 0;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;">Raw JSON</button>
+      </div>
+
+      <!-- Content -->
+      <div id="payloadTabContent" style="flex:1;overflow-y:auto;padding:18px 22px;">
+        <!-- filled by JS -->
+      </div>
+
+      <!-- Footer -->
+      <div style="padding:14px 22px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:flex-end;gap:10px;">
+        <button onclick="copyPayloadRaw()" style="padding:9px 18px;border-radius:10px;border:1.5px solid rgba(173,198,255,.25);background:transparent;color:#adc6ff;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <span class="material-symbols-outlined" style="font-size:15px;">content_copy</span> Copy JSON
+        </button>
+        <button onclick="document.getElementById('payloadModal').style.display='none';document.getElementById('pubGtm').click()" style="padding:9px 20px;border-radius:10px;border:none;background:#00d4aa;color:#00382b;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;">
+          <span class="material-symbols-outlined" style="font-size:15px;">rocket_launch</span> Deploy Now
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
