@@ -77,6 +77,43 @@ http.createServer((req, res) => {
     return;
   }
 
+  // ── URL Scanner Proxy ─────────────────────────────────────
+  if (req.method === 'POST' && req.url === '/api/scan-url') {
+    parseBody(req, (err, body) => {
+      if (err) { res.writeHead(400); res.end(JSON.stringify({ error: 'Invalid JSON' })); return; }
+      let targetUrl = (body && body.url) ? body.url.trim() : '';
+      if (!targetUrl) { res.writeHead(400); res.end(JSON.stringify({ error: 'Missing url' })); return; }
+      if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
+
+      const lib = targetUrl.startsWith('https') ? https : http;
+      const options = { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EasyTrackScanner/1.0)' } };
+
+      function fetchUrl(url, redirects) {
+        if (redirects > 5) { res.writeHead(502); res.end(JSON.stringify({ error: 'Too many redirects' })); return; }
+        lib.get(url, options, apiRes => {
+          // Follow redirects
+          if ([301,302,303,307,308].includes(apiRes.statusCode) && apiRes.headers.location) {
+            const loc = apiRes.headers.location;
+            const next = loc.startsWith('http') ? loc : new URL(loc, url).href;
+            return fetchUrl(next, redirects + 1);
+          }
+          let html = '';
+          apiRes.setEncoding('utf8');
+          apiRes.on('data', c => { if (html.length < 600000) html += c; });
+          apiRes.on('end', () => {
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.end(JSON.stringify({ html, status: apiRes.statusCode, url }));
+          });
+        }).on('error', e => {
+          res.writeHead(502);
+          res.end(JSON.stringify({ error: e.message }));
+        });
+      }
+      fetchUrl(targetUrl, 0);
+    });
+    return;
+  }
+
   // ── Static File Server ────────────────────────────────────
   const urlPath = req.url.split('?')[0];
   let filePath = path.join(ROOT, urlPath === '/' ? '/index.html' : urlPath);
