@@ -7968,12 +7968,42 @@
     resultEl.innerHTML = '<div style="color:var(--mut);font-size:13px;">⏳ Fetching page...</div>';
 
     try {
+      var isFileProtocol = location.protocol === 'file:';
+      var html = '';
+
+      if (isFileProtocol) {
+        // Running as file:// — try direct fetch (will work only if target allows CORS)
+        resultEl.innerHTML = '<div style="color:#adc6ff;font-size:12px;margin-bottom:10px;">⚠ Running as file:// — trying direct fetch (may fail due to CORS). For best results run via <code>node server.js</code></div>';
+        try {
+          var directResp = await fetch(url.startsWith('http') ? url : 'https://' + url, { mode: 'no-cors' });
+          // no-cors gives opaque response — can't read body
+          resultEl.innerHTML += '<div style="color:#ffb4ab;font-size:13px;">❌ Direct scan not possible from file:// — please run <b>node server.js</b> then open <b>http://localhost:3000</b></div>';
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
+          return;
+        } catch(e) {
+          resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Please run <b>node server.js</b> then open <b>http://localhost:3000</b> to use the scanner.</div>';
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
+          return;
+        }
+      }
+
       var resp = await fetch('/api/scan-url', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: url })
       });
-      var data = await resp.json();
+
+      var respText = await resp.text();
+      var data;
+      try { data = JSON.parse(respText); }
+      catch(e) {
+        resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Server error — make sure <b>node server.js</b> is running.</div>';
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
+        return;
+      }
 
       if (!resp.ok || data.error) {
         resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Failed to fetch page: ' + _esc(data.error || 'Unknown error') + '</div>';
@@ -7982,7 +8012,7 @@
         return;
       }
 
-      var html = data.html || '';
+      html = data.html || '';
       var found = [];
       var missing = [];
       var configured = S.pixelIds || {};
