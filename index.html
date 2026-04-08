@@ -4395,6 +4395,114 @@
       }
       if (S.platforms.indexOf('ga4') !== -1) dlKeys.push('user_id');
 
+      // سلة: أضف customer variables تلقائياً لما login event محدد
+      if (S.cms === 'salla' && S.events.indexOf('login') !== -1) {
+        // Variable: DL - customer.isGuest
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'DL - customer.isGuest',
+          type: 'v',
+          parameter: [
+            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+            { type: 'TEMPLATE', key: 'name', value: 'customer.isGuest' }
+          ],
+          fingerprint: fp(varId)
+        });
+        varId++;
+        // Variable: DL - customer.emailHashed
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'DL - customer.emailHashed',
+          type: 'v',
+          parameter: [
+            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+            { type: 'TEMPLATE', key: 'name', value: 'customer.email_hashed' }
+          ],
+          fingerprint: fp(varId)
+        });
+        varId++;
+        // Variable: DL - customer.phoneHashed
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'DL - customer.phoneHashed',
+          type: 'v',
+          parameter: [
+            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+            { type: 'TEMPLATE', key: 'name', value: 'customer.phone_hashed' }
+          ],
+          fingerprint: fp(varId)
+        });
+        varId++;
+      }
+
+      // زد: أضف customer variables تلقائياً لما login event محدد
+      var zidLoginVarId = null;
+      if (S.cms === 'zid' && S.events.indexOf('login') !== -1) {
+        // Variable: DL - customer.isGuest
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'DL - customer.isGuest',
+          type: 'v',
+          parameter: [
+            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+            { type: 'TEMPLATE', key: 'name', value: 'customer.is_guest' }
+          ],
+          fingerprint: fp(varId)
+        });
+        zidLoginVarId = varId;
+        varId++;
+        // Variable: DL - customer.externalId
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'DL - customer.externalId',
+          type: 'v',
+          parameter: [
+            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+            { type: 'TEMPLATE', key: 'name', value: 'customer.external_id' }
+          ],
+          fingerprint: fp(varId)
+        });
+        varId++;
+        // Variable: DL - customer.emailHashed
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'DL - customer.emailHashed',
+          type: 'v',
+          parameter: [
+            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+            { type: 'TEMPLATE', key: 'name', value: 'customer.email_hashed' }
+          ],
+          fingerprint: fp(varId)
+        });
+        varId++;
+        // Variable: DL - customer.mobileHashed
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'DL - customer.mobileHashed',
+          type: 'v',
+          parameter: [
+            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+            { type: 'TEMPLATE', key: 'name', value: 'customer.mobile_hashed' }
+          ],
+          fingerprint: fp(varId)
+        });
+        varId++;
+      }
+
       var cmsVarMap = CMS_DL_MAP[S.cms] && CMS_DL_MAP[S.cms].vars;
       for (var vi = 0; vi < dlKeys.length; vi++) {
         var k = dlKeys[vi];
@@ -4540,24 +4648,39 @@
         else if (bp === 'twitter') bHtml = TWITTER_BASE(bPixId);
         else if (bp === 'google') {
           var gAdsId = S.pixelIds['google'] || 'AW-XXXXXXXXXX';
-          // Custom HTML — googtag type يرفض placeholder IDs
-          bHtml = '<script async src="https://www.googletagmanager.com/gtag/js?id=' + gAdsId + '"><\/script>\n'
-            + '<script>\n'
-            + 'window.dataLayer=window.dataLayer||[];\n'
-            + 'function gtag(){dataLayer.push(arguments);}\n'
-            + "gtag('js',new Date());\n"
-            + "gtag('config','" + gAdsId + "');\n"
-            + '<\/script>';
+          tags.push({
+            accountId: '000000000', containerId: '00000000', tagId: tagId,
+            name: safeName(PM[bp].name + ' | Google Tag'),
+            type: 'googtag',
+            parameter: [
+              { type: 'TEMPLATE', key: 'tagId', value: gAdsId }
+            ],
+            firingTriggerId: [allPagesTrigId],
+            fingerprint: fp(tagId)
+          });
+          tagId++;
+          continue;
         } else if (bp === 'ga4') {
           var ga4CfgId = S.pixelIds['ga4'] || 'G-XXXXXXXXXX';
-          // Custom HTML — gaawc type قد يرفض placeholder IDs
-          bHtml = '<script async src="https://www.googletagmanager.com/gtag/js?id=' + ga4CfgId + '"><\/script>\n'
-            + '<script>\n'
-            + 'window.dataLayer=window.dataLayer||[];\n'
-            + 'function gtag(){dataLayer.push(arguments);}\n'
-            + "gtag('js',new Date());\n"
-            + "gtag('config','" + ga4CfgId + "',{send_page_view:false});\n"
-            + '<\/script>';
+          tags.push({
+            accountId: '000000000', containerId: '00000000', tagId: tagId,
+            name: safeName(PM[bp].name + ' | Google Tag'),
+            type: 'googtag',
+            parameter: [
+              { type: 'TEMPLATE', key: 'tagId', value: ga4CfgId },
+              {
+                type: 'LIST', key: 'configSettingsTable',
+                list: [{ type: 'MAP', map: [
+                  { type: 'TEMPLATE', key: 'parameter', value: 'send_page_view' },
+                  { type: 'TEMPLATE', key: 'parameterValue', value: 'true' }
+                ]}]
+              }
+            ],
+            firingTriggerId: [allPagesTrigId],
+            fingerprint: fp(tagId)
+          });
+          tagId++;
+          continue;
         }
         if (!bHtml) continue;
         tags.push({
@@ -4590,6 +4713,51 @@
       for (var ei = 0; ei < S.events.length; ei++) {
         var evId = S.events[ei];
         if (!trigMap[evId]) {
+
+          // سلة + login = Custom Event "Signed In"
+          if (evId === 'login' && S.cms === 'salla') {
+            triggers.push({
+              accountId: '000000000', containerId: '00000000',
+              triggerId: trigId,
+              name: 'CE | Login [سلة — Signed In]',
+              type: 'CUSTOM_EVENT',
+              customEventFilter: [{
+                type: 'EQUALS',
+                parameter: [
+                  { type: 'TEMPLATE', key: 'arg0', value: '{{_event}}' },
+                  { type: 'TEMPLATE', key: 'arg1', value: 'Signed In' }
+                ]
+              }],
+              notes: 'سلة: تسجيل دخول العميل — يطلق عند حدث "Signed In" | Generated by Easy Track',
+              fingerprint: fp(trigId)
+            });
+            trigMap[evId] = trigId;
+            trigId++;
+            continue;
+          }
+
+          // زد + login = Page View Trigger مع condition customer.isGuest = false
+          if (evId === 'login' && S.cms === 'zid') {
+            triggers.push({
+              accountId: '000000000', containerId: '00000000',
+              triggerId: trigId,
+              name: 'Login User [زد]',
+              type: 'PAGEVIEW',
+              filter: [{
+                type: 'CONTAINS',
+                parameter: [
+                  { type: 'TEMPLATE', key: 'arg0', value: '{{DL - customer.isGuest}}' },
+                  { type: 'TEMPLATE', key: 'arg1', value: 'false' }
+                ]
+              }],
+              notes: 'زد: مفيش login event — بيشتغل على Page View لما customer.is_guest = false | Generated by Easy Track',
+              fingerprint: fp(trigId)
+            });
+            trigMap[evId] = trigId;
+            trigId++;
+            continue;
+          }
+
           var nativeEv = (cmsEvMap && cmsEvMap[evId]) ? cmsEvMap[evId] : evId;
           var evLabel = evLabels[evId] || evId;
           // Clean naming: "CE | Purchase" or "CE | Purchase [Salla: productDetail]"
@@ -4835,34 +5003,41 @@
     // ===== CMS-SPECIFIC DL VARIABLE MAPS =====
     var CMS_DL_MAP = {
       salla: {
-        // سلة بتبعت events تلقائياً — الـ variables دي موجودة في dataLayer بتاعها
-        note: '// ✅ سلة بتدعم GTM Native Data Layer تلقائياً\n// الـ variables دي بتتبعت من سلة مباشرة — مش محتاج تكتب كود يدوي\n// بس تأكد إن GTM Container ID اتحط في: الإعدادات → التسويق → Google Tag Manager',
+        // سلة بتبعت events بـ UA Enhanced Ecommerce format — محتاج UA→GA4 Bridge
+        note: '// ✅ سلة — Real Data Layer Examples\n// ─────────────────────────────────────────────────────────────────\n// ⚠️ سلة بتبعت UA Enhanced Ecommerce format — مش GA4 مباشرة\n// استخدم الـ UA→GA4 Bridge tab عشان تحوّل الـ events لـ GA4 تلقائياً\n// تأكد إن GTM Container ID اتحط في: الإعدادات → التسويق → Google Tag Manager\n\n// ── 1) Product List Viewed — المنتجات في obj.data ──\ndataLayer.push({\n  event: "Product List Viewed",\n  status: 200,\n  data: [\n    { id: "1131050439", name: "فرشاة أورما الكهربائية", price: 155.65, currency: "SAR", sku: "DV58595151", category: { name: "الأجهزة" }, is_available: true },\n    { id: "1503084629", name: "جهاز التنظيف بالبخار",  price: 169.57, currency: "SAR", sku: "OM-DV",      category: { name: "الأجهزة" }, is_available: true },\n    { id: "1597494942", name: "مكنسة تولون برميل 1500 واط", price: 256.52, currency: "SAR", sku: "659465223693", category: { name: "الأجهزة" }, is_available: true }\n  ],\n  title: "3 منتجات",\n  source: "categories"\n});\n\n// ── 2) Product Viewed — المنتج في obj[0] ──\ndataLayer.push({\n  0: { id: 1503084629, name: "جهاز التنظيف بالبخار", category: "الأجهزة", price: 169.57, quantity: 0, currency: "SAR", sku: "OM-DV" },\n  event: "Product Viewed"\n});\n\n// ── 3) Add to Cart — ecommerce.add.products ──\ndataLayer.push({\n  event: "addToCart",\n  ecommerce: {\n    currencyCode: "SAR",\n    exchangeRate: "1",\n    event_id: 2674990342,\n    add: {\n      products: [{ id: 1830680877, name: "بكج التنظيف الشامل", category: "العروض", price: 199.13, quantity: 1, brand: "ORMA" }]\n    }\n  }\n});\n\n// ── 4) Signed In ──\ndataLayer.push({ event: "Signed In" });\n\n// ── 5) Product Added to Wishlist ──\ndataLayer.push({ event: "Product Added to Wishlist" });\n\n// ── 6) Cart Viewed — obj[0].products ──\ndataLayer.push({\n  0: {\n    cart_id: "145778443",\n    products: [\n      { id: 1830680877, name: "بكج التنظيف الشامل", category: "العروض", price: 458, quantity: 2, brand: "ORMA", sku: "orma222", currency: "SAR" },\n      { id: 1503084629, name: "جهاز التنظيف بالبخار",  category: "الأجهزة", price: 975.05, quantity: 5, sku: "OM-DV", currency: "SAR" }\n    ]\n  },\n  event: "Cart Viewed"\n});\n\n// ── 7) Product Removed — obj[0] ──\ndataLayer.push({\n  0: { id: 1503084629, name: "جهاز التنظيف بالبخار", category: "الأجهزة", price: 195.01, quantity: 5, cart_id: "145778443", sku: "OM-DV", currency: "SAR" },\n  event: "Product Removed"\n});\n\n// ── 8) Begin Checkout ──\ndataLayer.push({ event: "cart::submitted", status: 200, success: true });\n\n// ── 9) Purchase — ecommerce.purchase.products ──\ndataLayer.push({\n  event: "purchase",\n  ecommerce: {\n    currencyCode: "SAR",\n    exchangeRate: "1",\n    event_id: 253138256,\n    purchase: {\n      actionField: { id: 253138256, total: 83.86, revenue: 83.86, currency_code: "SAR" },\n      products: [{ id: 462352033, name: "...", category: "المكملات الغذائية", price: 73.85, quantity: 1, currency: "SAR" }]\n    }\n  },\n  customer: { isGuest: false, email_hashed: "sha256...", phone_hashed: "sha256..." }\n});\n\n// ── GTM Variables ──\n// • currency    → ecommerce.currencyCode\n// • transaction → ecommerce.event_id  أو  ecommerce.purchase.actionField.id\n// • value       → ecommerce.purchase.actionField.total\n// • product data → obj[0]  أو  ecommerce.add.products  أو  obj.data\n// • login       → Custom Event "Signed In"',
         vars: {
-          currency: 'ecommerce.currency',
-          value: 'ecommerce.revenue',        // سلة بتبعت revenue مش value
-          transaction_id: 'ecommerce.purchase.actionField.id',
-          items: 'ecommerce.purchase.products',  // سلة بتستخدم products
-          item_id: 'id',
-          item_name: 'name',
-          item_brand: 'brand',
-          item_category: 'category',
-          price: 'price',
-          quantity: 'quantity',
-          search_term: 'searchTerm',
-          method: 'method'
+          currency:        'ecommerce.currencyCode',
+          value:           'ecommerce.purchase.actionField.total',
+          transaction_id:  'ecommerce.event_id',
+          items:           'ecommerce.purchase.products',
+          item_id:         '0.id',
+          item_name:       '0.name',
+          item_brand:      '0.brand',
+          item_category:   '0.category',
+          price:           '0.price',
+          quantity:        '0.quantity',
+          search_term:     'searchTerm',
+          method:          'method',
+          'customer.isGuest':     'customer.isGuest',
+          'customer.emailHashed': 'customer.email_hashed',
+          'customer.phoneHashed': 'customer.phone_hashed'
         },
         eventNames: {
-          view_item: 'productDetail',
-          add_to_cart: 'addToCart',
-          remove_from_cart: 'removeFromCart',
-          begin_checkout: 'checkout',
-          purchase: 'purchase',
-          search: 'search'
+          view_item_list:  'Product List Viewed',
+          view_item:       'Product Viewed',
+          add_to_cart:     'addToCart',
+          view_cart:       'Cart Viewed',
+          remove_from_cart:'Product Removed',
+          add_to_wishlist: 'Product Added to Wishlist',
+          begin_checkout:  'cart::submitted',
+          purchase:        'purchase',
+          search:          'search',
+          login:           'Signed In'
         }
       },
       zid: {
         // زد بتبعت events GA4-compatible بشكل كبير
-        note: '// ✅ زد بتدعم GTM Data Layer — Events بتتبعت تلقائياً\n// تأكد إن GTM Container ID اتحط في: لوحة التحكم → التسويق → Google Tag Manager',
+        note: '// ✅ زد بتدعم GTM Data Layer — Events بتتبعت تلقائياً\n// تأكد إن GTM Container ID اتحط في: لوحة التحكم → التسويق → Google Tag Manager\n//\n// ── Login User Trigger (تسجيل دخول العميل) ──\n// زد مفيهاش event اسمه "login" — بدل كدا بتبعت customer.is_guest مع كل event\n// عشان تعمل Trigger للعميل المسجّل دخوله في GTM:\n//   Trigger Type  : Page View\n//   Fires on      : Some Page Views\n//   Condition     : customer.isGuest  |  contains  |  false\n//\n// لما العميل logged in بتيجي البيانات دي في كل event:\n//   customer.is_guest      → false\n//   customer.external_id   → Hash فريد للعميل\n//   customer.email         → إيميل العميل\n//   customer.email_hashed  → إيميل مشفّر (SHA-256)\n//   customer.mobile        → رقم الموبايل\n//   customer.mobile_hashed → موبايل مشفّر (SHA-256)',
         vars: {
           currency: 'ecommerce.currency',
           value: 'ecommerce.value',
@@ -4875,15 +5050,25 @@
           price: 'price',
           quantity: 'quantity',
           search_term: 'ecommerce.search_term',
-          method: 'method'
+          method: 'method',
+          'customer.isGuest': 'customer.is_guest',
+          'customer.externalId': 'customer.external_id',
+          'customer.email': 'customer.email',
+          'customer.emailHashed': 'customer.email_hashed',
+          'customer.mobile': 'customer.mobile',
+          'customer.mobileHashed': 'customer.mobile_hashed'
         },
         eventNames: {
           view_item: 'view_item',
           add_to_cart: 'add_to_cart',
           remove_from_cart: 'remove_from_cart',
+          view_cart: 'view_cart',
           begin_checkout: 'begin_checkout',
           purchase: 'purchase',
-          search: 'search'
+          add_to_wishlist: 'add_to_wishlist',
+          view_item_list: 'view_item_list',
+          search: 'search',
+          login: '⚠️ Page View + customer.isGuest = false'
         }
       }
     };
@@ -4915,7 +5100,12 @@
         lines.push('// استخدم Custom Event Trigger في GTM بالأسماء دي:');
         var evKeys = Object.keys(cmsMap.eventNames);
         for (var ei2 = 0; ei2 < evKeys.length; ei2++) {
-          lines.push('//   GA4: ' + evKeys[ei2] + '  →  ' + CMS[S.cms].name + ': ' + cmsMap.eventNames[evKeys[ei2]]);
+          if (evKeys[ei2] === 'login' && S.cms === 'zid') {
+            lines.push('//   GA4: login  →  زد: ⚠️ مفيش event — استخدم Page View Trigger');
+            lines.push('//         Condition: customer.isGuest  contains  false');
+          } else {
+            lines.push('//   GA4: ' + evKeys[ei2] + '  →  ' + CMS[S.cms].name + ': ' + cmsMap.eventNames[evKeys[ei2]]);
+          }
         }
         lines.push('');
         lines.push('// ── Custom Events (لو محتاج تضيف events مش موجودة) ──');
@@ -4928,6 +5118,37 @@
       for (var ei = 0; ei < S.events.length; ei++) {
         var evId = S.events[ei];
         var ev = GA4[evId];
+
+        // زد: Login مفيهاش event — بدله Page View Trigger
+        if (evId === 'login' && S.cms === 'zid') {
+          lines.push('// ── LOGIN USER (تسجيل دخول العميل) ──');
+          lines.push('// ⚠️ زد مش بتبعت event اسمه "login"');
+          lines.push('// بدل كدا، اعمل في GTM الـ Trigger ده:');
+          lines.push('//');
+          lines.push('//   Trigger Name : Login User');
+          lines.push('//   Trigger Type : Page View');
+          lines.push('//   Fires on     : Some Page Views');
+          lines.push('//   Condition    : customer.isGuest  |  contains  |  false');
+          lines.push('//');
+          lines.push('// وعشان تقدر تستخدم الشرط ده، أنشئ Data Layer Variable:');
+          lines.push('//   Variable Name : DL - customer.isGuest');
+          lines.push('//   DL Variable   : customer.is_guest');
+          lines.push('//');
+          lines.push('// لما العميل logged in، الـ Data Layer بيبعت:');
+          lines.push('// {');
+          lines.push('//   "customer": {');
+          lines.push('//     "is_guest": false,');
+          lines.push('//     "external_id": "hash...",');
+          lines.push('//     "email": "user@example.com",');
+          lines.push('//     "email_hashed": "sha256...",');
+          lines.push('//     "mobile": "+966xxxxxxx",');
+          lines.push('//     "mobile_hashed": "sha256..."');
+          lines.push('//   }');
+          lines.push('// }');
+          lines.push('');
+          continue;
+        }
+
         lines.push('// ── ' + ev.label.toUpperCase() + ' ──');
         lines.push("window.dataLayer.push({");
         lines.push("  event: '" + evId + "',");
@@ -4962,7 +5183,9 @@
             { icon: 'settings', title: 'فتح إعدادات سلة', body: 'الإعدادات → التسويق → Google Tag Manager' },
             { icon: 'content_paste', title: 'حط الـ Container ID', body: 'انسخ الـ Container ID من GTM (GTM-XXXXXX) وحطه في الحقل' },
             { icon: 'save', title: 'احفظ وتأكد', body: 'اضغط حفظ — سلة هترفع GTM تلقائياً على كل الصفحات' },
-            { icon: 'check_circle', title: 'جاهز!', body: 'الـ GTM Container المولّد متوافق بالكامل مع سلة — بمجرد الرفع هيشتغل تلقائياً بدون أي تعديل إضافي.' }
+            { icon: 'code', title: 'ارفع الـ UA→GA4 Bridge', body: 'سلة بتبعت UA Enhanced Ecommerce format — مش GA4 مباشرة.<br><br>في GTM: <strong>Tags → New → Custom HTML</strong><br>• انسخ كود الـ Bridge من تاب "UA→GA4 Bridge"<br>• Trigger: <strong>All Pages</strong><br>• Priority: <strong>10</strong> (عشان يشتغل قبل أي tag تاني)<br><br>⚠️ بدون الـ Bridge هيفضل فيه data مش بتتبعتش' },
+            { icon: 'manage_accounts', title: 'Login Trigger (Signed In)', body: 'الـ Container المولّد بيحتوي على Trigger جاهز للـ Login:<br><br>• Trigger Name: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:1px 6px;border-radius:3px;">CE | Login [سلة — Signed In]</code><br>• Trigger Type: <strong>Custom Event</strong><br>• Event Name: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:1px 6px;border-radius:3px;">Signed In</code><br><br>بيتبعت مع البيانات:<br>• <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:1px 6px;border-radius:3px;">customer.isGuest</code> = false<br>• <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:1px 6px;border-radius:3px;">customer.email_hashed</code> (SHA-256)<br>• <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:1px 6px;border-radius:3px;">customer.phone_hashed</code> (SHA-256)' },
+            { icon: 'check_circle', title: 'جاهز!', body: 'الـ GTM Container المولّد متوافق بالكامل مع سلة — بمجرد رفع الـ Bridge والـ Container هيشتغل تلقائياً.' }
           ]
         },
         zid: {
@@ -4973,6 +5196,7 @@
             { icon: 'settings', title: 'فتح لوحة التحكم', body: 'لوحة التحكم → التسويق → Google Tag Manager' },
             { icon: 'content_paste', title: 'حط الـ Container ID', body: 'انسخ الـ Container ID (GTM-XXXXXX) وحطه في الحقل المخصص' },
             { icon: 'save', title: 'احفظ التغييرات', body: 'زد بتحقن GTM تلقائياً على كل صفحات المتجر' },
+            { icon: 'manage_accounts', title: 'Login User Trigger', body: 'زد مفيهاش event اسمه "login" — عشان تتبع العميل المسجّل دخوله:<br><br><strong>GTM → Triggers → New</strong><br>• Trigger Type: <strong>Page View</strong><br>• Fires on: <strong>Some Page Views</strong><br>• Condition: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:1px 6px;border-radius:3px;">customer.isGuest</code> <strong>contains</strong> <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:1px 6px;border-radius:3px;">false</code><br><br>الـ Data Layer Variable المطلوب: <code style="color:var(--acc);background:rgba(70,241,197,0.1);padding:1px 6px;border-radius:3px;">customer.is_guest</code>' },
             { icon: 'check_circle', title: 'جاهز!', body: 'زد بتبعت الأحداث تلقائياً — الـ GTM Container المولّد هيشتغل فوراً بدون أي تعديل إضافي.' }
           ]
         }
@@ -5772,24 +5996,30 @@
         '  if (window._etSallaBridge) return; // run once',
         '  window._etSallaBridge = true;',
         '',
+        '  // خريطة أسماء أحداث سلة → GA4',
         '  var UA_TO_GA4 = {',
-        "    'productDetail':  'view_item',",
-        "    'addToCart':      'add_to_cart',",
-        "    'removeFromCart': 'remove_from_cart',",
-        "    'checkout':       'begin_checkout',",
-        "    'purchase':       'purchase',",
-        "    'search':         'search'",
+        "    'Product Viewed':           'view_item',",
+        "    'Product List Viewed':      'view_item_list',",
+        "    'addToCart':                'add_to_cart',",
+        "    'Cart Viewed':              'view_cart',",
+        "    'Product Removed':          'remove_from_cart',",
+        "    'Product Added to Wishlist':'add_to_wishlist',",
+        "    'cart::submitted':          'begin_checkout',",
+        "    'purchase':                 'purchase',",
+        "    'search':                   'search',",
+        "    'Signed In':                'login'",
         '  };',
         '',
+        '  // تحويل مصفوفة المنتجات لـ GA4 items format',
         '  function mapItems(products) {',
         '    return (products || []).map(function (p, i) {',
         '      return {',
-        "        item_id:       p.id       || p.sku  || '',",
+        "        item_id:       String(p.id   || p.sku  || ''),",
         "        item_name:     p.name     || '',",
         "        item_brand:    p.brand    || '',",
         "        item_category: p.category || '',",
-        '        price:         parseFloat(p.price)    || 0,',
-        '        quantity:      parseInt(p.quantity,10) || 1,',
+        '        price:         parseFloat(p.price)     || 0,',
+        '        quantity:      parseInt(p.quantity, 10) || 1,',
         '        index:         i',
         '      };',
         '    });',
@@ -5802,43 +6032,74 @@
         '    var ga4Ev = UA_TO_GA4[obj.event];',
         '    if (!ga4Ev) return;',
         '',
-        '    var ec  = obj.ecommerce || {};',
-        '    var af  = (ec.detail    && ec.detail.actionField)   ||',
-        '              (ec.add       && ec.add.actionField)       ||',
-        '              (ec.remove    && ec.remove.actionField)    ||',
-        '              (ec.checkout  && ec.checkout.actionField)  ||',
-        '              (ec.purchase  && ec.purchase.actionField)  || {};',
-        '    var prods = (ec.detail   && ec.detail.products)   ||',
-        '                (ec.add      && ec.add.products)       ||',
-        '                (ec.remove   && ec.remove.products)    ||',
-        '                (ec.checkout && ec.checkout.products)  ||',
-        '                (ec.purchase && ec.purchase.products)  || [];',
+        '    var ec    = obj.ecommerce || {};',
+        '    var prod0 = obj[0]        || {};   // سلة أحياناً بتحط البيانات في obj[0]',
+        '',
+        '    // استخراج المنتجات حسب نوع الحدث',
+        '    var prods = [];',
+        "    if (ga4Ev === 'view_item') {",
+        '      // Product Viewed — المنتج في obj[0]',
+        '      prods = prod0.id ? [prod0] : [];',
+        "    } else if (ga4Ev === 'view_item_list') {",
+        '      // Product List Viewed — المنتجات في obj.data',
+        '      prods = obj.data || [];',
+        "    } else if (ga4Ev === 'add_to_cart') {",
+        '      prods = (ec.add && ec.add.products) || [];',
+        "    } else if (ga4Ev === 'view_cart') {",
+        '      // Cart Viewed — المنتجات في obj[0].products',
+        '      prods = prod0.products || [];',
+        "    } else if (ga4Ev === 'remove_from_cart') {",
+        '      // Product Removed — المنتج في obj[0]',
+        '      prods = prod0.id ? [prod0] : (ec.remove && ec.remove.products) || [];',
+        "    } else if (ga4Ev === 'add_to_wishlist') {",
+        '      prods = prod0.id ? [prod0] : [];',
+        "    } else if (ga4Ev === 'begin_checkout') {",
+        '      prods = (ec.checkout && ec.checkout.products) || prod0.products || [];',
+        "    } else if (ga4Ev === 'purchase') {",
+        '      prods = (ec.purchase && ec.purchase.products) || [];',
+        '    }',
+        '',
+        '    var af = (ec.purchase && ec.purchase.actionField) ||',
+        '             (ec.checkout && ec.checkout.actionField) || {};',
         '',
         '    // Clear previous ecommerce object (GA4 best practice)',
         "    _origPush({ ecommerce: null });",
         '',
+        '    var currency = ec.currencyCode || prod0.currency || \'SAR\';',
+        '    var mappedItems = mapItems(prods);',
+        '    var totalValue  = mappedItems.reduce(function (s, it) {',
+        '      return s + it.price * it.quantity;',
+        '    }, 0);',
+        '',
         '    var payload = {',
-        '      event:      ga4Ev,',
-        '      ecommerce:  {',
-        "        currency: ec.currencyCode || 'SAR',",
-        '        items:    mapItems(prods)',
+        '      event:     ga4Ev,',
+        '      ecommerce: {',
+        '        currency: currency,',
+        '        value:    totalValue,',
+        '        items:    mappedItems',
         '      }',
         '    };',
         '',
         "    if (ga4Ev === 'purchase') {",
-        "      payload.ecommerce.transaction_id = af.id       || '';",
-        '      payload.ecommerce.value          = parseFloat(ec.revenue) || parseFloat(af.revenue) || 0;',
+        "      payload.ecommerce.transaction_id = String(ec.event_id || af.id || '');",
+        '      payload.ecommerce.value          = parseFloat(af.total || af.revenue || ec.revenue) || totalValue;',
         '      payload.ecommerce.tax            = parseFloat(af.tax)      || 0;',
         '      payload.ecommerce.shipping       = parseFloat(af.shipping) || 0;',
-        "      payload.ecommerce.coupon         = af.coupon   || '';",
-        "    } else if (ga4Ev === 'begin_checkout') {",
-        '      payload.ecommerce.value = parseFloat(af.revenue) || 0;',
-        "    } else if (ga4Ev === 'add_to_cart' || ga4Ev === 'remove_from_cart') {",
-        '      payload.ecommerce.value = payload.ecommerce.items.reduce(',
-        '        function (s, it) { return s + it.price * it.quantity; }, 0',
-        '      );',
+        "      payload.ecommerce.coupon         = af.coupon || '';",
+        "    } else if (ga4Ev === 'view_item_list') {",
+        "      payload.ecommerce.item_list_name = obj.title ? obj.title.replace(/<[^>]+>/g, '').trim() : '';",
+        "      delete payload.ecommerce.value;",
         "    } else if (ga4Ev === 'search') {",
         "      payload.search_term = obj.searchTerm || '';",
+        "    } else if (ga4Ev === 'login') {",
+        '      // Signed In — لا يحتاج ecommerce',
+        '      delete payload.ecommerce;',
+        '      payload.method = \'salla\';',
+        '    }',
+        '',
+        '    // أضف بيانات العميل لو موجودة',
+        '    if (obj.customer) {',
+        '      payload.customer = obj.customer;',
         '    }',
         '',
         '    _origPush(payload);',
