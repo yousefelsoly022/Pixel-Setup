@@ -8141,90 +8141,188 @@
           }
         }
       }
-      var found = [];
-      var missing = [];
-      var configured = S.pixelIds || {};
+      // ── Use Puppeteer pixels if backend returned them ──────────────────────
+      var puppeteerPixels = (data && Array.isArray(data.pixels) && data.pixels.length) ? data.pixels : null;
+      var scanMethod = (data && data.method) ? data.method : 'http';
 
-      HM_PLATFORMS_DEF.forEach(function(plat) {
-        var detected = plat.detect(html);
-        var ids = hmExtractIds(html, plat.patterns);
-        var configuredId = typeof configured[plat.key] === 'object' ? configured[plat.key].id : configured[plat.key];
-        configuredId = (configuredId || '').trim();
+      if (puppeteerPixels) {
+        // ── PUPPETEER RESULT PATH ─────────────────────────────────────────
+        var configured = S.pixelIds || {};
+        var html2 = '';
 
-        if (detected || ids.length) {
-          var match = ids.length && configuredId && ids.indexOf(configuredId) > -1;
-          var mismatch = ids.length && configuredId && !match;
-          var events = hmExtractEvents(html, plat.key);
-          found.push({ plat: plat, ids: ids, match: match, mismatch: mismatch, configuredId: configuredId, events: events });
-        } else if (configuredId) {
-          missing.push({ plat: plat, configuredId: configuredId });
-        }
-      });
-
-      // Build result HTML
-      var html2 = '<div style="margin-bottom:12px;font-size:12px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;">'
-        + 'Detected on ' + _esc(resolvedUrl) + ' — ' + found.length + ' pixel(s) found</div>';
-
-      if (!found.length && !missing.length) {
-        html2 += '<div style="color:var(--mut);font-size:13px;">No known tracking pixels detected on this page.</div>';
-      }
-
-      found.forEach(function(f) {
-        var statusColor = f.match ? '#46f1c5' : f.mismatch ? '#ffb4ab' : '#adc6ff';
-        var statusLabel = f.match ? '✓ ID Match' : f.mismatch ? '⚠ ID Mismatch' : '● Detected';
-        var evReport = hmBuildEventReport(f.plat.key, f.events);
-        var uid = 'ev_' + f.plat.key + '_' + Date.now();
-
-        html2 += '<div style="background:var(--sur3);border-radius:12px;margin-bottom:10px;overflow:hidden;border:1px solid var(--bdr2);">';
-
-        // Pixel header row
-        html2 += '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;flex-wrap:wrap;gap:8px;">'
-          + '<div style="display:flex;align-items:center;gap:8px;">'
-          +   '<span style="font-size:20px;">' + f.plat.icon + '</span>'
-          +   '<div>'
-          +     '<div style="font-size:14px;font-weight:800;color:var(--wht);">' + f.plat.name + '</div>'
-          +     '<div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);margin-top:1px;">'
-          +       (f.ids.length ? 'ID: ' + f.ids.join(', ') : 'ID not extracted') + '</div>'
-          +   '</div>'
-          + '</div>'
-          + '<div style="display:flex;align-items:center;gap:8px;">'
-          +   '<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + statusColor + '22;color:' + statusColor + ';border:1px solid ' + statusColor + '44;">'
-          +     statusLabel + '</span>'
-          +   (f.events.length ? '<button onclick="(function(){var el=document.getElementById(\'' + uid + '\');el.style.display=el.style.display===\'none\'?\'block\':\'none\';})()" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--bdr2);background:var(--sur4);color:var(--mut);cursor:pointer;">'
-          +     f.events.length + ' event' + (f.events.length>1?'s':'') + ' ▾</button>' : '')
-          + '</div>'
+        // Header banner
+        html2 += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:6px;">'
+          + '<div style="font-size:12px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;">'
+          + 'Detected on ' + _esc(resolvedUrl) + ' — ' + puppeteerPixels.length + ' pixel(s) found</div>'
+          + '<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(70,241,197,.1);color:var(--acc);border:1px solid rgba(70,241,197,.2);">🔬 Headless Chrome Scan</span>'
           + '</div>';
 
-        // Events section (collapsed by default)
-        if (f.events.length) {
-          html2 += '<div id="' + uid + '" style="display:none;padding:0 12px 12px;">';
-          html2 += '<div style="font-size:10px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding-top:4px;">EVENT HEALTH REPORT</div>';
-          html2 += evReport;
-          html2 += '</div>';
-        } else if (HM_EVENT_SCHEMAS[f.plat.key]) {
-          html2 += '<div style="padding:0 14px 11px;">'
-            + '<div style="font-size:11px;color:var(--mut);padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.03);border:1px dashed var(--bdr2);">'
-            + '⚠️ الـ Pixel موجود على الصفحة بس مفيش Events بتتفاير — تأكد إن الـ events مش بتتحمل lazy أو عبر GTM</div>'
-            + '</div>';
+        if (!puppeteerPixels.length) {
+          html2 += '<div style="color:var(--mut);font-size:13px;padding:12px;background:var(--sur3);border-radius:10px;">No known tracking pixels detected via network requests.</div>';
         }
 
-        html2 += '</div>';
-      });
+        puppeteerPixels.forEach(function(px) {
+          var configuredId = typeof configured[px.key] === 'object' ? configured[px.key].id : configured[px.key];
+          configuredId = (configuredId || '').trim();
 
-      if (missing.length) {
-        html2 += '<div style="margin-top:10px;margin-bottom:6px;font-size:12px;font-weight:700;color:#ffb4ab;letter-spacing:1px;text-transform:uppercase;">Configured but NOT found on page</div>';
-        missing.forEach(function(m) {
-          html2 += '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,180,171,.05);border:1px solid rgba(255,180,171,.2);border-radius:10px;margin-bottom:6px;">'
-            + '<span style="font-size:18px;">' + m.plat.icon + '</span>'
-            + '<div>'
-            +   '<div style="font-size:13px;font-weight:700;color:#ffb4ab;">' + m.plat.name + '</div>'
-            +   '<div style="font-size:11px;color:var(--mut);">Expected ID: ' + _esc(m.configuredId) + ' — not detected on page</div>'
+          var idMatch    = px.ids.length && configuredId && px.ids.indexOf(configuredId) > -1;
+          var idMismatch = px.ids.length && configuredId && !idMatch;
+          var statusColor = idMatch ? '#46f1c5' : idMismatch ? '#ffb4ab' : '#adc6ff';
+          var statusLabel = idMatch ? '✓ ID Match' : idMismatch ? '⚠ ID Mismatch' : '● Detected';
+          var methodBadge = px.isServerSide
+            ? '<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(173,198,255,.1);color:#adc6ff;border:1px solid rgba(173,198,255,.3);">🖥️ Server-side</span>'
+            : '<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(255,214,128,.1);color:#ffd680;border:1px solid rgba(255,214,128,.3);">🌐 Client-side</span>';
+
+          var evReport = hmBuildEventReport(px.key, px.events || []);
+          var uid = 'pxev_' + px.key + '_' + Date.now();
+
+          html2 += '<div style="background:var(--sur3);border-radius:12px;margin-bottom:10px;overflow:hidden;border:1px solid var(--bdr2);">';
+
+          // Pixel header
+          html2 += '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;flex-wrap:wrap;gap:8px;">'
+            + '<div style="display:flex;align-items:center;gap:9px;">'
+            +   '<span style="font-size:22px;">' + (px.icon || '📌') + '</span>'
+            +   '<div>'
+            +     '<div style="font-size:14px;font-weight:800;color:var(--wht);">' + _esc(px.name) + '</div>'
+            +     '<div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);margin-top:2px;">'
+            +       (px.ids.length ? 'ID: ' + px.ids.map(function(i){return _esc(i);}).join(', ') : 'ID not extracted') + '</div>'
+            +   '</div>'
+            + '</div>'
+            + '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">'
+            +   methodBadge
+            +   '<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + statusColor + '22;color:' + statusColor + ';border:1px solid ' + statusColor + '44;">'
+            +     statusLabel + '</span>'
+            +   ((px.events && px.events.length) ? '<button onclick="(function(){var el=document.getElementById(\'' + uid + '\');el.style.display=el.style.display===\'none\'?\'block\':\'none\';})()" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--bdr2);background:var(--sur4);color:var(--mut);cursor:pointer;">' + px.events.length + ' event' + (px.events.length>1?'s':'') + ' ▾</button>' : '')
             + '</div>'
             + '</div>';
-        });
-      }
 
-      resultEl.innerHTML = html2;
+          // Request count bar
+          html2 += '<div style="padding:0 14px 10px;font-size:11px;color:var(--mut);">📡 '
+            + (px.requestCount || 0) + ' network request' + ((px.requestCount||0)!==1?'s':'') + ' intercepted</div>';
+
+          // Events health report
+          if (px.events && px.events.length) {
+            html2 += '<div id="' + uid + '" style="display:none;padding:0 12px 12px;">';
+            html2 += '<div style="font-size:10px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">EVENT PARAMETER AUDIT</div>';
+            html2 += evReport;
+            html2 += '</div>';
+          } else if (HM_EVENT_SCHEMAS[px.key]) {
+            html2 += '<div style="padding:0 14px 11px;">'
+              + '<div style="font-size:11px;color:var(--mut);padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.03);border:1px dashed var(--bdr2);">'
+              + '⚠️ الـ Pixel موجود في الـ network بس مفيش Events اتبعتت — يمكن الـ events بتتبعت server-side أو عبر GTM على صفحات تانية</div>'
+              + '</div>';
+          }
+
+          html2 += '</div>';
+        });
+
+        // Check for configured pixels not found on page
+        var configuredNotFound = [];
+        HM_PLATFORMS_DEF.forEach(function(plat) {
+          var cfgId = typeof (S.pixelIds||{})[plat.key] === 'object' ? (S.pixelIds||{})[plat.key].id : (S.pixelIds||{})[plat.key];
+          cfgId = (cfgId || '').trim();
+          if (!cfgId) return;
+          var wasFound = puppeteerPixels.some(function(p){ return p.key === plat.key; });
+          if (!wasFound) configuredNotFound.push({ plat: plat, configuredId: cfgId });
+        });
+        if (configuredNotFound.length) {
+          html2 += '<div style="margin-top:10px;margin-bottom:6px;font-size:12px;font-weight:700;color:#ffb4ab;letter-spacing:1px;text-transform:uppercase;">Configured but NOT found via network</div>';
+          configuredNotFound.forEach(function(m) {
+            html2 += '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,180,171,.05);border:1px solid rgba(255,180,171,.2);border-radius:10px;margin-bottom:6px;">'
+              + '<span style="font-size:18px;">' + m.plat.icon + '</span>'
+              + '<div>'
+              +   '<div style="font-size:13px;font-weight:700;color:#ffb4ab;">' + m.plat.name + '</div>'
+              +   '<div style="font-size:11px;color:var(--mut);">Expected ID: ' + _esc(m.configuredId) + ' — no network request detected on page load</div>'
+              + '</div></div>';
+          });
+        }
+
+        resultEl.innerHTML = html2;
+
+      } else {
+        // ── FALLBACK: HTML REGEX PATH (no Puppeteer) ──────────────────────
+        var found = [];
+        var missing = [];
+        var configured = S.pixelIds || {};
+
+        HM_PLATFORMS_DEF.forEach(function(plat) {
+          var detected = plat.detect(html);
+          var ids = hmExtractIds(html, plat.patterns);
+          var configuredId = typeof configured[plat.key] === 'object' ? configured[plat.key].id : configured[plat.key];
+          configuredId = (configuredId || '').trim();
+
+          if (detected || ids.length) {
+            var match = ids.length && configuredId && ids.indexOf(configuredId) > -1;
+            var mismatch = ids.length && configuredId && !match;
+            var events = hmExtractEvents(html, plat.key);
+            found.push({ plat: plat, ids: ids, match: match, mismatch: mismatch, configuredId: configuredId, events: events });
+          } else if (configuredId) {
+            missing.push({ plat: plat, configuredId: configuredId });
+          }
+        });
+
+        var html2 = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:6px;">'
+          + '<div style="font-size:12px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;">'
+          + 'Detected on ' + _esc(resolvedUrl) + ' — ' + found.length + ' pixel(s) found</div>'
+          + '<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(255,214,128,.1);color:#ffd680;border:1px solid rgba(255,214,128,.2);">⚡ HTML Scan (limited)</span>'
+          + '</div>';
+
+        if (!found.length && !missing.length) {
+          html2 += '<div style="color:var(--mut);font-size:13px;">No known tracking pixels detected on this page.</div>';
+        }
+
+        found.forEach(function(f) {
+          var statusColor = f.match ? '#46f1c5' : f.mismatch ? '#ffb4ab' : '#adc6ff';
+          var statusLabel = f.match ? '✓ ID Match' : f.mismatch ? '⚠ ID Mismatch' : '● Detected';
+          var evReport = hmBuildEventReport(f.plat.key, f.events);
+          var uid = 'ev_' + f.plat.key + '_' + Date.now();
+
+          html2 += '<div style="background:var(--sur3);border-radius:12px;margin-bottom:10px;overflow:hidden;border:1px solid var(--bdr2);">';
+          html2 += '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;flex-wrap:wrap;gap:8px;">'
+            + '<div style="display:flex;align-items:center;gap:8px;">'
+            +   '<span style="font-size:20px;">' + f.plat.icon + '</span>'
+            +   '<div>'
+            +     '<div style="font-size:14px;font-weight:800;color:var(--wht);">' + f.plat.name + '</div>'
+            +     '<div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);margin-top:1px;">'
+            +       (f.ids.length ? 'ID: ' + f.ids.join(', ') : 'ID not extracted') + '</div>'
+            +   '</div>'
+            + '</div>'
+            + '<div style="display:flex;align-items:center;gap:8px;">'
+            +   '<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + statusColor + '22;color:' + statusColor + ';border:1px solid ' + statusColor + '44;">'
+            +     statusLabel + '</span>'
+            +   (f.events.length ? '<button onclick="(function(){var el=document.getElementById(\'' + uid + '\');el.style.display=el.style.display===\'none\'?\'block\':\'none\';})()" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--bdr2);background:var(--sur4);color:var(--mut);cursor:pointer;">' + f.events.length + ' events ▾</button>' : '')
+            + '</div>'
+            + '</div>';
+
+          if (f.events.length) {
+            html2 += '<div id="' + uid + '" style="display:none;padding:0 12px 12px;">';
+            html2 += '<div style="font-size:10px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding-top:4px;">EVENT HEALTH REPORT</div>';
+            html2 += evReport;
+            html2 += '</div>';
+          } else if (HM_EVENT_SCHEMAS[f.plat.key]) {
+            html2 += '<div style="padding:0 14px 11px;">'
+              + '<div style="font-size:11px;color:var(--mut);padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.03);border:1px dashed var(--bdr2);">'
+              + '⚠️ الـ Pixel موجود بس مفيش Events في الـ HTML — install Puppeteer for full network scan</div>'
+              + '</div>';
+          }
+
+          html2 += '</div>';
+        });
+
+        if (missing.length) {
+          html2 += '<div style="margin-top:10px;margin-bottom:6px;font-size:12px;font-weight:700;color:#ffb4ab;letter-spacing:1px;text-transform:uppercase;">Configured but NOT found on page</div>';
+          missing.forEach(function(m) {
+            html2 += '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,180,171,.05);border:1px solid rgba(255,180,171,.2);border-radius:10px;margin-bottom:6px;">'
+              + '<span style="font-size:18px;">' + m.plat.icon + '</span>'
+              + '<div>'
+              +   '<div style="font-size:13px;font-weight:700;color:#ffb4ab;">' + m.plat.name + '</div>'
+              +   '<div style="font-size:11px;color:var(--mut);">Expected ID: ' + _esc(m.configuredId) + ' — not detected on page</div>'
+              + '</div></div>';
+          });
+        }
+
+        resultEl.innerHTML = html2;
+      }
 
     } catch(e) {
       resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Error: ' + _esc(e.message) + '</div>';
