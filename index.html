@@ -7970,6 +7970,7 @@
     try {
       var html = '';
       var fullUrl = url.startsWith('http') ? url : 'https://' + url;
+      var resolvedUrl = fullUrl; // will be updated if server returns redirect URL
 
       // Step 1: Try own server first (works on localhost & Railway & any Node host)
       var serverOk = false;
@@ -7985,6 +7986,7 @@
           try { data = JSON.parse(respText); } catch(e) { data = null; }
           if (resp.ok && data && !data.error && data.html) {
             html = data.html;
+            resolvedUrl = data.url || fullUrl;
             serverOk = true;
           }
         } catch(e) { /* server not available — fall through to proxy */ }
@@ -8031,7 +8033,7 @@
 
       // Build result HTML
       var html2 = '<div style="margin-bottom:10px;font-size:12px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;">'
-        + 'Detected on ' + _esc(data.url || url) + ' — ' + found.length + ' pixel(s) found</div>';
+        + 'Detected on ' + _esc(resolvedUrl) + ' — ' + found.length + ' pixel(s) found</div>';
 
       if (!found.length && !missing.length) {
         html2 += '<div style="color:var(--mut);font-size:13px;">No known tracking pixels detected on this page.</div>';
