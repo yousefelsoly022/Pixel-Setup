@@ -7968,51 +7968,48 @@
     resultEl.innerHTML = '<div style="color:var(--mut);font-size:13px;">⏳ Fetching page...</div>';
 
     try {
-      var isFileProtocol = location.protocol === 'file:';
       var html = '';
+      var fullUrl = url.startsWith('http') ? url : 'https://' + url;
 
-      if (isFileProtocol) {
-        // Running as file:// — try direct fetch (will work only if target allows CORS)
-        resultEl.innerHTML = '<div style="color:#adc6ff;font-size:12px;margin-bottom:10px;">⚠ Running as file:// — trying direct fetch (may fail due to CORS). For best results run via <code>node server.js</code></div>';
+      // Step 1: Try own server first (works on localhost & Railway & any Node host)
+      var serverOk = false;
+      if (location.protocol !== 'file:') {
         try {
-          var directResp = await fetch(url.startsWith('http') ? url : 'https://' + url, { mode: 'no-cors' });
-          // no-cors gives opaque response — can't read body
-          resultEl.innerHTML += '<div style="color:#ffb4ab;font-size:13px;">❌ Direct scan not possible from file:// — please run <b>node server.js</b> then open <b>http://localhost:3000</b></div>';
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
-          return;
-        } catch(e) {
-          resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Please run <b>node server.js</b> then open <b>http://localhost:3000</b> to use the scanner.</div>';
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
-          return;
+          var resp = await fetch('/api/scan-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: fullUrl })
+          });
+          var respText = await resp.text();
+          var data;
+          try { data = JSON.parse(respText); } catch(e) { data = null; }
+          if (resp.ok && data && !data.error && data.html) {
+            html = data.html;
+            serverOk = true;
+          }
+        } catch(e) { /* server not available — fall through to proxy */ }
+      }
+
+      // Step 2: Fallback to CORS proxy (GitHub Pages / static hosting / file://)
+      if (!serverOk) {
+        resultEl.style.display = 'block';
+        resultEl.innerHTML = '<div style="color:var(--mut);font-size:12px;">⏳ Using CORS proxy...</div>';
+        try {
+          var proxyResp = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(fullUrl));
+          var proxyData = await proxyResp.json();
+          if (!proxyData.contents) throw new Error('Empty response');
+          html = proxyData.contents;
+        } catch(e1) {
+          try {
+            var p2Resp = await fetch('https://corsproxy.io/?' + encodeURIComponent(fullUrl));
+            if (!p2Resp.ok) throw new Error('Status ' + p2Resp.status);
+            html = await p2Resp.text();
+          } catch(e2) {
+            resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Could not fetch the page — the site may block external requests.<br><span style="color:var(--mut);">' + _esc(e2.message) + '</span></div>';
+            btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan'; return;
+          }
         }
       }
-
-      var resp = await fetch('/api/scan-url', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url })
-      });
-
-      var respText = await resp.text();
-      var data;
-      try { data = JSON.parse(respText); }
-      catch(e) {
-        resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Server error — make sure <b>node server.js</b> is running.</div>';
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
-        return;
-      }
-
-      if (!resp.ok || data.error) {
-        resultEl.innerHTML = '<div style="color:#ffb4ab;font-size:13px;">❌ Failed to fetch page: ' + _esc(data.error || 'Unknown error') + '</div>';
-        btn.disabled = false;
-        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
-        return;
-      }
-
-      html = data.html || '';
       var found = [];
       var missing = [];
       var configured = S.pixelIds || {};
