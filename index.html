@@ -7953,6 +7953,135 @@
     return ids;
   }
 
+  // ── Event Schemas: required + recommended params per platform ──
+  var HM_EVENT_SCHEMAS = {
+    meta: {
+      'PageView':             { required: [],                                    recommended: [] },
+      'ViewContent':          { required: ['content_ids','content_type'],        recommended: ['value','currency','content_name'] },
+      'AddToCart':            { required: ['content_ids','content_type'],        recommended: ['value','currency','content_name'] },
+      'InitiateCheckout':     { required: ['value','currency'],                  recommended: ['content_ids','num_items'] },
+      'Purchase':             { required: ['value','currency'],                  recommended: ['content_ids','content_type','num_items'] },
+      'Lead':                 { required: [],                                    recommended: ['value','currency','content_name'] },
+      'CompleteRegistration': { required: [],                                    recommended: ['value','currency','status'] },
+      'Search':               { required: ['search_string'],                     recommended: ['value','currency','content_ids'] },
+      'AddPaymentInfo':       { required: ['value','currency'],                  recommended: ['content_ids','num_items'] },
+      'AddToWishlist':        { required: ['content_ids','content_type'],        recommended: ['value','currency'] },
+    },
+    tiktok: {
+      'PageView':             { required: [],                                    recommended: [] },
+      'ViewContent':          { required: ['content_id','content_type'],         recommended: ['value','currency','content_name'] },
+      'AddToCart':            { required: ['content_id','content_type'],         recommended: ['value','currency','quantity'] },
+      'Purchase':             { required: ['value','currency','content_id'],     recommended: ['content_type','quantity'] },
+      'InitiateCheckout':     { required: ['value','currency'],                  recommended: ['content_id','quantity'] },
+      'PlaceAnOrder':         { required: ['value','currency','content_id'],     recommended: ['content_type','quantity'] },
+      'CompleteRegistration': { required: [],                                    recommended: ['value','currency'] },
+      'Search':               { required: ['query'],                             recommended: ['value','currency'] },
+    },
+    ga4: {
+      'page_view':            { required: [],                                    recommended: ['page_title','page_location'] },
+      'view_item':            { required: ['items'],                             recommended: ['currency','value'] },
+      'add_to_cart':          { required: ['items'],                             recommended: ['currency','value'] },
+      'begin_checkout':       { required: ['items'],                             recommended: ['currency','value','coupon'] },
+      'purchase':             { required: ['transaction_id','value','currency'], recommended: ['items','coupon','shipping','tax'] },
+      'generate_lead':        { required: [],                                    recommended: ['value','currency'] },
+      'search':               { required: ['search_term'],                       recommended: [] },
+    }
+  };
+
+  // Extract fbq / ttq / gtag events fired on the page
+  function hmExtractEvents(html, platformKey) {
+    var results = [];
+    var re;
+    if (platformKey === 'meta') {
+      re = /fbq\s*\(\s*['"]track(?:Custom)?['"]\s*,\s*['"](\w+)['"](?:\s*,\s*(\{[^}]{0,800}\}))?\s*\)/g;
+    } else if (platformKey === 'tiktok') {
+      re = /ttq\.track\s*\(\s*['"](\w+)['"](?:\s*,\s*(\{[^}]{0,800}\}))?\s*\)/g;
+    } else if (platformKey === 'ga4') {
+      re = /gtag\s*\(\s*['"]event['"]\s*,\s*['"](\w+)['"](?:\s*,\s*(\{[^}]{0,800}\}))?\s*\)/g;
+    } else { return results; }
+
+    var m;
+    while ((m = re.exec(html)) !== null) {
+      var evName = m[1];
+      var paramKeys = [];
+      if (m[2]) {
+        var pkRe = /['"](\w+)['"]\s*:/g, pk;
+        while ((pk = pkRe.exec(m[2])) !== null) paramKeys.push(pk[1]);
+      }
+      // avoid duplicates
+      var exists = results.filter(function(r){ return r.name === evName; })[0];
+      if (exists) {
+        paramKeys.forEach(function(k){ if (exists.params.indexOf(k) === -1) exists.params.push(k); });
+      } else {
+        results.push({ name: evName, params: paramKeys });
+      }
+    }
+    return results;
+  }
+
+  function hmBuildEventReport(platformKey, detectedEvents) {
+    var schema = HM_EVENT_SCHEMAS[platformKey] || {};
+    if (!detectedEvents.length) return '';
+
+    var rows = '';
+    detectedEvents.forEach(function(ev) {
+      var def = schema[ev.name] || { required: [], recommended: [] };
+      var missingReq = def.required.filter(function(p){ return ev.params.indexOf(p) === -1; });
+      var missingRec = def.recommended.filter(function(p){ return ev.params.indexOf(p) === -1 && missingReq.indexOf(p) === -1; });
+      var score = 100;
+      if (def.required.length)     score -= missingReq.length * Math.floor(50 / Math.max(def.required.length,1));
+      if (def.recommended.length)  score -= missingRec.length * Math.floor(30 / Math.max(def.recommended.length,1));
+      score = Math.max(score, 0);
+      var scoreColor = score >= 80 ? '#46f1c5' : score >= 50 ? '#ffd680' : '#ffb4ab';
+
+      rows += '<div style="border:1px solid var(--bdr2);border-radius:10px;margin-bottom:8px;overflow:hidden;">';
+      // Header row
+      rows += '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 13px;background:var(--sur4);">'
+        + '<span style="font-size:13px;font-weight:700;color:var(--wht);font-family:var(--font-mono);">' + _esc(ev.name) + '</span>'
+        + '<span style="font-size:11px;font-weight:800;padding:2px 9px;border-radius:20px;background:' + scoreColor + '22;color:' + scoreColor + ';border:1px solid ' + scoreColor + '44;">'
+        + score + '% health</span>'
+        + '</div>';
+
+      // Params found
+      if (ev.params.length) {
+        rows += '<div style="padding:7px 13px 0;display:flex;flex-wrap:wrap;gap:5px;">';
+        ev.params.forEach(function(p) {
+          var isReq = def.required.indexOf(p) > -1;
+          var c = isReq ? '#46f1c5' : '#adc6ff';
+          rows += '<span style="font-size:10px;padding:2px 7px;border-radius:12px;background:' + c + '18;color:' + c + ';border:1px solid ' + c + '33;font-family:var(--font-mono);">✓ ' + _esc(p) + '</span>';
+        });
+        rows += '</div>';
+      }
+
+      // Missing required
+      if (missingReq.length) {
+        rows += '<div style="padding:6px 13px 0;">';
+        rows += '<div style="font-size:10px;color:#ffb4ab;font-weight:700;margin-bottom:4px;letter-spacing:.5px;">MISSING REQUIRED:</div>';
+        rows += '<div style="display:flex;flex-wrap:wrap;gap:5px;">';
+        missingReq.forEach(function(p) {
+          rows += '<span style="font-size:10px;padding:2px 7px;border-radius:12px;background:rgba(255,180,171,.1);color:#ffb4ab;border:1px solid rgba(255,180,171,.3);font-family:var(--font-mono);">✗ ' + _esc(p) + '</span>';
+        });
+        rows += '</div></div>';
+      }
+
+      // Missing recommended
+      if (missingRec.length) {
+        rows += '<div style="padding:6px 13px 8px;">';
+        rows += '<div style="font-size:10px;color:#ffd680;font-weight:700;margin-bottom:4px;letter-spacing:.5px;">MISSING RECOMMENDED:</div>';
+        rows += '<div style="display:flex;flex-wrap:wrap;gap:5px;">';
+        missingRec.forEach(function(p) {
+          rows += '<span style="font-size:10px;padding:2px 7px;border-radius:12px;background:rgba(255,214,128,.1);color:#ffd680;border:1px solid rgba(255,214,128,.3);font-family:var(--font-mono);">? ' + _esc(p) + '</span>';
+        });
+        rows += '</div></div>';
+      } else {
+        rows += '<div style="padding-bottom:4px;"></div>';
+      }
+
+      rows += '</div>';
+    });
+    return rows;
+  }
+
   async function hmScanSite() {
     var urlInput = document.getElementById('hmScanUrl');
     var resultEl = document.getElementById('hmScanResult');
@@ -8025,14 +8154,15 @@
         if (detected || ids.length) {
           var match = ids.length && configuredId && ids.indexOf(configuredId) > -1;
           var mismatch = ids.length && configuredId && !match;
-          found.push({ plat: plat, ids: ids, match: match, mismatch: mismatch, configuredId: configuredId });
+          var events = hmExtractEvents(html, plat.key);
+          found.push({ plat: plat, ids: ids, match: match, mismatch: mismatch, configuredId: configuredId, events: events });
         } else if (configuredId) {
           missing.push({ plat: plat, configuredId: configuredId });
         }
       });
 
       // Build result HTML
-      var html2 = '<div style="margin-bottom:10px;font-size:12px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;">'
+      var html2 = '<div style="margin-bottom:12px;font-size:12px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;">'
         + 'Detected on ' + _esc(resolvedUrl) + ' — ' + found.length + ' pixel(s) found</div>';
 
       if (!found.length && !missing.length) {
@@ -8042,18 +8172,43 @@
       found.forEach(function(f) {
         var statusColor = f.match ? '#46f1c5' : f.mismatch ? '#ffb4ab' : '#adc6ff';
         var statusLabel = f.match ? '✓ ID Match' : f.mismatch ? '⚠ ID Mismatch' : '● Detected';
-        html2 += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--sur3);border-radius:10px;margin-bottom:6px;flex-wrap:wrap;gap:8px;">'
+        var evReport = hmBuildEventReport(f.plat.key, f.events);
+        var uid = 'ev_' + f.plat.key + '_' + Date.now();
+
+        html2 += '<div style="background:var(--sur3);border-radius:12px;margin-bottom:10px;overflow:hidden;border:1px solid var(--bdr2);">';
+
+        // Pixel header row
+        html2 += '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;flex-wrap:wrap;gap:8px;">'
           + '<div style="display:flex;align-items:center;gap:8px;">'
-          +   '<span style="font-size:18px;">' + f.plat.icon + '</span>'
+          +   '<span style="font-size:20px;">' + f.plat.icon + '</span>'
           +   '<div>'
-          +     '<div style="font-size:13px;font-weight:700;color:var(--wht);">' + f.plat.name + '</div>'
-          +     '<div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);">'
-          +       (f.ids.length ? f.ids.join(', ') : 'ID not extracted') + '</div>'
+          +     '<div style="font-size:14px;font-weight:800;color:var(--wht);">' + f.plat.name + '</div>'
+          +     '<div style="font-size:11px;color:var(--mut);font-family:var(--font-mono);margin-top:1px;">'
+          +       (f.ids.length ? 'ID: ' + f.ids.join(', ') : 'ID not extracted') + '</div>'
           +   '</div>'
           + '</div>'
-          + '<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + statusColor + '22;color:' + statusColor + ';border:1px solid ' + statusColor + '44;">'
-          +   statusLabel + '</span>'
+          + '<div style="display:flex;align-items:center;gap:8px;">'
+          +   '<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:' + statusColor + '22;color:' + statusColor + ';border:1px solid ' + statusColor + '44;">'
+          +     statusLabel + '</span>'
+          +   (f.events.length ? '<button onclick="(function(){var el=document.getElementById(\'' + uid + '\');el.style.display=el.style.display===\'none\'?\'block\':\'none\';})()" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--bdr2);background:var(--sur4);color:var(--mut);cursor:pointer;">'
+          +     f.events.length + ' event' + (f.events.length>1?'s':'') + ' ▾</button>' : '')
+          + '</div>'
           + '</div>';
+
+        // Events section (collapsed by default)
+        if (f.events.length) {
+          html2 += '<div id="' + uid + '" style="display:none;padding:0 12px 12px;">';
+          html2 += '<div style="font-size:10px;font-weight:700;color:var(--mut);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding-top:4px;">EVENT HEALTH REPORT</div>';
+          html2 += evReport;
+          html2 += '</div>';
+        } else if (HM_EVENT_SCHEMAS[f.plat.key]) {
+          html2 += '<div style="padding:0 14px 11px;">'
+            + '<div style="font-size:11px;color:var(--mut);padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.03);border:1px dashed var(--bdr2);">'
+            + '⚠️ الـ Pixel موجود على الصفحة بس مفيش Events بتتفاير — تأكد إن الـ events مش بتتحمل lazy أو عبر GTM</div>'
+            + '</div>';
+        }
+
+        html2 += '</div>';
       });
 
       if (missing.length) {
