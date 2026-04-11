@@ -6794,7 +6794,11 @@
             usageContext: ['WEB'],
             fingerprint: fp(0)
           },
-          tag: tags,
+          tag: tags.map(function(t) {
+            if (!t.tagFiringOption) t.tagFiringOption = 'oncePerEvent';
+            if (!t.monitoringMetadata) t.monitoringMetadata = { type: 'MAP', map: [] };
+            return t;
+          }),
           trigger: triggers,
           variable: variables,
           folder: folders,
