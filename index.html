@@ -2551,30 +2551,21 @@
     }
 
     #userBar .ub-logo {
-      font-weight: 900;
-      font-size: 18px;
-      color: var(--acc);
       text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 6px 10px;
+      gap: 12px;
+      padding: 6px 14px 6px 10px;
       border-radius: 12px;
-      border: 1px solid rgba(70, 241, 197, 0.15);
-      background: rgba(70, 241, 197, 0.05);
+      border: 1px solid rgba(70, 241, 197, 0.12);
+      background: rgba(70, 241, 197, 0.04);
       transition: all .2s;
-      letter-spacing: -0.3px;
     }
 
     #userBar .ub-logo:hover {
-      background: rgba(70, 241, 197, 0.1);
-      border-color: rgba(70, 241, 197, 0.3);
-      box-shadow: 0 0 16px rgba(70, 241, 197, 0.1);
-    }
-
-    #userBar .ub-logo .material-symbols-outlined {
-      font-size: 20px;
-      filter: drop-shadow(0 0 6px rgba(70, 241, 197, 0.5));
+      background: rgba(70, 241, 197, 0.08);
+      border-color: rgba(70, 241, 197, 0.25);
+      box-shadow: 0 0 20px rgba(70, 241, 197, 0.08);
     }
 
     #userBar .ub-nav {
@@ -3058,9 +3049,9 @@
     }
   </style>
   <!-- Firebase SDK v10 compat -->
-  <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
@@ -3068,9 +3059,44 @@
   <!-- ═══ USER BAR ═══ -->
   <div id="userBar">
     <div class="ub-left">
-      <a href="index.html" class="ub-logo">
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">radar</span>
-        <span>Easy<span style="color:#e1e2eb;">Track</span></span>
+      <a href="index.html" class="ub-logo" style="gap:12px;">
+        <svg viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;flex-shrink:0;overflow:visible;">
+          <defs>
+            <linearGradient id="ubGOuter" x1="0" y1="0" x2="260" y2="260" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#46f1c5" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#00d4aa" stop-opacity="0.5"/>
+            </linearGradient>
+            <linearGradient id="ubGMid" x1="0" y1="0" x2="260" y2="260" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#46f1c5" stop-opacity="0.75"/>
+              <stop offset="100%" stop-color="#00d4aa" stop-opacity="0.75"/>
+            </linearGradient>
+            <linearGradient id="ubGArrow" x1="130" y1="148" x2="130" y2="200" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#46f1c5"/>
+              <stop offset="100%" stop-color="#00d4aa"/>
+            </linearGradient>
+            <radialGradient id="ubGDot" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#46f1c5"/>
+              <stop offset="100%" stop-color="#00d4aa"/>
+            </radialGradient>
+            <filter id="ubGlowF" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="8" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <path d="M20 120 C20 57.726 70.726 7 133 7" stroke="url(#ubGOuter)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M240 120 C240 57.726 189.274 7 127 7" stroke="url(#ubGOuter)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M48 120 C48 79.131 81.131 46 122 46" stroke="url(#ubGMid)" stroke-width="4" stroke-linecap="round"/>
+          <path d="M212 120 C212 79.131 178.869 46 138 46" stroke="url(#ubGMid)" stroke-width="4" stroke-linecap="round"/>
+          <path d="M78 120 C78 100.118 94.118 84 114 84" stroke="#46f1c5" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M182 120 C182 100.118 165.882 84 146 84" stroke="#46f1c5" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="130" cy="120" r="30" fill="rgba(70,241,197,0.12)" filter="url(#ubGlowF)"/>
+          <circle cx="130" cy="120" r="16" fill="url(#ubGDot)"/>
+          <path d="M112 148 L130 192 L148 148" stroke="url(#ubGArrow)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span style="display:flex;flex-direction:column;gap:2px;line-height:1;">
+          <span style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:16px;letter-spacing:-0.5px;color:#e1e2eb;">easy<span style="color:#46f1c5;">TRACK</span></span>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:2.5px;color:rgba(70,241,197,0.7);text-transform:uppercase;">Pixel Config</span>
+        </span>
       </a>
       <div class="ub-nav" style="display:none;">
         <a href="#" class="ub-nav-link active">Dashboard</a>
@@ -3167,7 +3193,7 @@
     <button class="lb-close" onclick="document.getElementById('limitBanner').style.display='none'">✕</button>
     <h4>🔒 وصلت لحد الخطة</h4>
     <p id="limitMsg">الخطة Basic بتسمح بـ 1 مشروع فقط. Upgrade عشان تولّد أكتر.</p>
-    <button onclick="window.open('index.html#pricing','_blank')">Upgrade دلوقتي ↗</button>
+    <button onclick="window.open('https://wa.me/201552388174?text=مرحباً،%20أريد%20الترقية%20إلى%20خطة%20أعلى%20في%20Easy%20Track','_blank')">💬 تواصل للترقية ↗</button>
   </div>
 
   <div class="app">
@@ -3176,29 +3202,52 @@
     <div id="gate">
       <div class="gbox">
         <!-- Easy Track Logo — Login Screen -->
-        <div style="text-align:center;margin-bottom:32px;">
-          <div style="display:inline-flex;flex-direction:column;align-items:center;gap:14px;">
-            <!-- Logo Icon -->
-            <div
-              style="position:relative;width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,rgba(70,241,197,0.12),rgba(0,212,170,0.08));border:1.5px solid rgba(70,241,197,0.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(70,241,197,0.15),0 0 80px rgba(70,241,197,0.06),inset 0 1px 0 rgba(255,255,255,0.08);">
-              <span class="material-symbols-outlined"
-                style="font-size:40px;color:#46f1c5;font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 48;filter:drop-shadow(0 0 10px rgba(70,241,197,0.5));">radar</span>
-              <!-- Corner accents -->
-              <span
-                style="position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:#46f1c5;box-shadow:0 0 8px #46f1c5;"></span>
-            </div>
-            <!-- Brand Name -->
+        <div style="text-align:center;margin-bottom:28px;">
+          <!-- SVG + Name stacked vertically like landing page -->
+          <div style="display:inline-flex;flex-direction:column;align-items:center;gap:16px;">
+            <svg viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg"
+              style="width:100px;height:100px;overflow:visible;filter:drop-shadow(0 0 24px rgba(70,241,197,0.3));">
+              <defs>
+                <linearGradient id="glGOuter" x1="0" y1="0" x2="260" y2="260" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#46f1c5" stop-opacity="0.45"/>
+                  <stop offset="100%" stop-color="#00d4aa" stop-opacity="0.45"/>
+                </linearGradient>
+                <linearGradient id="glGMid" x1="0" y1="0" x2="260" y2="260" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#46f1c5" stop-opacity="0.75"/>
+                  <stop offset="100%" stop-color="#00d4aa" stop-opacity="0.75"/>
+                </linearGradient>
+                <linearGradient id="glGArrow" x1="130" y1="148" x2="130" y2="200" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#46f1c5"/>
+                  <stop offset="100%" stop-color="#00d4aa"/>
+                </linearGradient>
+                <radialGradient id="glGDot" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#46f1c5"/>
+                  <stop offset="100%" stop-color="#00d4aa"/>
+                </radialGradient>
+                <filter id="glGlowF" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="10" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <path d="M20 120 C20 57.726 70.726 7 133 7" stroke="url(#glGOuter)" stroke-width="5" stroke-linecap="round"/>
+              <path d="M240 120 C240 57.726 189.274 7 127 7" stroke="url(#glGOuter)" stroke-width="5" stroke-linecap="round"/>
+              <path d="M48 120 C48 79.131 81.131 46 122 46" stroke="url(#glGMid)" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M212 120 C212 79.131 178.869 46 138 46" stroke="url(#glGMid)" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M78 120 C78 100.118 94.118 84 114 84" stroke="#46f1c5" stroke-width="4" stroke-linecap="round"/>
+              <path d="M182 120 C182 100.118 165.882 84 146 84" stroke="#46f1c5" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="130" cy="120" r="32" fill="rgba(70,241,197,0.12)" filter="url(#glGlowF)"/>
+              <circle cx="130" cy="120" r="18" fill="url(#glGDot)"/>
+              <path d="M112 148 L130 196 L148 148" stroke="url(#glGArrow)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <!-- Brand name below icon -->
             <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
-              <div
-                style="font-family:'Plus Jakarta Sans',Cairo,sans-serif;font-weight:900;font-size:32px;letter-spacing:-1.2px;color:#e1e2eb;line-height:1;">
-                Easy<span style="color:#46f1c5;text-shadow:0 0 20px rgba(70,241,197,0.4);">Track</span>
+              <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:36px;letter-spacing:-1.2px;color:#e1e2eb;line-height:1;">
+                easy<span style="color:#46f1c5;text-shadow:0 0 20px rgba(70,241,197,0.45);">TRACK</span>
               </div>
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="display:inline-block;width:20px;height:1px;background:rgba(70,241,197,0.4);"></span>
-                <span
-                  style="font-family:var(--font-mono);font-size:9px;letter-spacing:3.5px;color:rgba(70,241,197,0.7);text-transform:uppercase;">Pixel
-                  Config v3</span>
-                <span style="display:inline-block;width:20px;height:1px;background:rgba(70,241,197,0.4);"></span>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="display:inline-block;width:22px;height:1px;background:rgba(70,241,197,0.35);"></span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3.5px;color:rgba(70,241,197,0.65);text-transform:uppercase;">Pixel Config v3</span>
+                <span style="display:inline-block;width:22px;height:1px;background:rgba(70,241,197,0.35);"></span>
               </div>
             </div>
           </div>
@@ -3206,8 +3255,8 @@
         <h1 class="gtitle">احصل على <em>Pixel Setup</em> كامل<br>في دقيقتين — مجاناً</h1>
         <!-- Auth Tabs -->
         <div class="gate-tabs">
-          <button class="gate-tab on" id="gtab-login" onclick="switchGateTab('login')">تسجيل دخول</button>
-          <button class="gate-tab" id="gtab-signup" onclick="switchGateTab('signup')">حساب جديد</button>
+          <button class="gate-tab on" id="gtab-login" onclick="(typeof switchGateTab==='function'?switchGateTab('login'):void 0)">تسجيل دخول</button>
+          <button class="gate-tab" id="gtab-signup" onclick="(typeof switchGateTab==='function'?switchGateTab('signup'):void 0)">حساب جديد</button>
         </div>
 
         <!-- Login Form -->
@@ -3225,9 +3274,9 @@
             </div>
           </div>
           <div class="gerr" id="gErr-l"></div>
-          <button class="gcta" id="gBtn-l" onclick="doGateLogin()">دخول ← </button>
+          <button class="gcta" id="gBtn-l" onclick="(typeof doGateLogin==='function'?doGateLogin():void 0)">دخول ← </button>
           <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--mut);">مش عندك حساب؟ <a href="#"
-              onclick="switchGateTab('signup')" style="color:var(--gold);text-decoration:none;">سجّل دلوقتي</a></div>
+              onclick="(typeof switchGateTab==='function'?switchGateTab('signup'):void 0)" style="color:var(--gold);text-decoration:none;">سجّل دلوقتي</a></div>
         </div>
 
         <!-- Signup Form -->
@@ -3249,9 +3298,9 @@
             </div>
           </div>
           <div class="gerr" id="gErr-s"></div>
-          <button class="gcta" id="gBtn-s" onclick="doGateSignup()">إنشاء حساب ← </button>
+          <button class="gcta" id="gBtn-s" onclick="(typeof doGateSignup==='function'?doGateSignup():void 0)">إنشاء حساب ← </button>
           <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--mut);">عندك حساب؟ <a href="#"
-              onclick="switchGateTab('login')" style="color:var(--gold);text-decoration:none;">سجّل دخول</a></div>
+              onclick="(typeof switchGateTab==='function'?switchGateTab('login'):void 0)" style="color:var(--gold);text-decoration:none;">سجّل دخول</a></div>
         </div>
         <div class="gfoot">
           <a class="gli" href="https://www.linkedin.com/in/youssef-elsouly" target="_blank">
@@ -3370,21 +3419,9 @@
           <span class="material-symbols-outlined" style="font-size:18px;">folder_open</span>
           <span>My Projects</span>
         </button>
-        <button class="sb-link" id="sbHealth" type="button" onclick="switchAppView('health',this)">
-          <span class="material-symbols-outlined" style="font-size:18px;">monitor_heart</span>
-          <span>Health Monitor</span>
-        </button>
-        <button class="sb-link" id="sbDataLayer" type="button" onclick="switchAppView('datalayer',this)">
-          <span class="material-symbols-outlined" style="font-size:18px;">layers</span>
-          <span>DataLayer Monitor</span>
-        </button>
-        <button class="sb-link" id="sbAttribution" type="button" onclick="switchAppView('attribution',this)">
-          <span class="material-symbols-outlined" style="font-size:18px;">conversion_path</span>
-          <span>Attribution</span>
-        </button>
         <button class="sb-link" id="sbServerSide" type="button" onclick="switchAppView('serverside',this)">
           <span class="material-symbols-outlined" style="font-size:18px;">dns</span>
-          <span>Server-Side</span>
+          <span>Server-Side Tracking (soon)</span>
         </button>
         <button class="sb-link" type="button" onclick="toggleSettings()">
           <span class="material-symbols-outlined" style="font-size:18px;">settings</span>
@@ -3402,11 +3439,14 @@
           style="padding:8px 12px 4px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--mut2);text-transform:uppercase;">
           Quick Guide</div>
         <button class="sb-footer-link" type="button" onclick="showCmsGuide('salla')">
-          <span class="material-symbols-outlined" style="font-size:18px;color:#e84393;">storefront</span>
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;flex-shrink:0;">
+            <rect x="8" y="8" width="84" height="84" rx="20" stroke="#1B5E5A" stroke-width="7" fill="none"/>
+            <path d="M 30 67 Q 50 81 70 67" stroke="#1B5E5A" stroke-width="7" stroke-linecap="round" fill="none"/>
+          </svg>
           <span>سلة — Setup Guide</span>
         </button>
         <button class="sb-footer-link" type="button" onclick="showCmsGuide('zid')">
-          <span class="material-symbols-outlined" style="font-size:18px;color:#4f6ef7;">bolt</span>
+          <img src="https://www.f6s.com/content-resource/profiles/3554028_th1.jpg" style="width:18px;height:18px;border-radius:4px;flex-shrink:0;object-fit:cover;" alt="زد" />
           <span>زد — Setup Guide</span>
         </button>
 
@@ -3544,6 +3584,26 @@
           </div>
         </div>
 
+        <!-- URL Scanner (Moved to Overview) -->
+        <div
+          style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:16px;padding:20px;margin-bottom:24px;">
+          <div
+            style="font-size:13px;font-weight:700;color:var(--wht);margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+            <span class="material-symbols-outlined" style="font-size:17px;color:#adc6ff;">travel_explore</span>
+            Pixel Scanner (soon)
+          </div>
+          <div style="font-size:12px;color:var(--mut);margin-bottom:14px;">Enter any website URL to detect all tracking
+            pixels installed on it</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <input id="hmScanUrl" type="url" placeholder="https://example.com" disabled
+              style="flex:1;min-width:220px;background:var(--sur3);border:1px solid var(--bdr2);border-radius:10px;padding:10px 14px;color:var(--mut2);font-family:var(--font-ui);font-size:13px;outline:none;" />
+            <button id="hmScanBtn" disabled
+              style="padding:10px 22px;border-radius:10px;border:none;background:var(--sur3);color:var(--mut2);font-weight:800;font-size:13px;cursor:not-allowed;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+              <span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan (soon)
+            </button>
+          </div>
+        </div>
+
       </div>
       <!-- END OVERVIEW VIEW -->
 
@@ -3585,17 +3645,11 @@
             <!-- سلة -->
             <button class="cms-card" data-val="salla">
               <div class="cms-chk">✓</div>
-              <div class="cms-logo" style="background:rgba(232,67,147,0.08);border-color:rgba(232,67,147,0.2);">
-                <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;">
-                  <rect width="80" height="80" rx="18" fill="rgba(232,67,147,0.12)" />
-                  <!-- Salla shopping bag icon -->
-                  <path d="M52 32H28a2 2 0 00-2 1.7l-3 20A2 2 0 0025 56h30a2 2 0 002-2.3l-3-20A2 2 0 0052 32z"
-                    fill="#E84393" opacity="0.9" />
-                  <path d="M33 32c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="#E84393" stroke-width="3" stroke-linecap="round" />
-                  <circle cx="35" cy="40" r="1.5" fill="white" />
-                  <circle cx="45" cy="40" r="1.5" fill="white" />
-                  <text x="40" y="52" text-anchor="middle" font-family="Arial" font-weight="700" font-size="10"
-                    fill="white">سلة</text>
+              <div class="cms-logo" style="background:rgba(27,94,90,0.06);border-color:rgba(27,94,90,0.2);">
+                <!-- Salla Official Icon — squircle + smile -->
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;">
+                  <rect x="8" y="8" width="84" height="84" rx="20" stroke="#1B5E5A" stroke-width="7" fill="none"/>
+                  <path d="M 30 67 Q 50 81 70 67" stroke="#1B5E5A" stroke-width="7" stroke-linecap="round" fill="none"/>
                 </svg>
               </div>
               <h3 class="cms-title">سلة</h3>
@@ -3616,11 +3670,7 @@
             <button class="cms-card" data-val="zid">
               <div class="cms-chk">✓</div>
               <div class="cms-logo" style="background:rgba(79,110,247,0.08);border-color:rgba(79,110,247,0.2);">
-                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
-                  style="width:48px;height:48px;">
-                  <path d="M50 10 L80 45 L60 45 L85 90 L35 50 L55 50 Z" fill="#4f6ef7" stroke="#46f1c5"
-                    stroke-width="1.5" stroke-linejoin="round" />
-                </svg>
+                <img src="https://www.f6s.com/content-resource/profiles/3554028_th1.jpg" style="width:48px;height:48px;border-radius:10px;object-fit:cover;" alt="زد" />
               </div>
               <h3 class="cms-title">زد</h3>
               <p class="cms-sub">Events تلقائية · GTM Native</p>
@@ -3720,14 +3770,13 @@
               <div class="cchk">✓</div>
               <span class="cicon">
                 <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
-                  <rect width="50" height="50" rx="12" fill="#F9AB00" opacity="0.15" />
-                  <rect x="10" y="30" width="8" height="12" rx="3" fill="#E37400" />
-                  <rect x="21" y="20" width="8" height="22" rx="3" fill="#F9AB00" />
-                  <rect x="32" y="8" width="8" height="34" rx="3" fill="#E37400" />
-                  <circle cx="14" cy="25" r="4" fill="#F9AB00" />
+                  <rect width="50" height="50" rx="12" fill="#F9AB00" opacity="0.1" />
+                  <rect x="10" y="32" width="9" height="10" rx="4.5" fill="#E37400" />
+                  <rect x="21" y="22" width="9" height="20" rx="4.5" fill="#F9AB00" />
+                  <rect x="32" y="10" width="9" height="32" rx="4.5" fill="#E37400" />
                 </svg>
               </span>
-              Google Analytics
+              Google Analytics 4
             </button>
 
             <!-- X/Twitter -->
@@ -3755,7 +3804,7 @@
           <div class="phdr">
             <div class="pnum">Step 03</div>
             <div class="ptitle">إيه الـ Events اللي عايز تتتبعها؟</div>
-            <div class="psub">اختار الأحداث اللي عايز تتتبعها في متجرك</div>
+            <div class="psub">اختار الأحداث لكل منصة بشكل مستقل — GA4 منفصل عن Google Ads ومنفصل عن Meta</div>
           </div>
           <div class="cgrid" id="evGrid"></div>
           <div class="pacts">
@@ -3786,16 +3835,8 @@
                 style="font-size:15px;font-variation-settings:'FILL' 1;">inventory_2</span>
               GTM Container
             </button>
-            <button class="otab" id="tabHealth" onclick="oTab('health',this)">
-              <span class="material-symbols-outlined"
-                style="font-size:15px;font-variation-settings:'FILL' 1;">health_and_safety</span>
-              Pixel Health
-            </button>
-            <button class="otab" id="tabScore" onclick="oTab('score',this)">
-              <span class="material-symbols-outlined"
-                style="font-size:15px;font-variation-settings:'FILL' 1;">stars</span>
-              Event Score
-            </button>
+
+
             <button class="otab" id="tabGuide" onclick="oTab('guide',this)">
               <span class="material-symbols-outlined"
                 style="font-size:15px;font-variation-settings:'FILL' 1;">auto_stories</span>
@@ -3889,33 +3930,11 @@
           <div style="display:none" id="pane-consent">
             <div id="consentBody"></div>
           </div>
-          <div class="opane" id="pane-health">
-            <div id="healthConfigCheck">
-              <div style="text-align:center;padding:60px 24px;color:var(--mut);">
-                <span class="material-symbols-outlined"
-                  style="font-size:48px;display:block;margin-bottom:12px;opacity:.3">health_and_safety</span>
-                <p style="font-size:14px;">اعمل Generate من Pixel Config عشان نحلل صحة الـ Configuration.</p>
-              </div>
-            </div>
-            <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.05);padding-top:16px;">
-              <div style="font-size:12px;color:var(--mut);margin-bottom:10px;">🔗 أو افحص URL مباشرة:</div>
-              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                <input id="healthUrl" type="url" placeholder="https://example.com"
-                  style="flex:1;min-width:200px;background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 16px;color:var(--wht);font-family:var(--font-mono);font-size:13px;outline:none;direction:ltr;">
-                <button onclick="runHealthCheck()"
-                  style="background:linear-gradient(135deg,var(--acc),var(--acc2));color:#05090f;border:none;border-radius:12px;padding:13px 28px;font-family:var(--font-ui);font-size:14px;font-weight:900;cursor:pointer;white-space:nowrap;">
-                  🔍 افحص URL
-                </button>
-              </div>
-              <div id="healthResults" style="margin-top:16px;"></div>
-            </div>
-          </div>
+
           <div class="opane" id="pane-guide">
             <div class="gsteps" id="guideSteps"></div>
           </div>
-          <div class="opane" id="pane-score">
-            <div id="scoreContent"></div>
-          </div>
+
           <div class="opane" id="pane-plan">
             <div style="display:flex;gap:8px;padding:12px 0 16px;flex-wrap:wrap;">
               <button class="dlbtn" onclick="downloadPlanExcel()">📥 تحميل Excel</button>
@@ -4086,352 +4105,22 @@
       </div>
       <!-- END MY PROJECTS VIEW -->
 
-      <!-- ══════ HEALTH MONITOR VIEW ══════ -->
-      <div class="app-view" id="view-health">
 
-        <!-- Header -->
-        <div
-          style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
-          <div>
-            <h2
-              style="font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--wht);letter-spacing:-.5px;display:flex;align-items:center;gap:10px;">
-              <span class="material-symbols-outlined" style="color:#46f1c5;font-size:22px;">monitor_heart</span>
-              Health Monitor
-            </h2>
-            <p style="font-size:13px;color:var(--mut);margin-top:4px;">Tracking setup health &amp; deployment history
-            </p>
-          </div>
-          <button onclick="renderHealthDashboard()"
-            style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:10px;padding:8px 16px;color:var(--mut);font-family:var(--font-ui);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;">
-            <span class="material-symbols-outlined" style="font-size:15px;">refresh</span> Refresh
-          </button>
-        </div>
-
-        <!-- URL Scanner -->
-        <div
-          style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:16px;padding:20px;margin-bottom:24px;">
-          <div
-            style="font-size:13px;font-weight:700;color:var(--wht);margin-bottom:4px;display:flex;align-items:center;gap:8px;">
-            <span class="material-symbols-outlined" style="font-size:17px;color:#adc6ff;">travel_explore</span>
-            Pixel Scanner
-          </div>
-          <div style="font-size:12px;color:var(--mut);margin-bottom:14px;">Enter any website URL to detect all tracking
-            pixels installed on it</div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <input id="hmScanUrl" type="url" placeholder="https://example.com"
-              style="flex:1;min-width:220px;background:var(--sur3);border:1px solid var(--bdr2);border-radius:10px;padding:10px 14px;color:var(--wht);font-family:var(--font-ui);font-size:13px;outline:none;"
-              onkeydown="if(event.key==='Enter')hmScanSite()" />
-            <button onclick="hmScanSite()" id="hmScanBtn"
-              style="padding:10px 22px;border-radius:10px;border:none;background:#adc6ff;color:#001a42;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;">
-              <span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan
-            </button>
-          </div>
-          <div id="hmScanResult" style="margin-top:14px;display:none;"></div>
-        </div>
-
-        <!-- Top Stats Row -->
-        <div id="hm-stats-row"
-          style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;">
-        </div>
-
-        <!-- Platform Health -->
-        <div style="margin-bottom:24px;">
-          <div
-            style="font-size:11px;font-weight:700;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">
-            Platform Health</div>
-          <div id="hm-platforms"
-            style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;"></div>
-        </div>
-
-        <!-- Deploy History + Error Log side by side -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div>
-            <div
-              style="font-size:11px;font-weight:700;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">
-              Deploy History</div>
-            <div id="hm-history" style="display:flex;flex-direction:column;gap:8px;"></div>
-          </div>
-          <div>
-            <div
-              style="font-size:11px;font-weight:700;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">
-              Error Log</div>
-            <div id="hm-errors" style="display:flex;flex-direction:column;gap:8px;"></div>
-          </div>
-        </div>
-
-      </div>
-      <!-- END HEALTH MONITOR VIEW -->
-
-      <!-- ══════ DATALAYER MONITOR VIEW ══════ -->
-      <div class="app-view" id="view-datalayer">
-        <div class="page-hdr">
-          <div>
-            <h2 class="page-title"><span class="material-symbols-outlined" style="color:var(--acc);">layers</span>
-              DataLayer Monitor</h2>
-            <p class="page-sub">Real-time normalization engine — Salla &amp; Zid → GA4 standard</p>
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn-ghost-sm" onclick="dlm_clearLog()">
-              <span class="material-symbols-outlined" style="font-size:14px;">delete_sweep</span> Clear
-            </button>
-            <button class="btn-ghost-sm" onclick="dlm_sendTest()">
-              <span class="material-symbols-outlined" style="font-size:14px;">send</span> Test Event
-            </button>
-          </div>
-        </div>
-
-        <!-- CMS Toggle + Platform Selector -->
-        <div class="dlm-controls">
-          <div class="dlm-ctrl-group">
-            <span class="dlm-label">CMS Normalization</span>
-            <div class="dlm-toggle-row">
-              <button class="dlm-cms-btn active" id="dlmCmsSalla" onclick="dlm_setCms('salla',this)">
-                <svg viewBox="0 0 20 20" style="width:14px;height:14px;">
-                  <circle cx="10" cy="10" r="9" fill="#E84393" opacity=".2" />
-                  <path d="M13 8H7a1 1 0 00-1 .85l-.75 5A1 1 0 006.25 15H13.75a1 1 0 001-.85L14 8.85A1 1 0 0013 8z"
-                    fill="#E84393" />
-                  <path d="M8.5 8c0-1 .67-1.75 1.5-1.75S11.5 7 11.5 8" stroke="#E84393" stroke-width="1.2" fill="none"
-                    stroke-linecap="round" />
-                </svg>
-                سلة
-              </button>
-              <button class="dlm-cms-btn" id="dlmCmsZid" onclick="dlm_setCms('zid',this)">
-                <svg viewBox="0 0 20 20" style="width:14px;height:14px;">
-                  <path d="M10 2L16 9.5H12.5L17 18H8L13 10.5H9.5Z" fill="#4f6ef7" opacity=".8" />
-                </svg>
-                زد
-              </button>
-            </div>
-          </div>
-          <div class="dlm-ctrl-group">
-            <span class="dlm-label">Platform Filter</span>
-            <select class="dlm-select" id="dlmPlatFilter" onchange="dlm_filterPlatform(this.value)">
-              <option value="all">All Platforms</option>
-              <option value="ga4">GA4</option>
-              <option value="meta">Meta</option>
-              <option value="tiktok">TikTok</option>
-              <option value="snapchat">Snapchat</option>
-              <option value="google">Google Ads</option>
-              <option value="mixpanel">Mixpanel</option>
-            </select>
-          </div>
-          <div class="dlm-ctrl-group">
-            <span class="dlm-label">Mode</span>
-            <div class="dlm-toggle-row">
-              <button class="dlm-mode-btn active" id="dlmModeStream"
-                onclick="dlm_setMode('stream',this)">Stream</button>
-              <button class="dlm-mode-btn" id="dlmModeRaw" onclick="dlm_setMode('raw',this)">Raw</button>
-            </div>
-          </div>
-          <div style="margin-right:auto;display:flex;align-items:center;gap:8px;">
-            <span class="dlm-live-dot"></span>
-            <span style="font-family:var(--font-mono);font-size:10px;color:var(--acc);letter-spacing:1px;">LIVE</span>
-          </div>
-        </div>
-
-        <!-- Stats Bar -->
-        <div class="dlm-stats-bar">
-          <div class="dlm-stat">
-            <div class="dlm-stat-val" id="dlmStatTotal">0</div>
-            <div class="dlm-stat-lbl">Total Events</div>
-          </div>
-          <div class="dlm-stat">
-            <div class="dlm-stat-val" id="dlmStatNorm" style="color:var(--acc);">0</div>
-            <div class="dlm-stat-lbl">Normalized</div>
-          </div>
-          <div class="dlm-stat">
-            <div class="dlm-stat-val" id="dlmStatErrors" style="color:var(--red);">0</div>
-            <div class="dlm-stat-lbl">Errors</div>
-          </div>
-          <div class="dlm-stat">
-            <div class="dlm-stat-val" id="dlmStatDedupe" style="color:var(--amber);">0</div>
-            <div class="dlm-stat-lbl">Deduped</div>
-          </div>
-        </div>
-
-        <!-- Two-column: Event Stream + Payload Inspector -->
-        <div class="dlm-layout">
-          <div class="dlm-stream-col">
-            <div class="dlm-col-title">
-              <span class="material-symbols-outlined" style="font-size:15px;color:var(--acc);">stream</span>
-              Event Stream
-            </div>
-            <div id="dlmEventStream" class="dlm-stream-body">
-              <div class="dlm-empty-state">
-                <span class="material-symbols-outlined"
-                  style="font-size:40px;opacity:.3;display:block;margin-bottom:10px;">layers</span>
-                <p style="font-size:13px;">Listening for dataLayer events...</p>
-                <p style="font-size:11px;color:var(--mut2);margin-top:6px;">Click "Test Event" to simulate</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="dlm-inspect-col">
-            <div class="dlm-col-title">
-              <span class="material-symbols-outlined" style="font-size:15px;color:var(--acc);">data_object</span>
-              Payload Inspector
-            </div>
-            <div id="dlmInspector" class="dlm-inspect-body">
-              <div style="text-align:center;padding:40px 20px;color:var(--mut);">
-                <span class="material-symbols-outlined"
-                  style="font-size:36px;opacity:.3;display:block;margin-bottom:10px;">touch_app</span>
-                <p style="font-size:12px;">Click an event to inspect the normalized payload</p>
-              </div>
-            </div>
-
-            <!-- Platform Delivery Status -->
-            <div class="dlm-col-title" style="margin-top:16px;">
-              <span class="material-symbols-outlined" style="font-size:15px;color:var(--acc);">send</span>
-              Platform Delivery
-            </div>
-            <div id="dlmDelivery" class="dlm-delivery-grid"></div>
-
-            <!-- GA4 Normalized Code -->
-            <div class="dlm-col-title" style="margin-top:16px;">
-              <span class="material-symbols-outlined" style="font-size:15px;color:var(--acc);">code</span>
-              Normalized Output
-            </div>
-            <div class="dlm-code-wrap">
-              <div class="dlm-code-bar">
-                <span style="font-family:var(--font-mono);font-size:10px;color:var(--mut);">GA4 Standard</span>
-                <button class="btn-ghost-sm" onclick="dlm_copyNorm()">Copy</button>
-              </div>
-              <pre id="dlmNormCode" class="dlm-code-body">// Select an event above</pre>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- END DATALAYER MONITOR VIEW -->
-
-      <!-- ══════ ATTRIBUTION VIEW ══════ -->
-      <div class="app-view" id="view-attribution">
-        <div class="page-hdr">
-          <div>
-            <h2 class="page-title"><span class="material-symbols-outlined"
-                style="color:var(--acc);">conversion_path</span> Attribution & Identity</h2>
-            <p class="page-sub">Click ID capture, cookie persistence, and user identity tracking</p>
-          </div>
-          <button class="btn-ghost-sm" onclick="attr_refresh()">
-            <span class="material-symbols-outlined" style="font-size:14px;">refresh</span> Refresh
-          </button>
-        </div>
-
-        <div class="attr-grid">
-          <!-- Click IDs Panel -->
-          <div class="attr-card">
-            <div class="attr-card-title">
-              <span class="material-symbols-outlined" style="font-size:18px;color:var(--acc);">link</span>
-              Click IDs (Attribution)
-            </div>
-            <p style="font-size:12px;color:var(--mut);margin-bottom:16px;line-height:1.7;">Captured from URL params and
-              stored in cookies. Attached to every tracking event.</p>
-            <div id="attrClickIds" class="attr-ids-list"></div>
-            <div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.05);">
-              <div style="font-size:11px;color:var(--mut);margin-bottom:10px;font-weight:600;">Simulate Click IDs from
-                URL</div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button class="attr-sim-btn" onclick="attr_simulateClickId('gclid')">+ gclid</button>
-                <button class="attr-sim-btn" onclick="attr_simulateClickId('fbclid')">+ fbclid</button>
-                <button class="attr-sim-btn" onclick="attr_simulateClickId('ttclid')">+ ttclid</button>
-                <button class="attr-sim-btn" onclick="attr_simulateClickId('scclid')">+ scclid</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- User Identity Panel -->
-          <div class="attr-card">
-            <div class="attr-card-title">
-              <span class="material-symbols-outlined" style="font-size:18px;color:var(--acc);">person_pin</span>
-              User Identity
-            </div>
-            <p style="font-size:12px;color:var(--mut);margin-bottom:16px;line-height:1.7;">Set user identity data to be
-              attached to all events. Email and phone are SHA-256 hashed automatically.</p>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div class="attr-input-group">
-                <label class="attr-input-label">User ID</label>
-                <input type="text" id="attrUserId" class="attr-input" placeholder="user_12345"
-                  oninput="attr_updateIdentity()">
-              </div>
-              <div class="attr-input-group">
-                <label class="attr-input-label">External ID</label>
-                <input type="text" id="attrExternalId" class="attr-input" placeholder="ext_abc123"
-                  oninput="attr_updateIdentity()">
-              </div>
-              <div class="attr-input-group">
-                <label class="attr-input-label">Email <span
-                    style="font-size:9px;background:rgba(70,241,197,.1);color:var(--acc);padding:1px 5px;border-radius:3px;margin-right:4px;">SHA-256</span></label>
-                <input type="email" id="attrEmail" class="attr-input" placeholder="user@example.com"
-                  oninput="attr_updateIdentity()">
-              </div>
-              <div class="attr-input-group">
-                <label class="attr-input-label">Phone <span
-                    style="font-size:9px;background:rgba(70,241,197,.1);color:var(--acc);padding:1px 5px;border-radius:3px;margin-right:4px;">SHA-256</span></label>
-                <input type="tel" id="attrPhone" class="attr-input" placeholder="+966512345678"
-                  oninput="attr_updateIdentity()" style="direction:ltr;text-align:right;">
-              </div>
-            </div>
-          </div>
-
-          <!-- Event ID (Deduplication) -->
-          <div class="attr-card">
-            <div class="attr-card-title">
-              <span class="material-symbols-outlined" style="font-size:18px;color:var(--acc);">fingerprint</span>
-              Event Deduplication
-            </div>
-            <p style="font-size:12px;color:var(--mut);margin-bottom:16px;line-height:1.7;">Each event gets a unique
-              <code
-                style="font-family:var(--font-mono);font-size:11px;background:var(--sur3);padding:1px 6px;border-radius:4px;color:var(--acc);">event_id</code>.
-              The same ID is used for browser and server events to prevent double-counting.
-            </p>
-            <div id="attrDedupeSample" class="dedupe-sample"></div>
-            <button class="btn-acc-sm" style="margin-top:12px;" onclick="attr_genNewEventId()">
-              <span class="material-symbols-outlined" style="font-size:14px;">autorenew</span> Generate New ID
-            </button>
-          </div>
-
-          <!-- Full Payload Preview -->
-          <div class="attr-card" style="grid-column:span 2;">
-            <div class="attr-card-title">
-              <span class="material-symbols-outlined" style="font-size:18px;color:var(--acc);">data_object</span>
-              Full Event Payload (GA4 Standard)
-            </div>
-            <p style="font-size:12px;color:var(--mut);margin-bottom:16px;">Complete dataLayer.push() structure with all
-              tracking components attached.</p>
-            <div class="dlm-code-wrap">
-              <div class="dlm-code-bar">
-                <span style="font-family:var(--font-mono);font-size:10px;color:var(--mut);">dataLayer.push()</span>
-                <button class="btn-ghost-sm" onclick="attr_copyPayload()">Copy</button>
-              </div>
-              <pre id="attrFullPayload" class="dlm-code-body"></pre>
-            </div>
-          </div>
-
-          <!-- Cookie Storage Status -->
-          <div class="attr-card" style="grid-column:span 2;">
-            <div class="attr-card-title">
-              <span class="material-symbols-outlined" style="font-size:18px;color:var(--acc);">cookie</span>
-              Cookie Storage Status
-            </div>
-            <div id="attrCookieStatus" class="attr-cookie-grid"></div>
-          </div>
-        </div>
-      </div>
-      <!-- END ATTRIBUTION VIEW -->
 
       <!-- ══════ SERVER-SIDE VIEW ══════ -->
       <div class="app-view" id="view-serverside">
         <div class="page-hdr">
           <div>
             <h2 class="page-title"><span class="material-symbols-outlined" style="color:var(--acc);">dns</span>
-              Server-Side Tracking</h2>
+              Server-Side Tracking (soon)</h2>
             <p class="page-sub">Configure server-side endpoints and monitor event delivery across platforms</p>
           </div>
-          <button class="btn-ghost-sm" onclick="ss_testAll()">
-            <span class="material-symbols-outlined" style="font-size:14px;">science</span> Test All
+          <button class="btn-ghost-sm" disabled>
+            <span class="material-symbols-outlined" style="font-size:14px;">science</span> Test All (soon)
           </button>
         </div>
 
-        <div class="ss-layout">
+        <div class="ss-layout" style="opacity: 0.6; pointer-events: none;">
           <!-- Left: Config -->
           <div class="ss-config-col">
 
@@ -4444,15 +4133,12 @@
               <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;">
                 <div style="flex:1;min-width:200px;">
                   <label class="attr-input-label">Server URL</label>
-                  <input type="url" id="ssServerUrl" class="attr-input" placeholder="https://your-sst-server.com"
-                    oninput="ss_validateUrl()">
-                  <div id="ssUrlError" style="font-size:11px;color:var(--red);margin-top:4px;display:none;"></div>
+                  <input type="url" class="attr-input" placeholder="https://your-sst-server.com (soon)" disabled>
                 </div>
-                <button class="btn-acc-sm" style="margin-top:22px;" onclick="ss_testConnection()">
-                  <span class="material-symbols-outlined" style="font-size:14px;">wifi_tethering</span> Test
+                <button class="btn-acc-sm" style="margin-top:22px;" disabled>
+                  <span class="material-symbols-outlined" style="font-size:14px;">wifi_tethering</span> Test (soon)
                 </button>
               </div>
-              <div id="ssConnectionStatus" class="ss-conn-status" style="margin-top:12px;display:none;"></div>
             </div>
 
             <!-- GA4 Client (required) -->
@@ -4460,16 +4146,11 @@
               <div class="ss-card-title">
                 <span class="material-symbols-outlined" style="font-size:18px;color:#F9AB00;">analytics</span>
                 GA4 Client
-                <span class="ss-required-badge">Required</span>
+                <span class="ss-required-badge">Soon</span>
               </div>
               <div class="attr-input-group">
-                <label class="attr-input-label">Measurement ID (G-XXXXXXXX)</label>
-                <input type="text" id="ssGa4Id" class="attr-input" placeholder="G-XXXXXXXXXX" style="direction:ltr;">
-              </div>
-              <div class="attr-input-group" style="margin-top:8px;">
-                <label class="attr-input-label">API Secret</label>
-                <input type="password" id="ssGa4Secret" class="attr-input" placeholder="Generated in GA4 Admin"
-                  style="direction:ltr;">
+                <label class="attr-input-label">Measurement ID (G-XXXXXXXX) - soon</label>
+                <input type="text" class="attr-input" placeholder="G-XXXXXXXXXX (soon)" disabled>
               </div>
             </div>
 
@@ -4477,7 +4158,7 @@
             <div class="ss-card">
               <div class="ss-card-title">
                 <span class="material-symbols-outlined" style="font-size:18px;color:var(--acc);">devices</span>
-                Server-Side Platforms
+                Server-Side Platforms (soon)
               </div>
               <div id="ssPlatforms" class="ss-platforms-list"></div>
             </div>
@@ -4486,41 +4167,15 @@
 
           <!-- Right: Event Monitor -->
           <div class="ss-monitor-col">
-
-            <!-- Event Monitor -->
             <div class="ss-card">
               <div class="ss-card-title" style="margin-bottom:12px;">
                 <span class="material-symbols-outlined" style="font-size:18px;color:var(--acc);">monitoring</span>
-                Event Monitor
-                <span class="dlm-live-dot" style="margin-right:auto;"></span>
+                Event Monitor (soon)
               </div>
-              <div id="ssEventMonitor" class="ss-monitor-body">
-                <div class="dlm-empty-state">
-                  <span class="material-symbols-outlined"
-                    style="font-size:36px;opacity:.3;display:block;margin-bottom:10px;">monitoring</span>
-                  <p style="font-size:12px;">No server events yet</p>
-                  <p style="font-size:11px;color:var(--mut2);margin-top:4px;">Click "Test All" to fire a test purchase
-                    event</p>
-                </div>
-              </div>
-              <button class="btn-ghost-sm" style="width:100%;margin-top:10px;justify-content:center;"
-                onclick="ss_clearMonitor()">
-                <span class="material-symbols-outlined" style="font-size:14px;">delete_sweep</span> Clear
-              </button>
-            </div>
-
-            <!-- Event Delivery Matrix -->
-            <div class="ss-card">
-              <div class="ss-card-title">
-                <span class="material-symbols-outlined" style="font-size:18px;color:var(--acc);">fact_check</span>
-                Delivery Matrix
-              </div>
-              <div id="ssDeliveryMatrix" class="ss-matrix-wrap">
-                <div style="text-align:center;padding:20px;color:var(--mut);font-size:12px;">Test events to see delivery
-                  status</div>
+              <div class="dlm-empty-state">
+                <p style="font-size:12px;">Server-Side monitor coming soon...</p>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -5387,10 +5042,10 @@
 
   <script>
     // ===== STATE =====
-    var S = { cms: null, platforms: [], events: [], pixelIds: {}, lead: {} };
+    var S = { cms: null, platforms: [], events: [], platformEvents: {}, pixelIds: {}, lead: {} };
 
     // ===== APP VIEW SWITCHING =====
-    var APP_VIEWS = { overview: 'view-overview', pixels: 'view-pixels', gtmview: 'view-gtmview', projects: 'view-projects', health: 'view-health', datalayer: 'view-datalayer', attribution: 'view-attribution', serverside: 'view-serverside' };
+    var APP_VIEWS = { overview: 'view-overview', pixels: 'view-pixels', gtmview: 'view-gtmview', projects: 'view-projects', serverside: 'view-serverside' };
 
     // Cached GTM JSON string for sidebar view
     var _cachedGtmStr = null;
@@ -5560,27 +5215,42 @@
       return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    // ===== SVG ICONS (Official) =====
+    var PLATFORM_SVGS = {
+      // ── CMS Platforms ─────────────────────────────────────────
+      salla: '<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;"><rect x="8" y="8" width="84" height="84" rx="20" stroke="#1B5E5A" stroke-width="7" fill="none"/><path d="M 30 67 Q 50 81 70 67" stroke="#1B5E5A" stroke-width="7" stroke-linecap="round" fill="none"/></svg>',
+      zid: '<img src="https://www.f6s.com/content-resource/profiles/3554028_th1.jpg" style="width:22px;height:22px;border-radius:5px;object-fit:cover;" alt="زد" />',
+      // ── Advertising Platforms ──────────────────────────────────
+      meta: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;"><path d="M5 25c0-5.8 1.3-10.2 3.2-13.1C10.1 9 12.5 7.5 15 7.5c2 0 3.8.8 5.5 2.4 1.2 1.1 2.5 2.9 4.5 6.1 2-3.2 3.3-5 4.5-6.1 1.7-1.6 3.5-2.4 5.5-2.4 2.5 0 4.9 1.5 6.8 4.4C43.7 14.8 45 19.2 45 25c0 3.8-.7 7-2 9.4-1.6 2.9-3.9 4.6-6.3 4.6-1.5 0-2.9-.5-4.4-1.5-1.9-1.3-3.8-3.4-6.6-7.6-2.8 4.2-4.7 6.3-6.6 7.6-1.5 1-2.9 1.5-4.4 1.5-2.4 0-4.7-1.7-6.3-4.6C5.7 32 5 28.8 5 25z" fill="#1877F2"/></svg>',
+      snapchat: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;"><rect width="50" height="50" rx="12" fill="#FFFC00"/><path d="M25 8c-5.6 0-9.5 3.8-9.5 9.3v1.5c-.6.3-1.4.4-2.1.2-.3 0-.4.1-.4.4 0 1.2 2.1 1.7 2.5 1.8.4 1.3 1.2 2.4 2.2 3.2-1.6.8-3.9 1.2-4.2 2.3 0 .2.2.4.4.4 2 .3 3.7 1.1 4.9 2.7.1.2.1.3-.1.4-1.5.6-3 .6-3 1.4 0 .5.7.7 1.3.7.9 0 1.8-.3 2.6-.6.5-.2.9-.2 1.3.1.8.6 1 1.7 1 2.7 0 .2.1.4.3.4 1 .1 2.1.1 2.8.1s1.8 0 2.8-.1c.2 0 .3-.2.3-.4 0-1 .2-2.1 1-2.7.4-.3.8-.3 1.3-.1.8.3 1.7.6 2.6.6.6 0 1.3-.2 1.3-.7 0-.8-1.5-.8-3-1.4-.2-.1-.2-.2-.1-.4 1.2-1.6 2.9-2.4 4.9-2.7.2 0 .4-.2.4-.4-.3-1.1-2.6-1.5-4.2-2.3 1-.8 1.8-1.9 2.2-3.2.4-.1 2.5-.6 2.5-1.8 0-.3-.1-.4-.4-.4-.7.2-1.5.1-2.1-.2v-1.5C34.5 11.8 30.6 8 25 8z" fill="#333"/></svg>',
+      tiktok: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;"><rect width="50" height="50" rx="12" fill="#010101"/><path d="M34.5 14.5a7.5 7.5 0 01-7.5-7.5h-5v22.3c0 2.1-1.7 3.7-3.8 3.7a3.75 3.75 0 01-3.7-3.7c0-2.1 1.7-3.7 3.7-3.7.4 0 .7.1 1 .2V20a8.9 8.9 0 00-1-.1c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7 8.7-3.9 8.7-8.7V21.4a12.6 12.6 0 007.5 2.4v-5a7.4 7.4 0 01-4.9-4.3h4.9V14.5z" fill="white"/><path d="M37 14.5a7.5 7.5 0 01-7.5-7.5h-3v22.3c0 2.1-1.7 3.7-3.8 3.7a3.75 3.75 0 01-3.7-3.7c0-2.1 1.7-3.7 3.7-3.7.4 0 .7.1 1 .2V20a8.9 8.9 0 00-1-.1c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7 8.7-3.9 8.7-8.7V21.4a12.6 12.6 0 007.5 2.4v-5a7.6 7.6 0 01-2.9-4.3" fill="#69C9D0"/></svg>',
+      google: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;"><path d="M25 8A17 17 0 1 0 25 42A17 17 0 1 0 25 8Z" fill="white"/><path d="M33.5 20H25v5h4.9c-.4 2.5-2.6 4.3-4.9 4.3a5.8 5.8 0 0 1 0-11.6c1.4 0 2.7.5 3.7 1.4l3.5-3.5A10.5 10.5 0 0 0 25 12.5a12.5 12.5 0 0 0 0 25c7 0 11.5-4.9 11.5-12 0-.8-.1-1.7-.2-2.5H33.5z" fill="#4285F4"/><path d="M14.3 27.9l-4 3.1A12.5 12.5 0 0 0 25 37.5v-5c-4.1 0-7.7-2.3-9.4-5.8l-.3.2z" fill="#34A853"/><path d="M10.3 18.6A12.5 12.5 0 0 0 12.5 31l4-3.1c-.7-1.4-1-3-1-4.9 0-2 .4-3.8 1.1-5.4l-4.1-3.2a12.4 12.4 0 0 0-2.2 4.2z" fill="#FBBC05"/><path d="M25 12.5c2.7 0 5.1 1 6.9 2.5l3.6-3.6A12.4 12.4 0 0 0 25 8a12.5 12.5 0 0 0-10.7 6l4.1 3.2A7.5 7.5 0 0 1 25 12.5z" fill="#EA4335"/></svg>',
+      ga4: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;"><rect width="50" height="50" rx="12" fill="#F9AB0015"/><rect x="10" y="32" width="9" height="10" rx="4.5" fill="#E37400"/><rect x="21" y="22" width="9" height="20" rx="4.5" fill="#F9AB00"/><rect x="32" y="10" width="9" height="32" rx="4.5" fill="#E37400"/></svg>',
+      twitter: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;"><rect width="50" height="50" rx="12" fill="#000"/><path d="M28.3 22.5L38.5 11h-2.4l-8.9 10.3L20.3 11H12l10.7 15.5L12 39h2.4l9.3-10.8 7.4 10.8H39L28.3 22.5zm-3.3 3.8l-1.1-1.5L15.1 12.8h3.7l6.9 9.9 1.1 1.5 9 12.9h-3.7l-7.1-10.8z" fill="white"/></svg>'
+    };
+
     // ===== UPDATE OVERVIEW AFTER GENERATE =====
     function refreshOverview() {
       var platMeta = {
-        meta: { name: 'Meta Pixel', icon: '📘', color: '#1877F2', bar: 85 },
-        snapchat: { name: 'Snap Pixel', icon: '👻', color: '#FFFC00', bar: 68 },
-        tiktok: { name: 'TikTok Pixel', icon: '🎵', color: '#46f1c5', bar: 92 },
-        google: { name: 'Google Ads', icon: '🔍', color: '#4285F4', bar: 78 },
-        ga4: { name: 'GA4', icon: '📊', color: '#F9AB00', bar: 95 },
-        twitter: { name: 'X / Twitter', icon: '𝕏', color: '#1D9BF0', bar: 60 }
+        meta: { name: 'Meta Pixel', color: '#1877F2', bar: 85 },
+        snapchat: { name: 'Snap Pixel', color: '#FFFC00', bar: 68 },
+        tiktok: { name: 'TikTok Pixel', color: '#010101', bar: 92 },
+        google: { name: 'Google Ads', color: '#4285F4', bar: 78 },
+        ga4: { name: 'GA4', color: '#F9AB00', bar: 95 },
+        twitter: { name: 'X / Twitter', color: '#000000', bar: 60 }
       };
       var grid = document.getElementById('ovPixelsGrid');
       if (!grid) return;
       grid.innerHTML = '';
       S.platforms.forEach(function (p) {
-        var m = platMeta[p] || { name: p, icon: '📡', color: 'var(--acc)', bar: 80 };
+        var m = platMeta[p] || { name: p, color: 'var(--acc)', bar: 80 };
+        var svgIcon = PLATFORM_SVGS[p] || '<span style="font-size:20px;">📡</span>';
         var rawId = (typeof S.pixelIds[p] === 'object' ? S.pixelIds[p].id : S.pixelIds[p]) || '';
         var isActive = !!(rawId && rawId.trim());
         var pid = isActive ? (rawId.length > 10 ? rawId.substring(0, 10) + '...' : rawId) : '—';
         grid.innerHTML += '<div class="ov-pixel-card">'
           + '<div class="ov-pixel-top">'
-          + '<div class="ov-pixel-icon" style="background:' + m.color + '22;">' + m.icon + '</div>'
+          + '<div class="ov-pixel-icon" style="background:' + m.color + '18;display:flex;align-items:center;justify-content:center;">' + svgIcon + '</div>'
           + '<span class="ov-pixel-badge ' + (isActive ? 'active' : 'pending') + '">' + (isActive ? 'ACTIVE' : 'PENDING') + '</span>'
           + '</div>'
           + '<div class="ov-pixel-name">' + m.name + '</div>'
@@ -5626,31 +5296,25 @@
     };
 
     var GA4 = {
-      view_item: { label: 'View Product', score: 3, req: ['currency', 'value', 'items'], opt: [], ip: ['item_id', 'item_name', 'item_brand', 'item_category', 'item_variant', 'price', 'quantity'] },
-      add_to_cart: { label: 'Add to Cart', score: 6, req: ['currency', 'value', 'items'], opt: [], ip: ['item_id', 'item_name', 'item_brand', 'item_category', 'price', 'quantity'] },
-      remove_from_cart: { label: 'Remove from Cart', score: 2, req: ['currency', 'value', 'items'], opt: [], ip: ['item_id', 'item_name', 'price', 'quantity'] },
-      view_cart: { label: 'View Cart', score: 3, req: ['currency', 'value', 'items'], opt: [], ip: ['item_id', 'item_name', 'price', 'quantity'] },
-      begin_checkout: { label: 'Begin Checkout', score: 8, req: ['currency', 'value', 'items'], opt: ['coupon'], ip: ['item_id', 'item_name', 'item_brand', 'item_category', 'price', 'quantity'] },
-      add_shipping_info: { label: 'Add Shipping Info', score: 7, req: ['currency', 'value', 'shipping_tier', 'items'], opt: ['coupon'], ip: ['item_id', 'item_name', 'price', 'quantity'] },
-      add_payment_info: { label: 'Add Payment Info', score: 9, req: ['currency', 'value', 'payment_type', 'items'], opt: ['coupon'], ip: ['item_id', 'item_name', 'price', 'quantity'] },
-      purchase: { label: 'Purchase', score: 10, req: ['transaction_id', 'currency', 'value', 'items'], opt: ['affiliation', 'coupon', 'shipping', 'tax'], ip: ['item_id', 'item_name', 'item_brand', 'item_category', 'coupon', 'discount', 'price', 'quantity'] },
-      refund: { label: 'Refund', score: 4, req: ['transaction_id', 'currency', 'value'], opt: ['affiliation', 'items'], ip: ['item_id', 'item_name', 'price', 'quantity'] },
-      search: { label: 'Search', score: 2, req: ['search_term'], opt: [], ip: [] },
-      add_to_wishlist: { label: 'Add to Wishlist', score: 4, req: ['currency', 'value', 'items'], opt: [], ip: ['item_id', 'item_name', 'price', 'quantity'] },
-      view_item_list: { label: 'View Item List', score: 2, req: ['items'], opt: ['item_list_id', 'item_list_name'], ip: ['item_id', 'item_name', 'index', 'price'] },
-      select_item: { label: 'Select Item', score: 3, req: ['items'], opt: ['item_list_id', 'item_list_name'], ip: ['item_id', 'item_name', 'index', 'price'] },
-      sign_up: { label: 'Sign Up', score: 5, req: ['method'], opt: [], ip: [] },
-      login: { label: 'Login', score: 1, req: ['method'], opt: [], ip: [] }
+      view_item:        { label: 'View Item (Product Page)', score: 6,  req: ['currency','value','items'], opt: [], ip: ['item_id','item_name','item_brand','item_category','price','quantity'] },
+      add_to_cart:      { label: 'Add to Cart',              score: 8,  req: ['currency','value','items'], opt: [], ip: ['item_id','item_name','item_brand','item_category','price','quantity'] },
+      begin_checkout:   { label: 'Begin Checkout',           score: 9,  req: ['currency','value','items'], opt: ['coupon'], ip: ['item_id','item_name','price','quantity'] },
+      purchase:         { label: 'Purchase',                 score: 10, req: ['transaction_id','currency','value','items'], opt: ['affiliation','coupon','shipping','tax'], ip: ['item_id','item_name','item_brand','item_category','coupon','discount','price','quantity'] },
+      remove_from_cart: { label: 'Remove from Cart',         score: 5,  req: ['currency','value','items'], opt: [], ip: ['item_id','item_name','price','quantity'] },
+      view_cart:        { label: 'View Cart',                score: 6,  req: ['currency','value'],         opt: [], ip: [] },
+      add_to_wishlist:  { label: 'Add to Wishlist',          score: 5,  req: ['currency','value','items'], opt: [], ip: ['item_id','item_name','price'] },
+      view_item_list:   { label: 'View Item List',           score: 4,  req: ['items'],                   opt: [], ip: ['item_id','item_name','price'] },
+      login:            { label: 'Login / Sign In',          score: 7,  req: [],                          opt: [], ip: [] }
     };
 
     var PMAP = {
-      meta: { view_item: 'ViewContent', add_to_cart: 'AddToCart', remove_from_cart: null, view_cart: null, begin_checkout: 'InitiateCheckout', add_shipping_info: null, add_payment_info: 'AddPaymentInfo', purchase: 'Purchase', refund: null, search: 'Search', add_to_wishlist: 'AddToWishlist', view_item_list: null, select_item: null, sign_up: 'CompleteRegistration', login: null },
-      snapchat: { view_item: 'VIEW_CONTENT', add_to_cart: 'ADD_CART', remove_from_cart: null, view_cart: null, begin_checkout: 'START_CHECKOUT', add_shipping_info: null, add_payment_info: 'ADD_BILLING', purchase: 'PURCHASE', refund: null, search: 'SEARCH', add_to_wishlist: 'SAVE', view_item_list: null, select_item: null, sign_up: 'SIGN_UP', login: null },
-      tiktok: { view_item: 'ViewContent', add_to_cart: 'AddToCart', remove_from_cart: null, view_cart: null, begin_checkout: 'InitiateCheckout', add_shipping_info: null, add_payment_info: 'AddPaymentInfo', purchase: 'Purchase', refund: null, search: 'Search', add_to_wishlist: 'AddToWishlist', view_item_list: null, select_item: null, sign_up: 'CompleteRegistration', login: null },
-      google: { view_item: 'view_item', add_to_cart: 'add_to_cart', remove_from_cart: 'remove_from_cart', view_cart: 'view_cart', begin_checkout: 'begin_checkout', add_shipping_info: 'add_shipping_info', add_payment_info: 'add_payment_info', purchase: 'purchase', refund: 'refund', search: 'search', add_to_wishlist: 'add_to_wishlist', view_item_list: 'view_item_list', select_item: 'select_item', sign_up: 'sign_up', login: 'login' },
-      twitter: { view_item: 'ViewContent', add_to_cart: 'AddToCart', remove_from_cart: null, view_cart: null, begin_checkout: 'InitiateCheckout', add_shipping_info: null, add_payment_info: null, purchase: 'Purchase', refund: null, search: 'Search', add_to_wishlist: null, view_item_list: null, select_item: null, sign_up: 'SignUp', login: null }
+      meta: { view_item: 'ViewContent', add_to_cart: 'AddToCart', remove_from_cart: null, view_cart: null, begin_checkout: 'InitiateCheckout', purchase: 'Purchase', add_to_wishlist: 'AddToWishlist', view_item_list: null, login: null },
+      snapchat: { view_item: 'VIEW_CONTENT', add_to_cart: 'ADD_CART', remove_from_cart: null, view_cart: null, begin_checkout: 'START_CHECKOUT', purchase: 'PURCHASE', add_to_wishlist: 'SAVE', view_item_list: null, login: null },
+      tiktok: { view_item: 'ViewContent', add_to_cart: 'AddToCart', remove_from_cart: null, view_cart: null, begin_checkout: 'InitiateCheckout', purchase: 'Purchase', add_to_wishlist: 'AddToWishlist', view_item_list: null, login: null },
+      google: { view_item: 'view_item', add_to_cart: 'add_to_cart', remove_from_cart: 'remove_from_cart', view_cart: 'view_cart', begin_checkout: 'begin_checkout', purchase: 'purchase', add_to_wishlist: 'add_to_wishlist', view_item_list: 'view_item_list', login: 'login' },
+      twitter: { view_item: 'ViewContent', add_to_cart: 'AddToCart', remove_from_cart: null, view_cart: null, begin_checkout: 'InitiateCheckout', purchase: 'Purchase', add_to_wishlist: null, view_item_list: null, login: null }
       ,
-      ga4: { view_item: 'view_item', add_to_cart: 'add_to_cart', remove_from_cart: 'remove_from_cart', view_cart: 'view_cart', begin_checkout: 'begin_checkout', add_shipping_info: 'add_shipping_info', add_payment_info: 'add_payment_info', purchase: 'purchase', refund: 'refund', search: 'search', add_to_wishlist: 'add_to_wishlist', view_item_list: 'view_item_list', select_item: 'select_item', sign_up: 'sign_up', login: 'login' }
+      ga4: { view_item: 'view_item', add_to_cart: 'add_to_cart', remove_from_cart: 'remove_from_cart', view_cart: 'view_cart', begin_checkout: 'begin_checkout', purchase: 'purchase', add_to_wishlist: 'add_to_wishlist', view_item_list: 'view_item_list', login: 'login' }
     };
 
     var PM = {
@@ -5674,33 +5338,33 @@
     // GTM tag HTML - hardcoded per platform/event to avoid JS syntax errors
     var TAGHTML = {
       meta: {
-        ViewContent: "[S]\nfbq('track', 'ViewContent', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        AddToCart: "[S]\nfbq('track', 'AddToCart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        InitiateCheckout: "[S]\nfbq('track', 'InitiateCheckout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        AddPaymentInfo: "[S]\nfbq('track', 'AddPaymentInfo', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        Purchase: "[S]\nfbq('track', 'Purchase', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product'\n});\n[/S]",
+        ViewContent: "[S]\nfbq('track', 'ViewContent', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n});\n[/S]",
+        AddToCart: "[S]\nfbq('track', 'AddToCart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n});\n[/S]",
+        InitiateCheckout: "[S]\nfbq('track', 'InitiateCheckout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product',\n  num_items: {{DL - quantity}}\n});\n[/S]",
+        AddPaymentInfo: "[S]\nfbq('track', 'AddPaymentInfo', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product'\n});\n[/S]",
+        Purchase: "[S]\nfbq('track', 'Purchase', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  num_items: {{DL - quantity}}\n});\n[/S]",
         Search: "[S]\nfbq('track', 'Search', {});\n[/S]",
-        AddToWishlist: "[S]\nfbq('track', 'AddToWishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
+        AddToWishlist: "[S]\nfbq('track', 'AddToWishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n});\n[/S]",
         CompleteRegistration: "[S]\nfbq('track', 'CompleteRegistration', {});\n[/S]"
       },
       snapchat: {
-        VIEW_CONTENT: "[S]\nsnaptr('track', 'VIEW_CONTENT', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}}\n});\n[/S]",
-        ADD_CART: "[S]\nsnaptr('track', 'ADD_CART', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}}\n});\n[/S]",
-        START_CHECKOUT: "[S]\nsnaptr('track', 'START_CHECKOUT', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}}\n});\n[/S]",
+        VIEW_CONTENT: "[S]\nsnaptr('track', 'VIEW_CONTENT', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}'\n});\n[/S]",
+        ADD_CART: "[S]\nsnaptr('track', 'ADD_CART', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}'\n});\n[/S]",
+        START_CHECKOUT: "[S]\nsnaptr('track', 'START_CHECKOUT', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  item_ids: ['{{DL - item_id}}'],\n  number_items: {{DL - quantity}}\n});\n[/S]",
         ADD_BILLING: "[S]\nsnaptr('track', 'ADD_BILLING', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}}\n});\n[/S]",
-        PURCHASE: "[S]\nsnaptr('track', 'PURCHASE', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  transaction_id: '{{DL - transaction_id}}'\n});\n[/S]",
+        PURCHASE: "[S]\nsnaptr('track', 'PURCHASE', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  transaction_id: '{{DL - transaction_id}}',\n  item_ids: ['{{DL - item_id}}'],\n  number_items: {{DL - quantity}}\n});\n[/S]",
         SEARCH: "[S]\nsnaptr('track', 'SEARCH', {});\n[/S]",
-        SAVE: "[S]\nsnaptr('track', 'SAVE', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}}\n});\n[/S]",
+        SAVE: "[S]\nsnaptr('track', 'SAVE', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}'\n});\n[/S]",
         SIGN_UP: "[S]\nsnaptr('track', 'SIGN_UP', {});\n[/S]"
       },
       tiktok: {
-        ViewContent: "[S]\nttq.track('ViewContent', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        AddToCart: "[S]\nttq.track('AddToCart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        InitiateCheckout: "[S]\nttq.track('InitiateCheckout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        AddPaymentInfo: "[S]\nttq.track('AddPaymentInfo', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        Purchase: "[S]\nttq.track('Purchase', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
+        ViewContent: "[S]\nttq.track('ViewContent', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n});\n[/S]",
+        AddToCart: "[S]\nttq.track('AddToCart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n});\n[/S]",
+        InitiateCheckout: "[S]\nttq.track('InitiateCheckout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n});\n[/S]",
+        AddPaymentInfo: "[S]\nttq.track('AddPaymentInfo', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product'\n});\n[/S]",
+        Purchase: "[S]\nttq.track('PlaceAnOrder', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n});\n[/S]",
         Search: "[S]\nttq.track('Search', {});\n[/S]",
-        AddToWishlist: "[S]\nttq.track('AddToWishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
+        AddToWishlist: "[S]\nttq.track('AddToWishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n});\n[/S]",
         CompleteRegistration: "[S]\nttq.track('CompleteRegistration', {});\n[/S]"
       },
       google: {
@@ -5808,47 +5472,115 @@
       }
     }
 
-    // ===== EVENTS GRID =====
+    // ===== EVENTS GRID — Per-Platform Independent Selection =====
     function buildEvGrid() {
       S.events = [];
+      S.platformEvents = {};
       var grid = document.getElementById('evGrid');
       grid.innerHTML = '';
-      var keys = Object.keys(GA4);
-      for (var ki = 0; ki < keys.length; ki++) {
-        var id = keys[ki];
-        var ev = GA4[id];
-        var supported = [];
-        for (var pi = 0; pi < S.platforms.length; pi++) {
-          if (PMAP[S.platforms[pi]][id] != null) supported.push(S.platforms[pi]);
-        }
-        if (!supported.length) continue;
-        var isForced = (id === 'purchase');
-        if (isForced) S.events.push(id);
-        var tags = '';
-        for (var si = 0; si < supported.length; si++) {
-          tags += '<span class="ptag">' + PM[supported[si]].icon + '</span>';
-        }
-        var btn = document.createElement('button');
-        btn.className = 'cbtn' + (isForced ? ' on' : '');
-        btn.setAttribute('data-evid', id);
-        if (isForced) { btn.style.opacity = '.8'; btn.style.cursor = 'default'; btn.setAttribute('data-forced', '1'); }
-        btn.innerHTML = '<div class="cchk">✓</div><div class="ptags">' + tags + '</div>'
-          + '<span style="font-size:13px;font-weight:700">' + ev.label + '</span>'
-          + '<span style="font-family:monospace;font-size:9px;color:var(--mut)">GA4</span>';
-        grid.appendChild(btn);
-      }
-      grid.onclick = function (e) {
-        var btn = e.target;
-        while (btn && btn.tagName !== 'BUTTON') btn = btn.parentElement;
-        if (!btn || btn.getAttribute('data-forced')) return;
-        var eid = btn.getAttribute('data-evid');
-        if (!eid) return;
-        var idx = S.events.indexOf(eid);
-        if (idx === -1) { S.events.push(eid); btn.classList.add('on'); }
-        else { S.events.splice(idx, 1); btn.classList.remove('on'); }
+
+      if (!S.platforms.length) return;
+
+      // Compute union of S.events from platformEvents
+      function syncUnion() {
+        var u = {};
+        Object.keys(S.platformEvents).forEach(function (p) {
+          (S.platformEvents[p] || []).forEach(function (e) { u[e] = true; });
+        });
+        S.events = Object.keys(u);
         document.getElementById('btn3').disabled = S.events.length === 0;
-      };
-      document.getElementById('btn3').disabled = S.events.length === 0;
+      }
+
+      // Init each platform with 'purchase' forced
+      S.platforms.forEach(function (p) {
+        S.platformEvents[p] = (PMAP[p] && PMAP[p].purchase) ? ['purchase'] : [];
+      });
+      syncUnion();
+
+      // Info banner removed
+
+      // Platform tabs
+      var tabsDiv = document.createElement('div');
+      tabsDiv.className = 'pixtabs';
+      tabsDiv.style.marginBottom = '0';
+      tabsDiv.style.gridColumn = '1 / -1';
+      S.platforms.forEach(function (p, i) {
+        var tb = document.createElement('button');
+        tb.className = 'pixtab' + (i === 0 ? ' on' : '');
+        tb.setAttribute('data-plat', p);
+        tb.textContent = PM[p].name;
+        tabsDiv.appendChild(tb);
+      });
+      grid.appendChild(tabsDiv);
+
+      // Per-platform event sections
+      S.platforms.forEach(function (p, i) {
+        var section = document.createElement('div');
+        section.className = 'pixwrap' + (i === 0 ? ' on' : '');
+        section.id = 'evSec-' + p;
+        section.style.cssText = 'grid-column:1 / -1;padding-top:14px;';
+
+        var evIds = Object.keys(PMAP[p] || {}).filter(function (id) {
+          return GA4[id] && PMAP[p][id] != null;
+        });
+
+        if (!evIds.length) {
+          section.innerHTML = '<div style="padding:20px;color:var(--mut);font-size:13px;text-align:center;">لا توجد أيفنتات متاحة لهذه المنصة</div>';
+          grid.appendChild(section);
+          return;
+        }
+
+        var innerGrid = document.createElement('div');
+        innerGrid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;';
+
+        evIds.forEach(function (evId) {
+          var ev = GA4[evId];
+          var platName = PMAP[p][evId]; // Platform-specific event name
+          var isForced = (evId === 'purchase');
+          var isSelected = (S.platformEvents[p] || []).indexOf(evId) !== -1;
+
+          var btn = document.createElement('button');
+          btn.className = 'cbtn' + ((isForced || isSelected) ? ' on' : '');
+          btn.setAttribute('data-evid', evId);
+          btn.setAttribute('data-plat', p);
+          if (isForced) { btn.style.opacity = '.8'; btn.style.cursor = 'default'; btn.setAttribute('data-forced', '1'); }
+          btn.innerHTML = '<div class="cchk">✓</div>'
+            + '<span style="font-size:13px;font-weight:700;display:block;margin-bottom:3px;">' + ev.label + '</span>'
+            + '<span style="font-family:monospace;font-size:9px;color:var(--mut);word-break:break-all;">' + platName + '</span>';
+          innerGrid.appendChild(btn);
+        });
+
+        // Click handler scoped to this platform's grid
+        innerGrid.addEventListener('click', function (e) {
+          var btn = e.target;
+          while (btn && btn.tagName !== 'BUTTON') btn = btn.parentElement;
+          if (!btn || btn.getAttribute('data-forced')) return;
+          var eid = btn.getAttribute('data-evid');
+          var plat = btn.getAttribute('data-plat');
+          if (!eid || !plat) return;
+          var arr = S.platformEvents[plat] || [];
+          var idx = arr.indexOf(eid);
+          if (idx === -1) { arr.push(eid); btn.classList.add('on'); }
+          else { arr.splice(idx, 1); btn.classList.remove('on'); }
+          S.platformEvents[plat] = arr;
+          syncUnion();
+        });
+
+        section.appendChild(innerGrid);
+        grid.appendChild(section);
+      });
+
+      // Tab switching
+      tabsDiv.addEventListener('click', function (e) {
+        var tb = e.target;
+        if (tb.tagName !== 'BUTTON') return;
+        var plat = tb.getAttribute('data-plat');
+        tabsDiv.querySelectorAll('.pixtab').forEach(function (b) { b.classList.remove('on'); });
+        grid.querySelectorAll('.pixwrap').forEach(function (w) { w.classList.remove('on'); });
+        tb.classList.add('on');
+        var sec = document.getElementById('evSec-' + plat);
+        if (sec) sec.classList.add('on');
+      });
     }
 
     // ===== PIXEL INPUTS =====
@@ -6135,13 +5867,15 @@
       var tagId = 1, trigId = 100, varId = 200;
       var trigMap = {};
       var allPagesTrigId = 2147479553;
-      function fp(id) { return String(baseTs + id); }
+      function fp(id) { return String(baseTs * 1000 + id); }
 
       // ── 1. VARIABLES ────────────────────────────────────────
       var dlKeys = [
         'currency', 'value', 'transaction_id', 'affiliation',
         'coupon', 'shipping', 'tax', 'payment_type',
-        'search_term', 'shipping_tier', 'method', 'items', 'user_email'
+        'search_term', 'shipping_tier', 'method', 'items', 'user_email',
+        'item_id', 'item_name', 'item_sku', 'item_brand', 'item_category',
+        'price', 'quantity'
       ];
       if (S.platforms.indexOf('google') !== -1) {
         dlKeys.push('google_conversion_id');
@@ -6257,12 +5991,189 @@
         varId++;
       }
 
+      // ═══════════════════════════════════════════════════════════════
+      // سلة — Per-Event DLV Variables
+      // ═══════════════════════════════════════════════════════════════
+      // سلة بتستخدم paths مختلفة لنفس المفهوم في كل event
+      // Rule: نفس الـ path = نفس المتغير / path مختلف = متغير منفصل
+      if (S.cms === 'salla') {
+        var sallaPerEventVars = [
+          // ── Product List Viewed (data[]) ──────────────────────
+          { name: 'DLV - items_array - Product List Viewed',   path: 'data' },
+          { name: 'DLV - item_id - Product List Viewed',       path: 'data.0.id' },
+          { name: 'DLV - item_name - Product List Viewed',     path: 'data.0.name' },
+          { name: 'DLV - item_sku - Product List Viewed',      path: 'data.0.sku' },
+          { name: 'DLV - price - Product List Viewed',         path: 'data.0.price' },
+          { name: 'DLV - currency - Product List Viewed',      path: 'data.0.currency' },
+          // ⚠️ category هنا object {name} مش string مباشرة
+          { name: 'DLV - item_category - Product List Viewed', path: 'data.0.category.name' },
+
+          // ── Product Viewed + Product Removed (shared 0.* path) ──
+          { name: 'DLV - item_id - Product Viewed',       path: '0.id' },
+          { name: 'DLV - item_name - Product Viewed',     path: '0.name' },
+          { name: 'DLV - item_sku - Product Viewed',      path: '0.sku' },
+          // ⚠️ استخدم price مش value — 0.value بيكون integer مقطوع
+          { name: 'DLV - price - Product Viewed',         path: '0.price' },
+          { name: 'DLV - currency - Product Viewed',      path: '0.currency' },
+          { name: 'DLV - item_category - Product Viewed', path: '0.category' },
+          { name: 'DLV - item_url - Product Viewed',      path: '0.url' },
+          { name: 'DLV - item_image - Product Viewed',    path: '0.image_url' },
+          // ⚠️ quantity في Product Viewed بيكون 0 دايماً (Salla bug) — hardcode 1 في GA4 tag
+
+          // ── addToCart (ecommerce.add.products[]) ──────────────
+          { name: 'DLV - items_array - addToCart',       path: 'ecommerce.add.products' },
+          { name: 'DLV - item_id - addToCart',           path: 'ecommerce.add.products.0.id' },
+          { name: 'DLV - item_name - addToCart',         path: 'ecommerce.add.products.0.name' },
+          { name: 'DLV - price - addToCart',             path: 'ecommerce.add.products.0.price' },
+          { name: 'DLV - quantity - addToCart',          path: 'ecommerce.add.products.0.quantity' },
+          { name: 'DLV - item_category - addToCart',     path: 'ecommerce.add.products.0.category' },
+          { name: 'DLV - brand - addToCart',             path: 'ecommerce.add.products.0.brand' },
+          // ⚠️ currencyCode مش currency
+          { name: 'DLV - currency - addToCart',          path: 'ecommerce.currencyCode' },
+          { name: 'DLV - event_id - addToCart',          path: 'ecommerce.event_id' },
+          // ⚠️ SKU غير موجود في addToCart من سلة
+
+          // ── Cart Viewed (0.products[]) ────────────────────────
+          { name: 'DLV - cart_id - Cart Viewed',         path: '0.cart_id' },
+          { name: 'DLV - items_array - Cart Viewed',     path: '0.products' },
+          { name: 'DLV - item_id - Cart Viewed',         path: '0.products.0.id' },
+          { name: 'DLV - item_name - Cart Viewed',       path: '0.products.0.name' },
+          { name: 'DLV - item_sku - Cart Viewed',        path: '0.products.0.sku' },
+          // ⚠️ price هنا قد يكون إجمالي الخط (price * qty) — مش وحدة
+          { name: 'DLV - price - Cart Viewed',           path: '0.products.0.price' },
+          { name: 'DLV - quantity - Cart Viewed',        path: '0.products.0.quantity' },
+          { name: 'DLV - currency - Cart Viewed',        path: '0.products.0.currency' },
+          { name: 'DLV - item_category - Cart Viewed',   path: '0.products.0.category' },
+          { name: 'DLV - coupon - Cart Viewed',          path: '0.products.0.coupon' },
+          // ⚠️ مفيش cart total في Cart Viewed — اعمل Custom JS Variable تجمع الـ prices
+
+          // ── cart::submitted — begin_checkout ─────────────────
+          // ⚠️ مفيش ecommerce data في cart::submitted — status only
+
+          // ── purchase (ecommerce.purchase.*) ───────────────────
+          { name: 'DLV - event_id - purchase',           path: 'ecommerce.event_id' },
+          { name: 'DLV - transaction_id - purchase',     path: 'ecommerce.purchase.actionField.id' },
+          { name: 'DLV - revenue - purchase',            path: 'ecommerce.purchase.actionField.revenue' },
+          { name: 'DLV - total - purchase',              path: 'ecommerce.purchase.actionField.total' },
+          { name: 'DLV - currency_code - purchase',      path: 'ecommerce.purchase.actionField.currency_code' },
+          { name: 'DLV - items_array - purchase',        path: 'ecommerce.purchase.products' },
+          { name: 'DLV - item_id - purchase',            path: 'ecommerce.purchase.products.0.id' },
+          { name: 'DLV - item_name - purchase',          path: 'ecommerce.purchase.products.0.name' },
+          { name: 'DLV - price - purchase',              path: 'ecommerce.purchase.products.0.price' },
+          { name: 'DLV - quantity - purchase',           path: 'ecommerce.purchase.products.0.quantity' },
+          // ⚠️ category قد تكون concatenated (المكملات/العروض) — اقطعها لو محتاج
+          { name: 'DLV - item_category - purchase',      path: 'ecommerce.purchase.products.0.category' },
+          // ⚠️ SKU غير موجود في purchase products من سلة
+
+          // ── Customer (purchase — logged-in) ───────────────────
+          // ⚠️ isGuest بـ camelCase — مختلف عن زد التي تستخدم is_guest
+          { name: 'DLV - customer.isGuest',              path: 'customer.isGuest' },
+          { name: 'DLV - customer.name',                 path: 'customer.name' },
+          // ⚠️ first_name و last_name مشفّرين SHA-1 من سلة — مش plain text
+          { name: 'DLV - customer.firstNameHashed',      path: 'customer.first_name' },
+          { name: 'DLV - customer.lastNameHashed',       path: 'customer.last_name' },
+          { name: 'DLV - customer.email',                path: 'customer.email' },
+          { name: 'DLV - customer.phone',                path: 'customer.phone' },
+          { name: 'DLV - customer.emailHashed',          path: 'customer.email_hashed' },
+          { name: 'DLV - customer.phoneHashed',          path: 'customer.phone_hashed' }
+        ];
+        sallaPerEventVars.forEach(function (v) {
+          variables.push({
+            accountId: '000000000', containerId: '00000000',
+            variableId: varId,
+            name: v.name,
+            type: 'v',
+            parameter: [
+              { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+              { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+              { type: 'TEMPLATE', key: 'name', value: v.path }
+            ],
+            fingerprint: fp(varId)
+          });
+          varId++;
+        });
+      }
+
+      // ═══════════════════════════════════════════════════════════════
+      // زد — Extra DLV Variables (per-event specifics)
+      // ═══════════════════════════════════════════════════════════════
+      if (S.cms === 'zid') {
+        var zidExtraVars = [
+          // ── Item-level (index 0) — explicit named variables ────
+          { name: 'DLV - item_id',              path: 'ecommerce.items.0.item_id' },
+          { name: 'DLV - item_name',            path: 'ecommerce.items.0.item_name' },
+          { name: 'DLV - item_category',        path: 'ecommerce.items.0.item_category' },
+          { name: 'DLV - item_price',           path: 'ecommerce.items.0.price' },
+          { name: 'DLV - item_quantity',        path: 'ecommerce.items.0.quantity' },
+          // ── SKU — TWO SEPARATE VARIABLES ──────────────────────
+          // ⚠️ CRITICAL: زد بتبعت item_sku في كل الـ events ما عدا purchase
+          // في purchase بتبعت sku (مش item_sku) — path مختلف → متغير منفصل
+          { name: 'DLV - item_sku',             path: 'ecommerce.items.0.item_sku' },
+          { name: 'DLV - item_sku (Purchase)',   path: 'ecommerce.items.0.sku' },
+          // ── Purchase-only fields ──────────────────────────────
+          { name: 'DLV - ecommerce_tax',        path: 'ecommerce.tax' },
+          { name: 'DLV - ecommerce_shipping',   path: 'ecommerce.shipping' },
+          { name: 'DLV - ecommerce_coupon',     path: 'ecommerce.coupon' },
+          // ── Customer fields ───────────────────────────────────
+          // ⚠️ is_guest بـ snake_case — مختلف عن سلة التي تستخدم isGuest
+          { name: 'DLV - customer.is_guest',    path: 'customer.is_guest' },
+          { name: 'DLV - customer.external_id', path: 'customer.external_id' },
+          { name: 'DLV - customer.email',       path: 'customer.email' },
+          { name: 'DLV - customer.mobile',      path: 'customer.mobile' },
+          { name: 'DLV - customer.emailHashed', path: 'customer.email_hashed' },
+          { name: 'DLV - customer.mobileHashed',path: 'customer.mobile_hashed' }
+        ];
+        zidExtraVars.forEach(function (v) {
+          variables.push({
+            accountId: '000000000', containerId: '00000000',
+            variableId: varId,
+            name: v.name,
+            type: 'v',
+            parameter: [
+              { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+              { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+              { type: 'TEMPLATE', key: 'name', value: v.path }
+            ],
+            fingerprint: fp(varId)
+          });
+          varId++;
+        });
+      }
+
       var cmsVarMap = CMS_DL_MAP[S.cms] && CMS_DL_MAP[S.cms].vars;
       for (var vi = 0; vi < dlKeys.length; vi++) {
         var k = dlKeys[vi];
+        // ── Google Ads: conversion ID + labels are CONSTANTS, not DataLayer variables ──
+        if (k === 'google_conversion_id') {
+          var gConstId = (S.pixelIds && S.pixelIds['google']) ? S.pixelIds['google'].replace('AW-', '') : 'XXXXXXXXXX';
+          variables.push({
+            accountId: '000000000', containerId: '00000000',
+            variableId: varId,
+            name: 'Const - Google Conversion ID',
+            type: 'c',
+            parameter: [{ type: 'TEMPLATE', key: 'value', value: gConstId }],
+            fingerprint: fp(varId)
+          });
+          varId++;
+          continue;
+        }
+        if (k.indexOf('google_label_') === 0) {
+          var evKey = k.replace('google_label_', '');
+          var labelVal = (S.pixelIds && S.pixelIds['google_labels'] && S.pixelIds['google_labels'][evKey])
+            ? S.pixelIds['google_labels'][evKey] : 'YOUR_LABEL_' + evKey.toUpperCase();
+          variables.push({
+            accountId: '000000000', containerId: '00000000',
+            variableId: varId,
+            name: 'Const - Google Label ' + (evKey.charAt(0).toUpperCase() + evKey.slice(1).replace(/_/g, ' ')),
+            type: 'c',
+            parameter: [{ type: 'TEMPLATE', key: 'value', value: labelVal }],
+            fingerprint: fp(varId)
+          });
+          varId++;
+          continue;
+        }
         var dlName;
         if (k === 'user_id' || k === 'user_email') dlName = k;
-        else if (k.indexOf('google_') === 0) dlName = k;
         else if (cmsVarMap && cmsVarMap[k]) dlName = cmsVarMap[k];
         else dlName = 'ecommerce.' + k;
         variables.push({
@@ -6324,7 +6235,7 @@
           { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }
         ],
         firingTriggerId: [consentInitTrigId],
-        tagFiringOption: 'ONCE_PER_EVENT',
+        tagFiringOption: 'oncePerEvent',
         fingerprint: fp(tagId)
       });
       tagId++;
@@ -6392,6 +6303,110 @@
         varId++;
       }
 
+      // ── CLICK IDs + UTMs: URL Query Variables + First-Party Cookie Variables ──
+      // These are ALWAYS included regardless of which platforms are selected
+      var clickIdKeys = ['gclid', 'fbclid', 'ttclid', 'scclid', 'twclid'];
+      var utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'];
+      var trackingKeys = clickIdKeys.concat(utmKeys);
+
+      // ── DL - campaign_url: DataLayer variable for preserving original URL with UTMs ──
+      variables.push({
+        accountId: '000000000', containerId: '00000000',
+        variableId: varId,
+        name: 'DL - campaign_url',
+        type: 'v',
+        parameter: [
+          { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+          { type: 'BOOLEAN', key: 'setDefaultValue', value: 'true' },
+          { type: 'TEMPLATE', key: 'defaultValue', value: '' },
+          { type: 'TEMPLATE', key: 'name', value: 'campaign_url' }
+        ],
+        fingerprint: fp(varId)
+      });
+      varId++;
+
+      trackingKeys.forEach(function (k) {
+        var isUtm = utmKeys.indexOf(k) !== -1;
+        // URL Query Variable — UTMs use campaign_url as source, click IDs use page URL
+        var urlParams = [
+          { type: 'TEMPLATE', key: 'component', value: 'QUERY' },
+          { type: 'TEMPLATE', key: 'queryKey', value: k }
+        ];
+        if (isUtm) {
+          urlParams.push({ type: 'TEMPLATE', key: 'urlSource', value: '{{DL - campaign_url}}' });
+        }
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'URL - ' + k,
+          type: 'u',
+          parameter: urlParams,
+          fingerprint: fp(varId)
+        });
+        varId++;
+
+        // First-Party Cookie Variable (read back from cookie)
+        variables.push({
+          accountId: '000000000', containerId: '00000000',
+          variableId: varId,
+          name: 'Cookie - ' + k,
+          type: 'k',
+          parameter: [
+            { type: 'TEMPLATE', key: 'name', value: 'et_' + k },
+            { type: 'BOOLEAN', key: 'decodeCookie', value: 'true' },
+            { type: 'BOOLEAN', key: 'formatValue', value: 'false' }
+          ],
+          fingerprint: fp(varId)
+        });
+        varId++;
+      });
+
+      // ── External ID: 1st Party Cookie Variable ─────────────────
+      // external_id is a server-set persistent cookie (not a URL param)
+      variables.push({
+        accountId: '000000000', containerId: '00000000',
+        variableId: varId,
+        name: 'Cookie - external_id',
+        type: 'k',
+        parameter: [
+          { type: 'TEMPLATE', key: 'name', value: 'external_id' },
+          { type: 'BOOLEAN', key: 'decodeCookie', value: 'true' },
+          { type: 'BOOLEAN', key: 'formatValue', value: 'false' }
+        ],
+        fingerprint: fp(varId)
+      });
+      varId++;
+
+      // Cookie Capture Custom HTML Tag (All Pages, Once Per Page) — always included
+      var cookieCaptureHtml = '<script>\n'
+        + '(function() {\n'
+        + '  var keys = ["gclid","fbclid","ttclid","scclid","twclid","utm_source","utm_medium","utm_campaign","utm_content","utm_term","utm_id"];\n'
+        + '  try { var params = new URLSearchParams(window.location.search); } catch(e) { return; }\n'
+        + '  keys.forEach(function(k) {\n'
+        + '    var v = params.get(k);\n'
+        + '    if (v) {\n'
+        + '      var exp = new Date(Date.now() + 90 * 864e5).toUTCString();\n'
+        + '      document.cookie = "et_" + k + "=" + encodeURIComponent(v) + ";expires=" + exp + ";path=/;SameSite=Lax";\n'
+        + '    }\n'
+        + '  });\n'
+        + '})();\n'
+        + '<\/script>';
+
+      tags.push({
+        accountId: '000000000', containerId: '00000000', tagId: tagId,
+        name: 'Cookie Capture | Click IDs + UTMs (All Pages)',
+        type: 'html',
+        parameter: [
+          { type: 'TEMPLATE', key: 'html', value: cookieCaptureHtml },
+          { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }
+        ],
+        firingTriggerId: [allPagesTrigId],
+        tagFiringOption: 'oncePerPage',
+        notes: 'Captures gclid, fbclid, ttclid, scclid, twclid and all UTM params into 90-day cookies (et_*) on every page | Generated by Easy Track',
+        fingerprint: fp(tagId)
+      });
+      tagId++;
+
       for (var bi = 0; bi < S.platforms.length; bi++) {
         var bp = S.platforms[bi];
         var bPixId = S.pixelIds[bp] || 'YOUR_PIXEL_ID';
@@ -6416,6 +6431,7 @@
           continue;
         } else if (bp === 'ga4') {
           var ga4CfgId = S.pixelIds['ga4'] || 'G-XXXXXXXXXX';
+          // GA4 config: send_page_view + all UTM parameters from cookies for proper attribution
           tags.push({
             accountId: '000000000', containerId: '00000000', tagId: tagId,
             name: safeName(PM[bp].name + ' | Google Tag'),
@@ -6424,15 +6440,19 @@
               { type: 'TEMPLATE', key: 'tagId', value: ga4CfgId },
               {
                 type: 'LIST', key: 'configSettingsTable',
-                list: [{
-                  type: 'MAP', map: [
-                    { type: 'TEMPLATE', key: 'parameter', value: 'send_page_view' },
-                    { type: 'TEMPLATE', key: 'parameterValue', value: 'true' }
-                  ]
-                }]
+                list: [
+                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'send_page_view' }, { type: 'TEMPLATE', key: 'parameterValue', value: 'true' }] },
+                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_source' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_source}}' }] },
+                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_medium' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_medium}}' }] },
+                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_name' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_campaign}}' }] },
+                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_content' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_content}}' }] },
+                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_term' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_term}}' }] },
+                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_id' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_id}}' }] }
+                ]
               }
             ],
             firingTriggerId: [allPagesTrigId],
+            notes: 'GA4 Config Tag — includes all UTM params from et_* cookies for full attribution | Generated by Easy Track',
             fingerprint: fp(tagId)
           });
           tagId++;
@@ -6460,10 +6480,9 @@
       var evLabels = {
         purchase: 'Purchase', add_to_cart: 'Add to Cart', remove_from_cart: 'Remove from Cart',
         view_item: 'View Item', view_cart: 'View Cart', begin_checkout: 'Begin Checkout',
-        add_shipping_info: 'Add Shipping Info', add_payment_info: 'Add Payment Info',
-        refund: 'Refund', search: 'Search', add_to_wishlist: 'Add to Wishlist',
-        view_item_list: 'View Item List', select_item: 'Select Item',
-        sign_up: 'Sign Up', login: 'Login'
+        add_to_wishlist: 'Add to Wishlist',
+        view_item_list: 'View Item List',
+        login: 'Login'
       };
 
       for (var ei = 0; ei < S.events.length; ei++) {
@@ -6545,33 +6564,65 @@
         purchase: { hasValue: true, hasCurrency: true, hasTxId: true },
         add_to_cart: { hasValue: true, hasCurrency: true, hasTxId: false },
         begin_checkout: { hasValue: true, hasCurrency: true, hasTxId: false },
-        add_payment_info: { hasValue: true, hasCurrency: true, hasTxId: false },
         view_item: { hasValue: true, hasCurrency: true, hasTxId: false },
-        add_to_wishlist: { hasValue: true, hasCurrency: true, hasTxId: false },
-        sign_up: { hasValue: false, hasCurrency: false, hasTxId: false }
+        add_to_wishlist: { hasValue: true, hasCurrency: true, hasTxId: false }
       };
       var GA4_EV_PARAMS = {
-        purchase: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }, { key: 'transaction_id', value: '{{DL - transaction_id}}' }, { key: 'items', value: '{{DL - items}}' }, { key: 'user_id', value: '{{DL - user_id}}' }],
-        add_to_cart: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }, { key: 'items', value: '{{DL - items}}' }],
-        remove_from_cart: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }, { key: 'items', value: '{{DL - items}}' }],
-        view_item: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }, { key: 'items', value: '{{DL - items}}' }],
-        view_cart: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }],
-        begin_checkout: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }, { key: 'items', value: '{{DL - items}}' }],
-        add_shipping_info: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }, { key: 'shipping_tier', value: '{{DL - shipping_tier}}' }],
-        add_payment_info: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }, { key: 'payment_type', value: '{{DL - payment_type}}' }],
-        refund: [{ key: 'transaction_id', value: '{{DL - transaction_id}}' }, { key: 'currency', value: '{{DL - currency}}' }],
-        search: [{ key: 'search_term', value: '{{DL - search_term}}' }],
-        view_item_list: [{ key: 'items', value: '{{DL - items}}' }],
-        select_item: [{ key: 'items', value: '{{DL - items}}' }],
-        add_to_wishlist: [{ key: 'value', value: '{{DL - value}}' }, { key: 'currency', value: '{{DL - currency}}' }],
-        sign_up: [{ key: 'method', value: '{{DL - method}}' }],
+        // ── Purchase: full parameters incl. tax/shipping/coupon (زد) ──
+        purchase: [
+          { key: 'transaction_id', value: '{{DL - transaction_id}}' },
+          { key: 'value',          value: '{{DL - value}}' },
+          { key: 'currency',       value: '{{DL - currency}}' },
+          { key: 'tax',            value: '{{DL - tax}}' },
+          { key: 'shipping',       value: '{{DL - shipping}}' },
+          { key: 'coupon',         value: '{{DL - coupon}}' },
+          { key: 'items',          value: '{{DL - items}}' },
+          { key: 'user_id',        value: '{{DL - user_id}}' }
+        ],
+        add_to_cart: [
+          { key: 'value',    value: '{{DL - value}}' },
+          { key: 'currency', value: '{{DL - currency}}' },
+          { key: 'items',    value: '{{DL - items}}' }
+        ],
+        remove_from_cart: [
+          { key: 'value',    value: '{{DL - value}}' },
+          { key: 'currency', value: '{{DL - currency}}' },
+          { key: 'items',    value: '{{DL - items}}' }
+        ],
+        view_item: [
+          { key: 'value',    value: '{{DL - value}}' },
+          { key: 'currency', value: '{{DL - currency}}' },
+          { key: 'items',    value: '{{DL - items}}' }
+        ],
+        // ── view_cart: items ADDED (was missing before) ──
+        view_cart: [
+          { key: 'value',    value: '{{DL - value}}' },
+          { key: 'currency', value: '{{DL - currency}}' },
+          { key: 'items',    value: '{{DL - items}}' }
+        ],
+        begin_checkout: [
+          { key: 'value',    value: '{{DL - value}}' },
+          { key: 'currency', value: '{{DL - currency}}' },
+          { key: 'items',    value: '{{DL - items}}' }
+        ],
+        view_item_list: [
+          { key: 'items',    value: '{{DL - items}}' }
+        ],
+        add_to_wishlist: [
+          { key: 'value',    value: '{{DL - value}}' },
+          { key: 'currency', value: '{{DL - currency}}' },
+          { key: 'items',    value: '{{DL - items}}' }
+        ],
         login: [{ key: 'method', value: '{{DL - method}}' }]
       };
 
       for (var pi2 = 0; pi2 < S.platforms.length; pi2++) {
         var plat = S.platforms[pi2];
-        for (var ei2 = 0; ei2 < S.events.length; ei2++) {
-          var evId2 = S.events[ei2];
+        // Use per-platform event selection — if set, use it; otherwise fall back to union S.events
+        var platEvList2 = (S.platformEvents && S.platformEvents[plat] && S.platformEvents[plat].length)
+          ? S.platformEvents[plat] : S.events;
+        for (var ei2 = 0; ei2 < platEvList2.length; ei2++) {
+          var evId2 = platEvList2[ei2];
           var ev2 = GA4[evId2];
           if (!trigMap[evId2]) continue;
 
@@ -6580,7 +6631,9 @@
             var convP = GOOGLE_CONV_PARAMS[evId2];
             if (!convP) continue;
             var gAdsId2 = S.pixelIds['google'] || 'AW-XXXXXXXXXX';
-            var gLabelId = (S.pixelIds['google_labels'] && S.pixelIds['google_labels'][evId2]) || '{{DL - google_label_' + evId2 + '}}';
+            // Labels are GTM Constants — reference the constant variable
+            var evLblKey = evId2.charAt(0).toUpperCase() + evId2.slice(1).replace(/_/g, ' ');
+            var gLabelId = '{{Const - Google Label ' + evLblKey + '}}';
             var convIdNum = parseInt((gAdsId2.replace('AW-', '')).split('/')[0]) || 0;
             var evLbl2 = evLabels[evId2] || evId2;
             var awctParams = [
@@ -6762,21 +6815,39 @@
         // سلة بتبعت events بـ UA Enhanced Ecommerce format — محتاج UA→GA4 Bridge
         note: '// ✅ سلة — Real Data Layer Examples\n// ─────────────────────────────────────────────────────────────────\n// ⚠️ سلة بتبعت UA Enhanced Ecommerce format — مش GA4 مباشرة\n// استخدم الـ UA→GA4 Bridge tab عشان تحوّل الـ events لـ GA4 تلقائياً\n// تأكد إن GTM Container ID اتحط في: الإعدادات → التسويق → Google Tag Manager\n\n// ── 1) Product List Viewed — المنتجات في obj.data ──\ndataLayer.push({\n  event: "Product List Viewed",\n  status: 200,\n  data: [\n    { id: "1131050439", name: "فرشاة أورما الكهربائية", price: 155.65, currency: "SAR", sku: "DV58595151", category: { name: "الأجهزة" }, is_available: true },\n    { id: "1503084629", name: "جهاز التنظيف بالبخار",  price: 169.57, currency: "SAR", sku: "OM-DV",      category: { name: "الأجهزة" }, is_available: true },\n    { id: "1597494942", name: "مكنسة تولون برميل 1500 واط", price: 256.52, currency: "SAR", sku: "659465223693", category: { name: "الأجهزة" }, is_available: true }\n  ],\n  title: "3 منتجات",\n  source: "categories"\n});\n\n// ── 2) Product Viewed — المنتج في obj[0] ──\ndataLayer.push({\n  0: { id: 1503084629, name: "جهاز التنظيف بالبخار", category: "الأجهزة", price: 169.57, quantity: 0, currency: "SAR", sku: "OM-DV" },\n  event: "Product Viewed"\n});\n\n// ── 3) Add to Cart — ecommerce.add.products ──\ndataLayer.push({\n  event: "addToCart",\n  ecommerce: {\n    currencyCode: "SAR",\n    exchangeRate: "1",\n    event_id: 2674990342,\n    add: {\n      products: [{ id: 1830680877, name: "بكج التنظيف الشامل", category: "العروض", price: 199.13, quantity: 1, brand: "ORMA" }]\n    }\n  }\n});\n\n// ── 4) Signed In ──\ndataLayer.push({ event: "Signed In" });\n\n// ── 5) Product Added to Wishlist ──\ndataLayer.push({ event: "Product Added to Wishlist" });\n\n// ── 6) Cart Viewed — obj[0].products ──\ndataLayer.push({\n  0: {\n    cart_id: "145778443",\n    products: [\n      { id: 1830680877, name: "بكج التنظيف الشامل", category: "العروض", price: 458, quantity: 2, brand: "ORMA", sku: "orma222", currency: "SAR" },\n      { id: 1503084629, name: "جهاز التنظيف بالبخار",  category: "الأجهزة", price: 975.05, quantity: 5, sku: "OM-DV", currency: "SAR" }\n    ]\n  },\n  event: "Cart Viewed"\n});\n\n// ── 7) Product Removed — obj[0] ──\ndataLayer.push({\n  0: { id: 1503084629, name: "جهاز التنظيف بالبخار", category: "الأجهزة", price: 195.01, quantity: 5, cart_id: "145778443", sku: "OM-DV", currency: "SAR" },\n  event: "Product Removed"\n});\n\n// ── 8) Begin Checkout ──\ndataLayer.push({ event: "cart::submitted", status: 200, success: true });\n\n// ── 9) Purchase — ecommerce.purchase.products ──\ndataLayer.push({\n  event: "purchase",\n  ecommerce: {\n    currencyCode: "SAR",\n    exchangeRate: "1",\n    event_id: 253138256,\n    purchase: {\n      actionField: { id: 253138256, total: 83.86, revenue: 83.86, currency_code: "SAR" },\n      products: [{ id: 462352033, name: "...", category: "المكملات الغذائية", price: 73.85, quantity: 1, currency: "SAR" }]\n    }\n  },\n  customer: { isGuest: false, email_hashed: "sha256...", phone_hashed: "sha256..." }\n});\n\n// ── GTM Variables ──\n// • currency    → ecommerce.currencyCode\n// • transaction → ecommerce.event_id  أو  ecommerce.purchase.actionField.id\n// • value       → ecommerce.purchase.actionField.total\n// • product data → obj[0]  أو  ecommerce.add.products  أو  obj.data\n// • login       → Custom Event "Signed In"',
         vars: {
+          // ── Currency: addToCart + purchase use ecommerce.currencyCode ──
           currency: 'ecommerce.currencyCode',
-          value: 'ecommerce.purchase.actionField.total',
-          transaction_id: 'ecommerce.event_id',
+          // ── Value / Revenue: purchase actionField (primary revenue event) ──
+          value: 'ecommerce.purchase.actionField.revenue',
+          // ── Transaction ID: FIXED — was ecommerce.event_id (WRONG) ──
+          // Real path: ecommerce.purchase.actionField.id
+          transaction_id: 'ecommerce.purchase.actionField.id',
+          // ── Purchase extra fields ──
+          revenue: 'ecommerce.purchase.actionField.revenue',
+          total: 'ecommerce.purchase.actionField.total',
+          event_id: 'ecommerce.event_id',
+          // ── Items: purchase event products array ──
           items: 'ecommerce.purchase.products',
+          // ── Item-level (Product Viewed / Product Removed — path 0.*) ──
           item_id: '0.id',
           item_name: '0.name',
           item_brand: '0.brand',
           item_category: '0.category',
+          item_sku: '0.sku',
           price: '0.price',
           quantity: '0.quantity',
+          cart_id: '0.cart_id',
+          // ── Other ──
           search_term: 'searchTerm',
           method: 'method',
+          // ── Customer (purchase — logged-in users) ──
           'customer.isGuest': 'customer.isGuest',
+          'customer.email': 'customer.email',
+          'customer.phone': 'customer.phone',
           'customer.emailHashed': 'customer.email_hashed',
-          'customer.phoneHashed': 'customer.phone_hashed'
+          'customer.phoneHashed': 'customer.phone_hashed',
+          'customer.firstNameHashed': 'customer.first_name',
+          'customer.lastNameHashed': 'customer.last_name'
         },
         eventNames: {
           view_item_list: 'Product List Viewed',
@@ -6795,18 +6866,30 @@
         // زد بتبعت events GA4-compatible بشكل كبير
         note: '// ✅ زد بتدعم GTM Data Layer — Events بتتبعت تلقائياً\n// تأكد إن GTM Container ID اتحط في: لوحة التحكم → التسويق → Google Tag Manager\n//\n// ── Login User Trigger (تسجيل دخول العميل) ──\n// زد مفيهاش event اسمه "login" — بدل كدا بتبعت customer.is_guest مع كل event\n// عشان تعمل Trigger للعميل المسجّل دخوله في GTM:\n//   Trigger Type  : Page View\n//   Fires on      : Some Page Views\n//   Condition     : customer.isGuest  |  contains  |  false\n//\n// لما العميل logged in بتيجي البيانات دي في كل event:\n//   customer.is_guest      → false\n//   customer.external_id   → Hash فريد للعميل\n//   customer.email         → إيميل العميل\n//   customer.email_hashed  → إيميل مشفّر (SHA-256)\n//   customer.mobile        → رقم الموبايل\n//   customer.mobile_hashed → موبايل مشفّر (SHA-256)',
         vars: {
+          // ── Ecommerce top-level ──
           currency: 'ecommerce.currency',
           value: 'ecommerce.value',
           transaction_id: 'ecommerce.transaction_id',
+          // ── Purchase-only fields ──
+          tax: 'ecommerce.tax',
+          shipping: 'ecommerce.shipping',
+          coupon: 'ecommerce.coupon',
+          // ── Items array (full) ──
           items: 'ecommerce.items',
-          item_id: 'item_id',
-          item_name: 'item_name',
-          item_brand: 'item_brand',
-          item_category: 'item_category',
-          price: 'price',
-          quantity: 'quantity',
+          // ── Item-level (index 0) — FIXED: all paths include ecommerce.items.0.* ──
+          item_id: 'ecommerce.items.0.item_id',
+          item_name: 'ecommerce.items.0.item_name',
+          item_brand: 'ecommerce.items.0.item_brand',
+          item_category: 'ecommerce.items.0.item_category',
+          // item_sku: all events EXCEPT purchase use item_sku
+          // purchase uses ecommerce.items.0.sku — see DLV - item_sku (Purchase) variable below
+          item_sku: 'ecommerce.items.0.item_sku',
+          price: 'ecommerce.items.0.price',
+          quantity: 'ecommerce.items.0.quantity',
+          // ── Other ──
           search_term: 'ecommerce.search_term',
           method: 'method',
+          // ── Customer object ──
           'customer.isGuest': 'customer.is_guest',
           'customer.externalId': 'customer.external_id',
           'customer.email': 'customer.email',
@@ -7131,9 +7214,17 @@
         }
       };
 
-      var platColors = { meta: '#1877F2', tiktok: '#46f1c5', snapchat: '#FFFC00', google: '#4285F4', ga4: '#F9AB00', mixpanel: '#7856FF' };
-      var platIcons = { meta: '📘', tiktok: '🎵', snapchat: '👻', google: '🔍', ga4: '📊', mixpanel: '🔮' };
-      var platNames = { meta: 'Meta Pixel', tiktok: 'TikTok Pixel', snapchat: 'Snap Pixel', google: 'Google Ads', ga4: 'GA4', mixpanel: 'Mixpanel' };
+      var platColors = { meta: '#1877F2', tiktok: '#010101', snapchat: '#FFFC00', google: '#4285F4', ga4: '#F9AB00', mixpanel: '#7856FF', twitter: '#000' };
+      var platIcons = {
+        meta: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;vertical-align:middle;"><path d="M5 25c0-5.8 1.3-10.2 3.2-13.1C10.1 9 12.5 7.5 15 7.5c2 0 3.8.8 5.5 2.4 1.2 1.1 2.5 2.9 4.5 6.1 2-3.2 3.3-5 4.5-6.1 1.7-1.6 3.5-2.4 5.5-2.4 2.5 0 4.9 1.5 6.8 4.4C43.7 14.8 45 19.2 45 25c0 3.8-.7 7-2 9.4-1.6 2.9-3.9 4.6-6.3 4.6-1.5 0-2.9-.5-4.4-1.5-1.9-1.3-3.8-3.4-6.6-7.6-2.8 4.2-4.7 6.3-6.6 7.6-1.5 1-2.9 1.5-4.4 1.5-2.4 0-4.7-1.7-6.3-4.6C5.7 32 5 28.8 5 25z" fill="#1877F2"/></svg>',
+        tiktok: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;vertical-align:middle;"><rect width="50" height="50" rx="12" fill="#010101"/><path d="M34.5 14.5a7.5 7.5 0 01-7.5-7.5h-5v22.3c0 2.1-1.7 3.7-3.8 3.7a3.75 3.75 0 01-3.7-3.7c0-2.1 1.7-3.7 3.7-3.7.4 0 .7.1 1 .2V20a8.9 8.9 0 00-1-.1c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7 8.7-3.9 8.7-8.7V21.4a12.6 12.6 0 007.5 2.4v-5a7.4 7.4 0 01-4.9-4.3h4.9V14.5z" fill="white"/><path d="M37 14.5a7.5 7.5 0 01-7.5-7.5h-3v22.3c0 2.1-1.7 3.7-3.8 3.7a3.75 3.75 0 01-3.7-3.7c0-2.1 1.7-3.7 3.7-3.7.4 0 .7.1 1 .2V20a8.9 8.9 0 00-1-.1c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7 8.7-3.9 8.7-8.7V21.4a12.6 12.6 0 007.5 2.4v-5a7.6 7.6 0 01-2.9-4.3" fill="#69C9D0"/></svg>',
+        snapchat: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;vertical-align:middle;"><rect width="50" height="50" rx="12" fill="#FFFC00"/><path d="M25 8c-5.6 0-9.5 3.8-9.5 9.3v1.5c-.6.3-1.4.4-2.1.2-.3 0-.4.1-.4.4 0 1.2 2.1 1.7 2.5 1.8.4 1.3 1.2 2.4 2.2 3.2-1.6.8-3.9 1.2-4.2 2.3 0 .2.2.4.4.4 2 .3 3.7 1.1 4.9 2.7.1.2.1.3-.1.4-1.5.6-3 .6-3 1.4 0 .5.7.7 1.3.7.9 0 1.8-.3 2.6-.6.5-.2.9-.2 1.3.1.8.6 1 1.7 1 2.7 0 .2.1.4.3.4 1 .1 2.1.1 2.8.1s1.8 0 2.8-.1c.2 0 .3-.2.3-.4 0-1 .2-2.1 1-2.7.4-.3.8-.3 1.3-.1.8.3 1.7.6 2.6.6.6 0 1.3-.2 1.3-.7 0-.8-1.5-.8-3-1.4-.2-.1-.2-.2-.1-.4 1.2-1.6 2.9-2.4 4.9-2.7.2 0 .4-.2.4-.4-.3-1.1-2.6-1.5-4.2-2.3 1-.8 1.8-1.9 2.2-3.2.4-.1 2.5-.6 2.5-1.8 0-.3-.1-.4-.4-.4-.7.2-1.5.1-2.1-.2v-1.5C34.5 11.8 30.6 8 25 8z" fill="#333"/></svg>',
+        google: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;vertical-align:middle;"><path d="M25 8A17 17 0 1 0 25 42A17 17 0 1 0 25 8Z" fill="white"/><path d="M33.5 20H25v5h4.9c-.4 2.5-2.6 4.3-4.9 4.3a5.8 5.8 0 0 1 0-11.6c1.4 0 2.7.5 3.7 1.4l3.5-3.5A10.5 10.5 0 0 0 25 12.5a12.5 12.5 0 0 0 0 25c7 0 11.5-4.9 11.5-12 0-.8-.1-1.7-.2-2.5H33.5z" fill="#4285F4"/><path d="M14.3 27.9l-4 3.1A12.5 12.5 0 0 0 25 37.5v-5c-4.1 0-7.7-2.3-9.4-5.8l-.3.2z" fill="#34A853"/><path d="M10.3 18.6A12.5 12.5 0 0 0 12.5 31l4-3.1c-.7-1.4-1-3-1-4.9 0-2 .4-3.8 1.1-5.4l-4.1-3.2a12.4 12.4 0 0 0-2.2 4.2z" fill="#FBBC05"/><path d="M25 12.5c2.7 0 5.1 1 6.9 2.5l3.6-3.6A12.4 12.4 0 0 0 25 8a12.5 12.5 0 0 0-10.7 6l4.1 3.2A7.5 7.5 0 0 1 25 12.5z" fill="#EA4335"/></svg>',
+        ga4: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;vertical-align:middle;"><rect x="10" y="32" width="9" height="10" rx="4.5" fill="#E37400"/><rect x="21" y="22" width="9" height="20" rx="4.5" fill="#F9AB00"/><rect x="32" y="10" width="9" height="32" rx="4.5" fill="#E37400"/></svg>',
+        mixpanel: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;vertical-align:middle;"><rect width="50" height="50" rx="12" fill="#7856FF"/><text x="25" y="34" text-anchor="middle" font-family="Arial" font-weight="900" font-size="26" fill="white">M</text></svg>',
+        twitter: '<svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;vertical-align:middle;"><rect width="50" height="50" rx="12" fill="#000"/><path d="M28.3 22.5L38.5 11h-2.4l-8.9 10.3L20.3 11H12l10.7 15.5L12 39h2.4l9.3-10.8 7.4 10.8H39L28.3 22.5zm-3.3 3.8l-1.1-1.5L15.1 12.8h3.7l6.9 9.9 1.1 1.5 9 12.9h-3.7l-7.1-10.8z" fill="white"/></svg>'
+      };
+      var platNames = { meta: 'Meta Pixel', tiktok: 'TikTok Pixel', snapchat: 'Snap Pixel', google: 'Google Ads', ga4: 'GA4', mixpanel: 'Mixpanel', twitter: 'X / Twitter' };
 
       if (!S.events || !S.events.length) {
         return '<div style="text-align:center;padding:60px;color:var(--mut)"><span class="material-symbols-outlined" style="font-size:48px;display:block;margin-bottom:12px;opacity:.3">star</span><p>اختار الأحداث من Pixel Config الأول.</p></div>';
@@ -7736,7 +7827,30 @@
       var w = window.open('', '_blank');
       w.document.write('<html><head><meta charset="UTF-8"><style>body{background:#05090f;color:#f0f4ff;font-family:Cairo,sans-serif;padding:24px;}table{width:100%;border-collapse:collapse;}td,th{padding:8px;border:1px solid rgba(255,255,255,.1);}</style></head><body>');
       w.document.write(content.innerHTML);
-      w.document.write('</body></html>');
+      w.document.write('
+  <!-- ══ WHATSAPP WIDGET ══ -->
+  <script>
+  (function () {
+    var whatsappNumber = "201552388174";
+    var options = {
+      whatsapp: whatsappNumber,
+      call_to_action: "تواصل معنا لخدمتك",
+      position: "left",
+      preFilledMessage: "مرحبًا، أريد الترقية إلى خطة أعلى في Easy Track."
+    };
+    var proto = document.location.protocol, host = "getbutton.io";
+    var s = document.createElement('script');
+    s.type = 'text/javascript'; s.async = true;
+    s.src = proto + "//static." + host + '/widget-send-button/js/init.js';
+    s.onload = function () {
+      if (typeof WhWidgetSendButton !== "undefined") {
+        WhWidgetSendButton.init(host, proto, options);
+      }
+    };
+    document.head.appendChild(s);
+  })();
+  </script>
+</body></html>');
       w.document.close(); w.print();
     }
 
@@ -9090,7 +9204,7 @@
 
     // ===== RESET =====
     function resetAll() {
-      S.cms = null; S.platforms = []; S.events = []; S.pixelIds = {};
+      S.cms = null; S.platforms = []; S.events = []; S.platformEvents = {}; S.pixelIds = {};
       document.getElementById('outWrap').classList.remove('on');
       for (var i = 1; i <= 4; i++) document.getElementById('s' + i).classList.remove('on');
       document.getElementById('s1').classList.add('on');
@@ -9116,17 +9230,43 @@
       appId: "1:976141198118:web:763607661ae0cccb0e57e7"
     };
 
-    // Initialize Firebase — wait for SDK (loaded with defer)
+    // Initialize Firebase — with file:// localhost bypass
     var db = null, auth = null;
+    var currentUser = null; // ensure always defined early
+
+    // ── Dev Bypass: if running from file:// or localhost without Firebase ──
+    function _isLocalDev() {
+      return location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    }
+
+    function _enterDevMode() {
+      // Auto-login as demo user when running locally (no Firebase needed)
+      var devUser = {
+        id: 'dev-local',
+        name: 'Dev User',
+        email: 'dev@easytrack.local',
+        plan: 'Growth',
+        status: 'active',
+        projects_used: 0
+      };
+      console.warn('[Easy Track] Running in LOCAL DEV mode — Firebase disabled');
+      setTimeout(function() { enterTool(devUser, 'dev-token'); }, 300);
+    }
+
     function initFirebase() {
+      // If running locally from file://, skip Firebase and use dev mode
+      if (_isLocalDev()) {
+        _enterDevMode();
+        return;
+      }
       if (typeof firebase === 'undefined') {
-        setTimeout(initFirebase, 50); // SDK still loading, retry
+        setTimeout(initFirebase, 50);
         return;
       }
       if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
       db = firebase.firestore();
       auth = firebase.auth();
-      checkGTMRedirectResult(); // complete any pending GTM publish after Google redirect
+      checkGTMRedirectResult();
       initSession();
     }
 
@@ -9155,6 +9295,9 @@
 
     // Plan limits
     var PLAN_LIMITS = { basic: 1, growth: 3, enterprise: 999 };
+
+    // Free events allowed on Basic plan (view_item, add_to_cart, view_item_list)
+    var FREE_EVENTS = ['view_item', 'add_to_cart', 'view_item_list'];
 
     // async function sbGet( — replaced by Firebase
 
@@ -9204,7 +9347,7 @@
           localStorage.setItem('et_user_email', fbUser.email);
 
           if (!client.status || client.status === 'pending') {
-            window.location.href = 'index.html#pricing';
+            window.open('https://wa.me/201552388174?text=مرحباً،%20أريد%20الترقية%20إلى%20خطة%20أعلى%20في%20Easy%20Track', '_blank');
             return;
           }
 
@@ -9265,6 +9408,7 @@
             cms: S.cms,
             platforms: S.platforms,
             events: S.events,
+            platformEvents: S.platformEvents || {},
             pixelIds: S.pixelIds,
             lead: S.lead
           },
@@ -9305,6 +9449,35 @@
     var _origGenerate = generate;
     generate = function () {
       if (!checkProjectLimit()) return;
+
+      // Free (Basic) plan: restrict events to FREE_EVENTS only
+      var _savedEvents = null;
+      var _savedPlatEvents = null;
+      if (currentUser) {
+        var _plan = (currentUser.plan || 'basic').toLowerCase();
+        if (_plan === 'basic') {
+          _savedEvents = S.events.slice();
+          _savedPlatEvents = JSON.parse(JSON.stringify(S.platformEvents || {}));
+          // Filter events to FREE_EVENTS only
+          S.events = S.events.filter(function(ev) { return FREE_EVENTS.indexOf(ev) !== -1; });
+          // Filter platformEvents too
+          Object.keys(S.platformEvents || {}).forEach(function(p) {
+            S.platformEvents[p] = (S.platformEvents[p] || []).filter(function(ev) { return FREE_EVENTS.indexOf(ev) !== -1; });
+          });
+          // Show notice if events were removed
+          var removedCount = _savedEvents.length - S.events.length;
+          if (removedCount > 0) {
+            setTimeout(function() {
+              var banner = document.createElement('div');
+              banner.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:9999;background:#191c22;border:1px solid rgba(245,158,11,.4);border-radius:14px;padding:14px 22px;font-size:13px;color:#ffd680;font-family:var(--font-display);font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.5);display:flex;align-items:center;gap:10px;max-width:500px;text-align:center;';
+              banner.innerHTML = '<span style="font-size:18px;">⚡</span><span>الخطة Basic تدعم 3 Events فقط (View Item, Add to Cart, View Item List)<br><span style="font-size:11px;color:var(--mut);font-weight:400;"><a href=\"https://wa.me/201552388174?text=مرحباً،%20أريد%20الترقية%20إلى%20خطة%20أعلى%20في%20Easy%20Track\" target=\"_blank\" style=\"color:#ffd680;\">تواصل معنا للترقية ↗</a> عشان تضيف باقي الـ Events</span></span>';
+              document.body.appendChild(banner);
+              setTimeout(function() { banner.remove(); }, 5000);
+            }, 500);
+          }
+        }
+      }
+
       _origGenerate();
       // Mark project as started — will save on output open
       // Save after a short delay to let outputs build
@@ -9424,6 +9597,7 @@
       if (cfg.cms) S.cms = cfg.cms;
       if (cfg.platforms) S.platforms = cfg.platforms;
       if (cfg.events) S.events = cfg.events;
+      if (cfg.platformEvents) S.platformEvents = cfg.platformEvents;
       if (cfg.pixelIds) S.pixelIds = cfg.pixelIds;
       if (cfg.lead) S.lead = cfg.lead;
 
@@ -9696,6 +9870,7 @@
       if (cfg.cms) S.cms = cfg.cms;
       if (cfg.platforms) S.platforms = cfg.platforms;
       if (cfg.events) S.events = cfg.events;
+      if (cfg.platformEvents) S.platformEvents = cfg.platformEvents;
       if (cfg.pixelIds) S.pixelIds = cfg.pixelIds;
       if (cfg.lead) S.lead = cfg.lead;
       toggleDashboard();
@@ -9745,13 +9920,13 @@
         localStorage.setItem('et_pending_plan', 'basic');
         localStorage.setItem('et_pending_token', token);
         localStorage.setItem('et_pending_user', JSON.stringify(user));
-        window.location.href = 'index.html#pricing';
+        window.open('https://wa.me/201552388174?text=مرحباً،%20أريد%20الترقية%20إلى%20خطة%20أعلى%20في%20Easy%20Track', '_blank');
         return;
       }
 
       // If existing user but not paid → redirect to payment
       if (!user.status || user.status === 'pending') {
-        window.location.href = 'index.html#pricing';
+        window.open('https://wa.me/201552388174?text=مرحباً،%20أريد%20الترقية%20إلى%20خطة%20أعلى%20في%20Easy%20Track', '_blank');
         return;
       }
 
@@ -9798,6 +9973,12 @@
     }
 
     async function doGateLogin() {
+      // Dev mode bypass for local testing
+      if (_isLocalDev()) {
+        var devUser = { id: 'dev-local', name: 'Dev User', email: 'dev@local', plan: 'Growth', status: 'active', projects_used: 0 };
+        enterTool(devUser, 'dev-token');
+        return;
+      }
       var email = document.getElementById('gEmail-l').value.trim();
       var pass = document.getElementById('gPass-l').value;
       var btn = document.getElementById('gBtn-l');
@@ -9825,7 +10006,7 @@
         // 4. Check payment
         if (!client.status || client.status === 'pending') {
           localStorage.setItem('et_auth_uid', uid);
-          window.location.href = 'index.html#pricing';
+          window.open('https://wa.me/201552388174?text=مرحباً،%20أريد%20الترقية%20إلى%20خطة%20أعلى%20في%20Easy%20Track', '_blank');
           return;
         }
 
@@ -9844,6 +10025,12 @@
     }
 
     async function doGateSignup() {
+      // Dev mode bypass for local testing
+      if (_isLocalDev()) {
+        var devUser = { id: 'dev-local', name: 'Dev User', email: 'dev@local', plan: 'Growth', status: 'active', projects_used: 0 };
+        enterTool(devUser, 'dev-token');
+        return;
+      }
       var name = document.getElementById('gName-s').value.trim();
       var email = document.getElementById('gEmail-s').value.trim();
       var pass = document.getElementById('gPass-s').value;
@@ -10387,141 +10574,7 @@
       btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">radar</span> Scan';
     }
 
-    // ══════ HEALTH MONITOR ══════
-    var HM_HISTORY_KEY = 'et_deploy_history';
-    var HM_MAX_HISTORY = 20;
 
-    // Called at end of every deploy — logs result to localStorage
-    function hmLogDeploy(entry) {
-      // entry: { ts, tags, triggers, vars, versionId, ok, errors: [] }
-      try {
-        var hist = JSON.parse(localStorage.getItem(HM_HISTORY_KEY) || '[]');
-        hist.unshift(entry);
-        if (hist.length > HM_MAX_HISTORY) hist = hist.slice(0, HM_MAX_HISTORY);
-        localStorage.setItem(HM_HISTORY_KEY, JSON.stringify(hist));
-      } catch (e) { }
-    }
-
-    function renderHealthDashboard() {
-      // ── Config Score ──────────────────────────────────────────
-      var platforms = S.platforms || [];
-      var pixelIds = S.pixelIds || {};
-      var events = S.events || [];
-      var activePlat = platforms.filter(function (p) { var v = typeof pixelIds[p] === 'object' ? pixelIds[p].id : pixelIds[p]; return !!(v && v.trim()); });
-      var score = platforms.length ? Math.round((activePlat.length / platforms.length) * 100) : 0;
-      var hist = [];
-      try { hist = JSON.parse(localStorage.getItem(HM_HISTORY_KEY) || '[]'); } catch (e) { }
-      var lastDeploy = hist[0] || null;
-      var totalDeploys = hist.length;
-      var successCount = hist.filter(function (h) { return h.ok; }).length;
-
-      // ── Stats Row ─────────────────────────────────────────────
-      var statsEl = document.getElementById('hm-stats-row');
-      if (statsEl) {
-        var scoreColor = score === 100 ? '#46f1c5' : score >= 50 ? '#adc6ff' : '#ffb4ab';
-        statsEl.innerHTML =
-          _hmStat('donut_large', score + '%', 'Config Score', scoreColor) +
-          _hmStat('ads_click', platforms.length, 'Platforms', '#adc6ff') +
-          _hmStat('bolt', events.length, 'Events', '#d4d4ff') +
-          _hmStat('rocket_launch', totalDeploys, 'Total Deploys', '#46f1c5') +
-          _hmStat('check_circle', successCount, 'Successful', '#46f1c5') +
-          _hmStat('schedule', lastDeploy ? _hmTimeAgo(lastDeploy.ts) : 'Never', 'Last Deploy', '#bacac2');
-      }
-
-      // ── Platform Health ───────────────────────────────────────
-      var platEl = document.getElementById('hm-platforms');
-      if (platEl) {
-        if (!platforms.length) {
-          platEl.innerHTML = '<div style="color:var(--mut);font-size:13px;padding:20px;">No platforms configured yet. Start from Pixel Config.</div>';
-        } else {
-          platEl.innerHTML = platforms.map(function (p) {
-            var m = (typeof platMeta !== 'undefined' && platMeta[p]) || { name: p, icon: '📡', color: 'var(--acc)' };
-            var rawId = typeof pixelIds[p] === 'object' ? pixelIds[p].id : pixelIds[p];
-            var isActive = !!(rawId && rawId.trim());
-            var evCount = events.filter(function (e) { return S.platforms.indexOf(p) > -1; }).length;
-            return '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:14px;padding:16px;">'
-              + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
-              + '<div style="display:flex;align-items:center;gap:8px;">'
-              + '<span style="font-size:20px;">' + m.icon + '</span>'
-              + '<span style="font-weight:700;font-size:13px;color:var(--wht);">' + m.name + '</span>'
-              + '</div>'
-              + '<span style="font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;'
-              + (isActive ? 'background:rgba(70,241,197,.12);color:#46f1c5;border:1px solid rgba(70,241,197,.3);' : 'background:rgba(255,180,171,.08);color:#ffb4ab;border:1px solid rgba(255,180,171,.25);')
-              + '">' + (isActive ? 'ACTIVE' : 'PENDING') + '</span>'
-              + '</div>'
-              + '<div style="font-size:11px;color:var(--mut);margin-bottom:4px;">Pixel ID</div>'
-              + '<div style="font-size:12px;color:var(--wht);font-family:var(--font-mono);background:var(--sur3);border-radius:8px;padding:6px 10px;word-break:break-all;">'
-              + (rawId && rawId.trim() ? (rawId.length > 20 ? rawId.substring(0, 20) + '...' : rawId) : '—')
-              + '</div>'
-              + '</div>';
-          }).join('');
-        }
-      }
-
-      // ── Deploy History ────────────────────────────────────────
-      var histEl = document.getElementById('hm-history');
-      if (histEl) {
-        if (!hist.length) {
-          histEl.innerHTML = '<div style="color:var(--mut);font-size:13px;padding:16px;background:var(--sur2);border-radius:12px;text-align:center;">No deployments yet</div>';
-        } else {
-          histEl.innerHTML = hist.slice(0, 8).map(function (h) {
-            var ok = h.ok;
-            return '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:12px;padding:12px 14px;">'
-              + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">'
-              + '<span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;'
-              + (ok ? 'background:rgba(70,241,197,.1);color:#46f1c5;' : 'background:rgba(255,180,171,.1);color:#ffb4ab;')
-              + '">' + (ok ? '✓ SUCCESS' : '✗ FAILED') + '</span>'
-              + '<span style="font-size:11px;color:var(--mut);">' + _hmTimeAgo(h.ts) + '</span>'
-              + '</div>'
-              + '<div style="font-size:11px;color:var(--mut);">'
-              + (h.tags || 0) + ' Tags · ' + (h.triggers || 0) + ' Triggers · ' + (h.vars || 0) + ' Vars'
-              + (h.versionId ? ' · <span style="color:#adc6ff;">v' + h.versionId + '</span>' : '')
-              + '</div>'
-              + '</div>';
-          }).join('');
-        }
-      }
-
-      // ── Error Log ─────────────────────────────────────────────
-      var errEl = document.getElementById('hm-errors');
-      if (errEl) {
-        var allErrors = [];
-        hist.forEach(function (h) {
-          if (h.errors && h.errors.length) {
-            h.errors.forEach(function (e) { allErrors.push({ ts: h.ts, msg: e }); });
-          }
-        });
-        if (!allErrors.length) {
-          errEl.innerHTML = '<div style="color:#46f1c5;font-size:13px;padding:16px;background:rgba(70,241,197,.05);border:1px solid rgba(70,241,197,.15);border-radius:12px;text-align:center;">✓ No errors recorded</div>';
-        } else {
-          errEl.innerHTML = allErrors.slice(0, 8).map(function (e) {
-            return '<div style="background:rgba(255,180,171,.05);border:1px solid rgba(255,180,171,.15);border-radius:12px;padding:12px 14px;">'
-              + '<div style="font-size:10px;color:var(--mut);margin-bottom:4px;">' + _hmTimeAgo(e.ts) + '</div>'
-              + '<div style="font-size:11px;color:#ffb4ab;line-height:1.5;word-break:break-word;">' + _esc(e.msg) + '</div>'
-              + '</div>';
-          }).join('');
-        }
-      }
-    }
-
-    function _hmStat(icon, value, label, color) {
-      return '<div style="background:var(--sur2);border:1px solid var(--bdr2);border-radius:14px;padding:16px;">'
-        + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
-        + '<span class="material-symbols-outlined" style="font-size:16px;color:' + color + ';">' + icon + '</span>'
-        + '<span style="font-size:11px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.8px;">' + label + '</span>'
-        + '</div>'
-        + '<div style="font-size:28px;font-weight:900;font-family:var(--font-display);color:' + color + ';letter-spacing:-1px;">' + value + '</div>'
-        + '</div>';
-    }
-
-    function _hmTimeAgo(ts) {
-      if (!ts) return '—';
-      var diff = Math.floor((Date.now() - ts) / 1000);
-      if (diff < 60) return diff + 's ago';
-      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-      return Math.floor(diff / 86400) + 'd ago';
-    }
 
     // ══════ PAYLOAD TESTER ══════
     var _payloadData = { vars: [], trigs: [], tags: [], raw: '' };
@@ -11159,366 +11212,9 @@
         if (saved.phone_hashed) _userIdentity.phone_hashed = saved.phone_hashed;
       } catch (e) { }
 
-      // ══════════════════════════════════════════════════════
-      // 9. DATALAYER MONITOR UI
-      // ══════════════════════════════════════════════════════
-      var _dlmCms = 'salla', _dlmMode = 'stream', _dlmFilter = 'all';
-      var _dlmLog = [];
-      var _dlmStats = { total: 0, norm: 0, errors: 0, dedupe: 0 };
-      var _seenEventIds = {};
-      var _selectedEventIdx = -1;
 
-      function dlm_setCms(cms, btn) {
-        _dlmCms = cms;
-        document.querySelectorAll('.dlm-cms-btn').forEach(function (b) { b.classList.remove('active'); });
-        if (btn) btn.classList.add('active');
-        ET.cms = cms;
-      }
-      window.dlm_setCms = dlm_setCms;
 
-      function dlm_setMode(mode, btn) {
-        _dlmMode = mode;
-        document.querySelectorAll('.dlm-mode-btn').forEach(function (b) { b.classList.remove('active'); });
-        if (btn) btn.classList.add('active');
-      }
-      window.dlm_setMode = dlm_setMode;
 
-      function dlm_filterPlatform(val) {
-        _dlmFilter = val;
-        dlm_renderStream();
-      }
-      window.dlm_filterPlatform = dlm_filterPlatform;
-
-      function dlm_clearLog() {
-        _dlmLog = [];
-        _dlmStats = { total: 0, norm: 0, errors: 0, dedupe: 0 };
-        _selectedEventIdx = -1;
-        dlm_updateStats();
-        dlm_renderStream();
-        var insp = document.getElementById('dlmInspector');
-        if (insp) insp.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--mut);"><span class="material-symbols-outlined" style="font-size:36px;opacity:.3;display:block;margin-bottom:10px;">touch_app</span><p style="font-size:12px;">Click an event to inspect payload</p></div>';
-        var norm = document.getElementById('dlmNormCode');
-        if (norm) norm.textContent = '// Select an event above';
-        var delivery = document.getElementById('dlmDelivery');
-        if (delivery) delivery.innerHTML = '';
-      }
-      window.dlm_clearLog = dlm_clearLog;
-
-      function dlm_updateStats() {
-        var el = function (id) { return document.getElementById(id); };
-        if (el('dlmStatTotal')) el('dlmStatTotal').textContent = _dlmStats.total;
-        if (el('dlmStatNorm')) el('dlmStatNorm').textContent = _dlmStats.norm;
-        if (el('dlmStatErrors')) el('dlmStatErrors').textContent = _dlmStats.errors;
-        if (el('dlmStatDedupe')) el('dlmStatDedupe').textContent = _dlmStats.dedupe;
-      }
-
-      function dlm_pushEvent(raw) {
-        var normalized = null;
-        var error = null;
-        try {
-          normalized = ET.normalize(raw, _dlmCms);
-          if (!normalized) return; // not a trackable event
-        } catch (e) { error = e.message; }
-
-        _dlmStats.total++;
-
-        if (error || !normalized) {
-          _dlmStats.errors++;
-        } else {
-          // Deduplication check
-          if (_seenEventIds[normalized.event_id]) {
-            _dlmStats.dedupe++;
-            normalized._deduped = true;
-          } else {
-            _seenEventIds[normalized.event_id] = true;
-            _dlmStats.norm++;
-          }
-          // Attach click IDs + user data to normalized event
-          var clicks = getClickIds();
-          if (Object.keys(clicks).length) normalized.click_ids = clicks;
-          var ud = getUserData();
-          if (ud) normalized.user_data = ud;
-        }
-
-        // Sync platforms from S if available
-        if (window.S && window.S.platforms && window.S.platforms.length) {
-          _activePlatforms = window.S.platforms;
-        }
-
-        var entry = {
-          idx: _dlmLog.length,
-          raw: raw,
-          normalized: normalized,
-          error: error,
-          ts: Date.now(),
-          platforms: _activePlatforms.slice(),
-          dispatch: normalized ? dispatch(normalized, _activePlatforms) : null
-        };
-        _dlmLog.unshift(entry);
-        if (_dlmLog.length > 100) _dlmLog.pop();
-
-        dlm_updateStats();
-        dlm_renderStream();
-
-        // Log to console with Easy Track branding
-        if (normalized) {
-          console.groupCollapsed('%c[Easy Track] ' + normalized.event + ' → ' + normalized.event_id,
-            'color:#46f1c5;font-weight:bold;');
-          console.log('GA4 Normalized:', normalized);
-          console.log('Dispatched to:', _activePlatforms);
-          console.groupEnd();
-        }
-      }
-
-      function dlm_renderStream() {
-        var container = document.getElementById('dlmEventStream');
-        if (!container) return;
-        var entries = _dlmLog;
-        if (_dlmFilter !== 'all') {
-          entries = entries.filter(function (e) {
-            return e.platforms.indexOf(_dlmFilter) !== -1;
-          });
-        }
-        if (!entries.length) {
-          container.innerHTML = '<div class="dlm-empty-state"><span class="material-symbols-outlined" style="font-size:40px;opacity:.3;display:block;margin-bottom:10px;">layers</span><p style="font-size:13px;">No events yet</p><p style="font-size:11px;color:var(--mut2);margin-top:6px;">Click "Test Event" to simulate</p></div>';
-          return;
-        }
-        container.innerHTML = entries.map(function (e, i) {
-          var n = e.normalized;
-          var evName = n ? n.event : (e.raw && e.raw.event ? e.raw.event : '?');
-          var val = n && n.ecommerce ? 'SAR ' + (n.ecommerce.value || 0).toFixed(2) : '';
-          var evId = n ? n.event_id : '—';
-          var evIdShort = evId.split('-').slice(-1)[0];
-          var badge = e.error ? '<span class="dlm-ev-badge err">ERR</span>' :
-            (n && n._deduped) ? '<span class="dlm-ev-badge" style="background:rgba(245,158,11,.1);color:var(--amber);">DUP</span>' :
-              '<span class="dlm-ev-badge ok">OK</span>';
-          var time = new Date(e.ts).toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-          return '<div class="dlm-event-row' + (i === _selectedEventIdx ? ' selected' : '') + '" onclick="dlm_selectEvent(' + i + ')">' +
-            '<span class="dlm-ev-name">' + evName + '</span>' +
-            '<span class="dlm-ev-id">' + evIdShort + '</span>' +
-            (val ? '<span class="dlm-ev-val">' + val + '</span>' : '<span class="dlm-ev-val" style="color:var(--mut);">—</span>') +
-            badge +
-            '<span class="dlm-ev-time">' + time + '</span>' +
-            '</div>';
-        }).join('');
-      }
-
-      window.dlm_selectEvent = function (idx) {
-        _selectedEventIdx = idx;
-        var entry = _dlmLog[idx];
-        if (!entry) return;
-        dlm_renderStream();
-
-        var n = entry.normalized;
-        // Inspector
-        var insp = document.getElementById('dlmInspector');
-        if (insp && n) {
-          insp.innerHTML = '<pre style="font-family:var(--font-mono);font-size:11px;line-height:1.8;color:#94a3b8;overflow:auto;max-height:200px;direction:ltr;">' +
-            JSON.stringify(n, null, 2).replace(/("event_id"[^,\n]*)/, '<span style="color:#46f1c5;">$1</span>') + '</pre>';
-        }
-
-        // Normalized code output
-        var normEl = document.getElementById('dlmNormCode');
-        if (normEl && n) {
-          normEl.textContent = 'dataLayer.push(' + JSON.stringify(n, null, 2) + ');';
-        }
-
-        // Platform delivery status
-        var delivery = document.getElementById('dlmDelivery');
-        if (delivery && entry.dispatch) {
-          var platIcons = { ga4: '📊', meta: '👥', tiktok: '🎵', snapchat: '👻', google: '🎯', mixpanel: '📈' };
-          var platNames = { ga4: 'GA4', meta: 'Meta', tiktok: 'TikTok', snapchat: 'Snap', google: 'G.Ads', mixpanel: 'Mixpanel' };
-          delivery.innerHTML = Object.keys(ET_PLATFORMS).map(function (p) {
-            var r = entry.dispatch[p];
-            var statusClass = !r ? 'wait' : (r.status === 'ok' ? 'ok' : 'err');
-            var statusText = !r ? 'Skip' : (r.status === 'ok' ? '✓' : '✗');
-            return '<div class="dlm-delivery-item">' +
-              '<div class="dlm-delivery-icon">' + platIcons[p] + '</div>' +
-              '<div class="dlm-delivery-name">' + platNames[p] + '</div>' +
-              '<div class="dlm-delivery-status ' + statusClass + '">' + statusText + '</div>' +
-              '</div>';
-          }).join('');
-        }
-      };
-
-      function dlm_sendTest() {
-        var testEvents = {
-          salla: [
-            { event: 'Product Viewed', 0: { id: 'P001', name: 'عطر فاخر', price: 250, brand: 'طيب', category: 'عطور', currency: 'SAR' } },
-            { event: 'addToCart', ecommerce: { add: { products: [{ id: 'P002', name: 'بخور عود', price: 180, quantity: 2 }] } } },
-            { event: 'purchase', ecommerce: { purchase: { actionField: { id: 'ORD-1234', revenue: 610, tax: 61, shipping: 25 }, products: [{ id: 'P001', name: 'عطر فاخر', price: 250, quantity: 1 }, { id: 'P002', name: 'بخور عود', price: 180, quantity: 2 }] } } }
-          ],
-          zid: [
-            { event: 'view_item', ecommerce: { currency: 'SAR', value: 350, items: [{ id: 'Z001', name: 'ثوب رجالي', price: 350, quantity: 1 }] } },
-            { event: 'add_to_cart', ecommerce: { currency: 'SAR', items: [{ id: 'Z002', name: 'شماغ', price: 120, quantity: 2 }] } },
-            { event: 'purchase', ecommerce: { transaction_id: 'ZID-5678', currency: 'SAR', value: 590, items: [{ id: 'Z001', name: 'ثوب رجالي', price: 350, quantity: 1 }, { id: 'Z002', name: 'شماغ', price: 120, quantity: 2 }] } }
-          ]
-        };
-        var pool = testEvents[_dlmCms] || testEvents.salla;
-        var raw = pool[Math.floor(Math.random() * pool.length)];
-        dlm_pushEvent(raw);
-      }
-      window.dlm_sendTest = dlm_sendTest;
-
-      function dlm_copyNorm() {
-        var el = document.getElementById('dlmNormCode');
-        if (el) navigator.clipboard.writeText(el.textContent).then(function () {
-          showToast('✅ Copied to clipboard');
-        });
-      }
-      window.dlm_copyNorm = dlm_copyNorm;
-
-      // Hook into real dataLayer
-      function hookDataLayer() {
-        window.dataLayer = window.dataLayer || [];
-        if (window._etDlmHooked) return;
-        window._etDlmHooked = true;
-        var _orig = Array.prototype.push.bind(window.dataLayer);
-        window.dataLayer.push = function () {
-          for (var i = 0; i < arguments.length; i++) {
-            _orig(arguments[i]);
-            if (arguments[i] && arguments[i].event) {
-              try { dlm_pushEvent(arguments[i]); } catch (e) { }
-            }
-          }
-        };
-      }
-      hookDataLayer();
-
-      // ══════════════════════════════════════════════════════
-      // 10. ATTRIBUTION VIEW UI
-      // ══════════════════════════════════════════════════════
-      var _currentEventId = generateEventId();
-
-      function attr_refresh() {
-        captureClickIds();
-        attr_renderClickIds();
-        attr_renderCookies();
-        attr_renderDedupeSample();
-        attr_buildFullPayload();
-      }
-      window.attr_refresh = attr_refresh;
-
-      function attr_renderClickIds() {
-        var container = document.getElementById('attrClickIds');
-        if (!container) return;
-        var clickIds = getClickIds();
-        var defs = {
-          gclid: { label: 'Google Ads', color: '#4285F4' },
-          fbclid: { label: 'Meta Ads', color: '#1877F2' },
-          ttclid: { label: 'TikTok Ads', color: '#69C9D0' },
-          scclid: { label: 'Snapchat Ads', color: '#FFFC00' }
-        };
-        container.innerHTML = CLICK_ID_KEYS.map(function (k) {
-          var val = clickIds[k] || '';
-          var active = !!val;
-          return '<div class="attr-id-row">' +
-            '<span class="attr-id-key" style="color:' + (defs[k].color) + ';">' + k + '</span>' +
-            '<span class="attr-id-val">' + (val || '<em style="color:var(--mut2);">not set</em>') + '</span>' +
-            '<span class="attr-id-badge ' + (active ? 'active' : 'empty') + '">' + (active ? 'ACTIVE' : 'EMPTY') + '</span>' +
-            '</div>';
-        }).join('');
-      }
-
-      function attr_simulateClickId(key) {
-        var fakeId = key.toUpperCase() + '_' + Math.random().toString(36).slice(2, 10).toUpperCase();
-        _clickIds[key] = fakeId;
-        setCookie(key, fakeId, 90);
-        attr_renderClickIds();
-        attr_renderCookies();
-        attr_buildFullPayload();
-        showToast('✅ Simulated ' + key + ': ' + fakeId);
-      }
-      window.attr_simulateClickId = attr_simulateClickId;
-
-      function attr_updateIdentity() {
-        var userId = (document.getElementById('attrUserId') || {}).value || '';
-        var externalId = (document.getElementById('attrExternalId') || {}).value || '';
-        var email = (document.getElementById('attrEmail') || {}).value || '';
-        var phone = (document.getElementById('attrPhone') || {}).value || '';
-        updateUserIdentity(userId, externalId, email, phone).then(function () {
-          attr_buildFullPayload();
-        });
-      }
-      window.attr_updateIdentity = attr_updateIdentity;
-
-      function attr_genNewEventId() {
-        _currentEventId = generateEventId();
-        attr_renderDedupeSample();
-        attr_buildFullPayload();
-      }
-      window.attr_genNewEventId = attr_genNewEventId;
-
-      function attr_renderDedupeSample() {
-        var el = document.getElementById('attrDedupeSample');
-        if (!el) return;
-        el.textContent =
-          '// Browser Event\ndataLayer.push({\n  event: "purchase",\n  event_id: "' + _currentEventId + '"\n});\n\n' +
-          '// Server-Side (same ID → deduplication)\nPOST /collect\n{\n  "event_id": "' + _currentEventId + '",\n  // same event_id prevents double-counting\n}';
-      }
-
-      function attr_buildFullPayload() {
-        var el = document.getElementById('attrFullPayload');
-        if (!el) return;
-        var payload = {
-          event: 'purchase',
-          event_id: _currentEventId,
-          user_data: getUserData() || { user_id: 'user_12345', external_id: 'ext_abc123' },
-          click_ids: getClickIds(),
-          ecommerce: {
-            currency: 'SAR',
-            value: 299.00,
-            transaction_id: 'TXN-' + Date.now().toString(36).toUpperCase(),
-            items: [{ item_id: 'P001', item_name: 'Sample Product', price: 299, quantity: 1 }]
-          }
-        };
-        el.textContent = 'dataLayer.push(\n' + JSON.stringify(payload, null, 2) + '\n);';
-      }
-
-      function attr_copyPayload() {
-        var el = document.getElementById('attrFullPayload');
-        if (el) navigator.clipboard.writeText(el.textContent).then(function () { showToast('✅ Copied!'); });
-      }
-      window.attr_copyPayload = attr_copyPayload;
-
-      function attr_renderCookies() {
-        var container = document.getElementById('attrCookieStatus');
-        if (!container) return;
-        var cookieDefs = [
-          { key: 'gclid', label: 'et_gclid', desc: 'Google Click ID' },
-          { key: 'fbclid', label: 'et_fbclid', desc: 'Meta Click ID' },
-          { key: 'ttclid', label: 'et_ttclid', desc: 'TikTok Click ID' },
-          { key: 'scclid', label: 'et_scclid', desc: 'Snapchat Click ID' }
-        ];
-        container.innerHTML = cookieDefs.map(function (c) {
-          var val = getCookie(c.key);
-          return '<div class="attr-cookie-item">' +
-            '<div class="attr-cookie-name">' + c.label + '</div>' +
-            '<div class="attr-cookie-val">' + (val || '<em style="color:var(--mut2);">not set</em>') + '</div>' +
-            '<div class="attr-cookie-exp">' + c.desc + ' · 90 days</div>' +
-            '</div>';
-        }).join('');
-      }
-
-      // Init attribution view when switching to it
-      var _attrInit = false;
-      function initAttrView() {
-        if (_attrInit) { attr_refresh(); return; }
-        _attrInit = true;
-        // Pre-fill from saved identity
-        var uid = document.getElementById('attrUserId');
-        var eid = document.getElementById('attrExternalId');
-        var ema = document.getElementById('attrEmail');
-        var pho = document.getElementById('attrPhone');
-        if (uid) uid.value = _userIdentity.user_id;
-        if (eid) eid.value = _userIdentity.external_id;
-        if (ema) ema.value = _userIdentity.email;
-        if (pho) pho.value = _userIdentity.phone;
-        attr_renderClickIds();
-        attr_renderCookies();
-        attr_renderDedupeSample();
-        attr_buildFullPayload();
-      }
 
       // ══════════════════════════════════════════════════════
       // 11. SERVER-SIDE UI
@@ -11694,9 +11390,7 @@
       var _origSwitchAppView = window.switchAppView;
       window.switchAppView = function (viewKey, btnEl) {
         if (_origSwitchAppView) _origSwitchAppView(viewKey, btnEl);
-        if (viewKey === 'attribution') { setTimeout(initAttrView, 50); }
         if (viewKey === 'serverside') { setTimeout(initServerSideView, 50); }
-        if (viewKey === 'datalayer') { /* Live — no init needed */ }
       };
 
       // ══════════════════════════════════════════════════════
