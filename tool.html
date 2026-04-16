@@ -3,6 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
+  <!-- Prevent browser caching so tool updates always reach the client -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Easy Track — Pixel Config Generator</title>
   <link
@@ -3254,6 +3258,9 @@
         </div>
         <h1 class="gtitle">احصل على <em>Pixel Setup</em> كامل<br>في دقيقتين — مجاناً</h1>
         <!-- Auth Tabs -->
+        <!-- Global connectivity error banner -->
+        <div id="gGlobalErr" style="display:none;background:rgba(255,100,80,.08);border:1px solid rgba(255,100,80,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#ffb4ab;text-align:center;line-height:1.6;"></div>
+
         <div class="gate-tabs">
           <button class="gate-tab on" id="gtab-login" onclick="(typeof switchGateTab==='function'?switchGateTab('login'):void 0)">تسجيل دخول</button>
           <button class="gate-tab" id="gtab-signup" onclick="(typeof switchGateTab==='function'?switchGateTab('signup'):void 0)">حساب جديد</button>
@@ -3779,18 +3786,17 @@
               Google Analytics 4
             </button>
 
-            <!-- X/Twitter -->
-            <button class="cbtn" data-val="twitter">
-              <div class="cchk">✓</div>
+            <!-- Mixpanel — SOON (disabled, not activatable) -->
+            <button class="cbtn cbtn-soon" data-val="mixpanel" disabled style="opacity:0.55;cursor:not-allowed;position:relative;">
+              <div class="cchk" style="display:none;">✓</div>
               <span class="cicon">
                 <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;">
-                  <rect width="50" height="50" rx="12" fill="#000" />
-                  <path
-                    d="M28.3 22.5L38.5 11h-2.4l-8.9 10.3L20.3 11H12l10.7 15.5L12 39h2.4l9.3-10.8 7.4 10.8H39L28.3 22.5zm-3.3 3.8l-1.1-1.5L15.1 12.8h3.7l6.9 9.9 1.1 1.5 9 12.9h-3.7l-7.1-10.8z"
-                    fill="white" />
+                  <rect width="50" height="50" rx="12" fill="#7856FF" />
+                  <text x="25" y="34" text-anchor="middle" font-family="Arial" font-weight="900" font-size="26" fill="white">M</text>
                 </svg>
               </span>
-              X / Twitter
+              Mixpanel
+              <span style="position:absolute;top:6px;right:6px;background:#7856FF;color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;letter-spacing:1px;">SOON</span>
             </button>
 
           </div>
@@ -5338,77 +5344,142 @@
     // GTM tag HTML - hardcoded per platform/event to avoid JS syntax errors
     var TAGHTML = {
       meta: {
-        ViewContent: "[S]\nfbq('track', 'ViewContent', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n});\n[/S]",
-        AddToCart: "[S]\nfbq('track', 'AddToCart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n});\n[/S]",
-        InitiateCheckout: "[S]\nfbq('track', 'InitiateCheckout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product',\n  num_items: {{DL - quantity}}\n});\n[/S]",
-        AddPaymentInfo: "[S]\nfbq('track', 'AddPaymentInfo', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product'\n});\n[/S]",
-        Purchase: "[S]\nfbq('track', 'Purchase', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  num_items: {{DL - quantity}}\n});\n[/S]",
-        Search: "[S]\nfbq('track', 'Search', {});\n[/S]",
-        AddToWishlist: "[S]\nfbq('track', 'AddToWishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n});\n[/S]",
+        ViewContent: "[S]\nfbq('track', 'ViewContent', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n}, { eventID: '{{DL - event_id}}' });\n[/S]",
+        AddToCart: "[S]\nfbq('track', 'AddToCart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n}, { eventID: '{{DL - event_id}}' });\n[/S]",
+        InitiateCheckout: "[S]\nfbq('track', 'InitiateCheckout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_type: 'product',\n  num_items: {{DL - num_items}}\n}, { eventID: '{{DL - event_id}}' });\n[/S]",
+        AddPaymentInfo: "[S]\nfbq('track', 'AddPaymentInfo', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_type: 'product'\n}, { eventID: '{{DL - event_id}}' });\n[/S]",
+        Purchase: "[S]\nfbq('track', 'Purchase', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  num_items: {{DL - num_items}}\n}, {\n  eventID: '{{DL - event_id}}',\n  userData: {\n    em: '{{DL - customer.emailHashed}}',\n    ph: '{{DL - customer.phoneHashed}}',\n    fn: '{{DL - customer.firstNameHashed}}',\n    ln: '{{DL - customer.lastNameHashed}}'\n  }\n});\n[/S]",
+        Search: "[S]\nfbq('track', 'Search', {}, { eventID: '{{DL - event_id}}' });\n[/S]",
+        AddToWishlist: "[S]\nfbq('track', 'AddToWishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_ids: ['{{DL - item_id}}'],\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n}, { eventID: '{{DL - event_id}}' });\n[/S]",
         CompleteRegistration: "[S]\nfbq('track', 'CompleteRegistration', {});\n[/S]"
       },
       snapchat: {
-        VIEW_CONTENT: "[S]\nsnaptr('track', 'VIEW_CONTENT', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}'\n});\n[/S]",
-        ADD_CART: "[S]\nsnaptr('track', 'ADD_CART', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}'\n});\n[/S]",
-        START_CHECKOUT: "[S]\nsnaptr('track', 'START_CHECKOUT', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  item_ids: ['{{DL - item_id}}'],\n  number_items: {{DL - quantity}}\n});\n[/S]",
-        ADD_BILLING: "[S]\nsnaptr('track', 'ADD_BILLING', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}}\n});\n[/S]",
-        PURCHASE: "[S]\nsnaptr('track', 'PURCHASE', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  transaction_id: '{{DL - transaction_id}}',\n  item_ids: ['{{DL - item_id}}'],\n  number_items: {{DL - quantity}}\n});\n[/S]",
-        SEARCH: "[S]\nsnaptr('track', 'SEARCH', {});\n[/S]",
-        SAVE: "[S]\nsnaptr('track', 'SAVE', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}'\n});\n[/S]",
+        VIEW_CONTENT: "[S]\nsnaptr('track', 'VIEW_CONTENT', {\n  currency: '{{DL - currency}}',\n  price: {{DL - price}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}',\n  client_dedup_id: '{{DL - event_id}}'\n});\n[/S]",
+        ADD_CART: "[S]\nsnaptr('track', 'ADD_CART', {\n  currency: '{{DL - currency}}',\n  price: {{DL - price}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}',\n  number_items: {{DL - num_items}},\n  client_dedup_id: '{{DL - event_id}}'\n});\n[/S]",
+        START_CHECKOUT: "[S]\nsnaptr('track', 'START_CHECKOUT', {\n  currency: '{{DL - currency}}',\n  price: {{DL - price}},\n  item_ids: ['{{DL - item_id}}'],\n  number_items: {{DL - num_items}},\n  client_dedup_id: '{{DL - event_id}}'\n});\n[/S]",
+        ADD_BILLING: "[S]\nsnaptr('track', 'ADD_BILLING', {\n  currency: '{{DL - currency}}',\n  price: {{DL - price}},\n  client_dedup_id: '{{DL - event_id}}'\n});\n[/S]",
+        PURCHASE: "[S]\nsnaptr('track', 'PURCHASE', {\n  currency: '{{DL - currency}}',\n  price: {{DL - value}},\n  transaction_id: '{{DL - transaction_id}}',\n  item_ids: ['{{DL - item_id}}'],\n  number_items: {{DL - num_items}},\n  client_dedup_id: '{{DL - event_id}}'\n});\nsnaptr('set', 'user_hashed_email', '{{DL - customer.emailHashed}}');\nsnaptr('set', 'user_hashed_phone_number', '{{DL - customer.phoneHashed}}');\n[/S]",
+        SEARCH: "[S]\nsnaptr('track', 'SEARCH', { client_dedup_id: '{{DL - event_id}}' });\n[/S]",
+        SAVE: "[S]\nsnaptr('track', 'SAVE', {\n  currency: '{{DL - currency}}',\n  price: {{DL - price}},\n  item_ids: ['{{DL - item_id}}'],\n  item_category: '{{DL - item_category}}',\n  client_dedup_id: '{{DL - event_id}}'\n});\n[/S]",
         SIGN_UP: "[S]\nsnaptr('track', 'SIGN_UP', {});\n[/S]"
       },
       tiktok: {
-        ViewContent: "[S]\nttq.track('ViewContent', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n});\n[/S]",
-        AddToCart: "[S]\nttq.track('AddToCart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n});\n[/S]",
-        InitiateCheckout: "[S]\nttq.track('InitiateCheckout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n});\n[/S]",
-        AddPaymentInfo: "[S]\nttq.track('AddPaymentInfo', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_type: 'product'\n});\n[/S]",
-        Purchase: "[S]\nttq.track('PlaceAnOrder', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n});\n[/S]",
-        Search: "[S]\nttq.track('Search', {});\n[/S]",
-        AddToWishlist: "[S]\nttq.track('AddToWishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n});\n[/S]",
+        ViewContent: "[S]\nttq.track('ViewContent', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n}, { event_id: '{{DL - event_id}}' });\n[/S]",
+        AddToCart: "[S]\nttq.track('AddToCart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - quantity}}\n}, { event_id: '{{DL - event_id}}' });\n[/S]",
+        InitiateCheckout: "[S]\nttq.track('InitiateCheckout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_type: 'product',\n  quantity: {{DL - num_items}}\n}, { event_id: '{{DL - event_id}}' });\n[/S]",
+        AddPaymentInfo: "[S]\nttq.track('AddPaymentInfo', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_type: 'product'\n}, { event_id: '{{DL - event_id}}' });\n[/S]",
+        Purchase: "[S]\nttq.identify({ email: '{{DL - customer.emailHashed}}', phone_number: '{{DL - customer.phoneHashed}}' });\nttq.track('PlaceAnOrder', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product',\n  quantity: {{DL - num_items}}\n}, { event_id: '{{DL - event_id}}' });\n[/S]",
+        Search: "[S]\nttq.track('Search', {}, { event_id: '{{DL - event_id}}' });\n[/S]",
+        AddToWishlist: "[S]\nttq.track('AddToWishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  content_id: '{{DL - item_id}}',\n  content_name: '{{DL - item_name}}',\n  content_type: 'product'\n}, { event_id: '{{DL - event_id}}' });\n[/S]",
         CompleteRegistration: "[S]\nttq.track('CompleteRegistration', {});\n[/S]"
       },
       google: {
-        view_item: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_view_item}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        add_to_cart: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_add_to_cart}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
+        view_item: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_view_item}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  transaction_id: '{{DL - event_id}}'\n});\n[/S]",
+        add_to_cart: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_add_to_cart}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  transaction_id: '{{DL - event_id}}'\n});\n[/S]",
         remove_from_cart: "[S]\ngtag('event', 'page_view', {});\n[/S]",
         view_cart: "[S]\ngtag('event', 'page_view', {});\n[/S]",
-        begin_checkout: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_begin_checkout}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
+        begin_checkout: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_begin_checkout}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  transaction_id: '{{DL - event_id}}'\n});\n[/S]",
         add_shipping_info: "[S]\ngtag('event', 'page_view', {});\n[/S]",
-        add_payment_info: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_add_payment_info}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
+        add_payment_info: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_add_payment_info}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  transaction_id: '{{DL - event_id}}'\n});\n[/S]",
         purchase: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_purchase}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  transaction_id: '{{DL - transaction_id}}'\n});\n[/S]",
         refund: "[S]\ngtag('event', 'page_view', {});\n[/S]",
         search: "[S]\ngtag('event', 'page_view', {});\n[/S]",
-        add_to_wishlist: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_add_to_wishlist}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
+        add_to_wishlist: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_add_to_wishlist}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  transaction_id: '{{DL - event_id}}'\n});\n[/S]",
         view_item_list: "[S]\ngtag('event', 'page_view', {});\n[/S]",
         select_item: "[S]\ngtag('event', 'page_view', {});\n[/S]",
         sign_up: "[S]\ngtag('event', 'conversion', {\n  send_to: '{{DL - google_conversion_id}}/{{DL - google_label_sign_up}}'\n});\n[/S]",
         login: "[S]\ngtag('event', 'page_view', {});\n[/S]"
       },
       ga4: {
-        view_item: "[S]\ngtag('event', 'view_item', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  items: {{DL - items}}\n});\n[/S]",
-        add_to_cart: "[S]\ngtag('event', 'add_to_cart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  items: {{DL - items}}\n});\n[/S]",
-        remove_from_cart: "[S]\ngtag('event', 'remove_from_cart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  items: {{DL - items}}\n});\n[/S]",
-        view_cart: "[S]\ngtag('event', 'view_cart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        begin_checkout: "[S]\ngtag('event', 'begin_checkout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  items: {{DL - items}}\n});\n[/S]",
-        add_shipping_info: "[S]\ngtag('event', 'add_shipping_info', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  shipping_tier: '{{DL - shipping_tier}}'\n});\n[/S]",
-        add_payment_info: "[S]\ngtag('event', 'add_payment_info', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  payment_type: '{{DL - payment_type}}'\n});\n[/S]",
-        purchase: "[S]\ngtag('event', 'purchase', {\n  transaction_id: '{{DL - transaction_id}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  items: {{DL - items}},\n  user_id: '{{DL - user_id}}'\n});\n[/S]",
+        view_item: "[S]\ngtag('event', 'view_item', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  items: {{DL - items}}\n});\n[/S]",
+        add_to_cart: "[S]\ngtag('event', 'add_to_cart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  items: {{DL - items}}\n});\n[/S]",
+        remove_from_cart: "[S]\ngtag('event', 'remove_from_cart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  items: {{DL - items}}\n});\n[/S]",
+        view_cart: "[S]\ngtag('event', 'view_cart', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  items: {{DL - items}}\n});\n[/S]",
+        begin_checkout: "[S]\ngtag('event', 'begin_checkout', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  items: {{DL - items}}\n});\n[/S]",
+        add_shipping_info: "[S]\ngtag('event', 'add_shipping_info', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  shipping_tier: '{{DL - shipping_tier}}'\n});\n[/S]",
+        add_payment_info: "[S]\ngtag('event', 'add_payment_info', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  payment_type: '{{DL - payment_type}}'\n});\n[/S]",
+        purchase: "[S]\ngtag('set', 'user_data', {\n  email: '{{DL - customer.emailHashed}}',\n  phone_number: '{{DL - customer.phoneHashed}}'\n});\ngtag('event', 'purchase', {\n  transaction_id: '{{DL - transaction_id}}',\n  currency: '{{DL - currency}}',\n  value: {{DL - value}},\n  items: {{DL - items}},\n  user_id: '{{DL - user_id}}'\n});\n[/S]",
         refund: "[S]\ngtag('event', 'refund', {\n  transaction_id: '{{DL - transaction_id}}',\n  currency: '{{DL - currency}}'\n});\n[/S]",
         search: "[S]\ngtag('event', 'search', {\n  search_term: '{{DL - search_term}}'\n});\n[/S]",
-        add_to_wishlist: "[S]\ngtag('event', 'add_to_wishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - value}}\n});\n[/S]",
-        view_item_list: "[S]\ngtag('event', 'view_item_list', {\n  item_list_id: '{{DL - item_list_id}}'\n});\n[/S]",
+        add_to_wishlist: "[S]\ngtag('event', 'add_to_wishlist', {\n  currency: '{{DL - currency}}',\n  value: {{DL - price}},\n  items: {{DL - items}}\n});\n[/S]",
+        view_item_list: "[S]\ngtag('event', 'view_item_list', {\n  item_list_name: '{{DL - item_list_name}}',\n  items: {{DL - items}}\n});\n[/S]",
         select_item: "[S]\ngtag('event', 'select_item', {\n  items: {{DL - items}}\n});\n[/S]",
         sign_up: "[S]\ngtag('event', 'sign_up', {\n  method: '{{DL - method}}'\n});\n[/S]",
         login: "[S]\ngtag('event', 'login', {\n  method: '{{DL - method}}'\n});\n[/S]"
       },
       twitter: {
-        ViewContent: "[S]\ntwq('event', 'tw-ViewContent', {\n  value: {{DL - value}},\n  currency: '{{DL - currency}}'\n});\n[/S]",
-        AddToCart: "[S]\ntwq('event', 'tw-AddToCart', {\n  value: {{DL - value}},\n  currency: '{{DL - currency}}'\n});\n[/S]",
-        InitiateCheckout: "[S]\ntwq('event', 'tw-InitiateCheckout', {\n  value: {{DL - value}},\n  currency: '{{DL - currency}}'\n});\n[/S]",
+        ViewContent: "[S]\ntwq('event', 'tw-ViewContent', {\n  value: {{DL - price}},\n  currency: '{{DL - currency}}',\n  conversion_id: '{{DL - event_id}}'\n});\n[/S]",
+        AddToCart: "[S]\ntwq('event', 'tw-AddToCart', {\n  value: {{DL - price}},\n  currency: '{{DL - currency}}',\n  conversion_id: '{{DL - event_id}}'\n});\n[/S]",
+        InitiateCheckout: "[S]\ntwq('event', 'tw-InitiateCheckout', {\n  value: {{DL - price}},\n  currency: '{{DL - currency}}',\n  conversion_id: '{{DL - event_id}}'\n});\n[/S]",
         Purchase: "[S]\ntwq('event', 'tw-Purchase', {\n  value: {{DL - value}},\n  currency: '{{DL - currency}}',\n  conversion_id: '{{DL - transaction_id}}'\n});\n[/S]",
         Search: "[S]\ntwq('event', 'tw-Search', {});\n[/S]",
         SignUp: "[S]\ntwq('event', 'tw-SignUp', {});\n[/S]"
       }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SALLA_TAGHTML — Platform tags using raw per-event Salla DLV paths
+    // ═══════════════════════════════════════════════════════════════════
+    // ⚠️ CRITICAL: The Salla bridge pushes the ORIGINAL event FIRST (_origPush(raw))
+    //    THEN pushes the GA4-normalized event. This means when a trigger fires on
+    //    a native Salla event (addToCart, Product Viewed, ...), ONLY the raw Salla
+    //    paths exist in the data layer. Generic vars like {{DL - price}} (ecommerce.price)
+    //    do NOT exist yet. These per-event vars fix this by using the correct raw paths.
+    // ═══════════════════════════════════════════════════════════════════
+    var SALLA_TAGHTML = {
+
+      // ── Meta Pixel ──────────────────────────────────────────────────
+      meta: {
+        // view_item → Product Viewed → raw path: 0.*
+        ViewContent: "[S]\nfbq('track', 'ViewContent', {\n  currency: '{{Product Viewed - product_currency}}',\n  value: {{Product Viewed - product_price}},\n  content_ids: ['{{Product Viewed - product_id}}'],\n  content_name: '{{Product Viewed - product_name}}',\n  content_type: 'product'\n});\n[/S]",
+        // add_to_cart → addToCart → raw path: ecommerce.add.products.0.*
+        AddToCart: "[S]\nfbq('track', 'AddToCart', {\n  currency: '{{addToCart - currencyCode}}',\n  value: {{addToCart - product_price}},\n  content_ids: ['{{addToCart - product_id}}'],\n  content_name: '{{addToCart - product_name}}',\n  content_type: 'product'\n}, { eventID: '{{addToCart - event_id}}' });\n[/S]",
+        // begin_checkout → cart::submitted → no product data in raw push
+        InitiateCheckout: "[S]\nfbq('track', 'InitiateCheckout', {\n  content_type: 'product'\n});\n[/S]",
+        // purchase → purchase → raw path: ecommerce.purchase.* + customer.*
+        Purchase: "[S]\nfbq('track', 'Purchase', {\n  currency: '{{purchase - currencyCode}}',\n  value: {{purchase - actionField_revenue}},\n  content_ids: ['{{purchase - product_id}}'],\n  content_name: '{{purchase - product_name}}',\n  content_type: 'product'\n}, {\n  eventID: '{{purchase - event_id}}',\n  userData: {\n    em: '{{purchase - customer_emailHashed}}',\n    ph: '{{purchase - customer_phoneHashed}}',\n    fn: '{{purchase - customer_firstNameHashed}}',\n    ln: '{{purchase - customer_lastNameHashed}}'\n  }\n});\n[/S]",
+        // add_to_wishlist → Product Added to Wishlist → no product data
+        AddToWishlist: "[S]\nfbq('track', 'AddToWishlist', {\n  content_type: 'product'\n});\n[/S]",
+        // login → Signed In
+        CompleteRegistration: "[S]\nfbq('track', 'CompleteRegistration', {});\n[/S]",
+        Search: "[S]\nfbq('track', 'Search', {});\n[/S]",
+        AddPaymentInfo: "[S]\nfbq('track', 'AddPaymentInfo', {\n  content_type: 'product'\n});\n[/S]"
+      },
+
+      // ── Snapchat Pixel ───────────────────────────────────────────────
+      snapchat: {
+        // view_item → Product Viewed → raw path: 0.*
+        VIEW_CONTENT: "[S]\nsnaptr('track', 'VIEW_CONTENT', {\n  currency: '{{Product Viewed - product_currency}}',\n  price: {{Product Viewed - product_price}},\n  item_ids: ['{{Product Viewed - product_id}}'],\n  item_category: '{{Product Viewed - product_category}}'\n});\n[/S]",
+        // add_to_cart → addToCart → raw path: ecommerce.add.products.0.*
+        ADD_CART: "[S]\nsnaptr('track', 'ADD_CART', {\n  currency: '{{addToCart - currencyCode}}',\n  price: {{addToCart - product_price}},\n  item_ids: ['{{addToCart - product_id}}'],\n  client_dedup_id: '{{addToCart - event_id}}'\n});\n[/S]",
+        // begin_checkout → cart::submitted → no product data
+        START_CHECKOUT: "[S]\nsnaptr('track', 'START_CHECKOUT', {\n  content_type: 'product'\n});\n[/S]",
+        ADD_BILLING: "[S]\nsnaptr('track', 'ADD_BILLING', {\n  content_type: 'product'\n});\n[/S]",
+        // purchase → purchase → raw path: ecommerce.purchase.*
+        PURCHASE: "[S]\nsnaptr('track', 'PURCHASE', {\n  currency: '{{purchase - currencyCode}}',\n  price: {{purchase - actionField_revenue}},\n  transaction_id: '{{purchase - actionField_id}}',\n  item_ids: ['{{purchase - product_id}}'],\n  client_dedup_id: '{{purchase - event_id}}'\n});\n[/S]",
+        // add_to_wishlist → Product Added to Wishlist → no product data
+        SAVE: "[S]\nsnaptr('track', 'SAVE', {\n  content_type: 'product'\n});\n[/S]",
+        SIGN_UP: "[S]\nsnaptr('track', 'SIGN_UP', {});\n[/S]",
+        SEARCH: "[S]\nsnaptr('track', 'SEARCH', {});\n[/S]"
+      },
+
+      // ── TikTok Pixel ─────────────────────────────────────────────────
+      tiktok: {
+        // view_item → Product Viewed → raw path: 0.*
+        ViewContent: "[S]\nttq.track('ViewContent', {\n  currency: '{{Product Viewed - product_currency}}',\n  value: {{Product Viewed - product_price}},\n  content_id: '{{Product Viewed - product_id}}',\n  content_name: '{{Product Viewed - product_name}}',\n  content_type: 'product'\n});\n[/S]",
+        // add_to_cart → addToCart → raw path: ecommerce.add.products.0.*
+        AddToCart: "[S]\nttq.track('AddToCart', {\n  currency: '{{addToCart - currencyCode}}',\n  value: {{addToCart - product_price}},\n  content_id: '{{addToCart - product_id}}',\n  content_name: '{{addToCart - product_name}}',\n  content_type: 'product',\n  quantity: {{addToCart - product_quantity}}\n}, { event_id: '{{addToCart - event_id}}' });\n[/S]",
+        // begin_checkout → cart::submitted → no product data
+        InitiateCheckout: "[S]\nttq.track('InitiateCheckout', {\n  content_type: 'product'\n});\n[/S]",
+        AddPaymentInfo: "[S]\nttq.track('AddPaymentInfo', {\n  content_type: 'product'\n});\n[/S]",
+        // purchase → purchase → raw path: ecommerce.purchase.*
+        Purchase: "[S]\nttq.track('PlaceAnOrder', {\n  currency: '{{purchase - currencyCode}}',\n  value: {{purchase - actionField_revenue}},\n  content_id: '{{purchase - product_id}}',\n  content_name: '{{purchase - product_name}}',\n  content_type: 'product'\n}, { event_id: '{{purchase - event_id}}' });\n[/S]",
+        // add_to_wishlist → Product Added to Wishlist → no product data
+        AddToWishlist: "[S]\nttq.track('AddToWishlist', {\n  content_type: 'product'\n});\n[/S]",
+        Search: "[S]\nttq.track('Search', {});\n[/S]",
+        CompleteRegistration: "[S]\nttq.track('CompleteRegistration', {});\n[/S]"
+      }
+
     };
 
     // ===== GATE =====
@@ -5436,6 +5507,8 @@
       if (!btn) return;
       var val = btn.getAttribute('data-val');
       if (!val) return;
+      // ── SOON platforms: not activatable ──
+      if (btn.classList.contains('cbtn-soon') || val === 'mixpanel') return;
       var idx = S.platforms.indexOf(val);
       if (idx === -1) { S.platforms.push(val); btn.classList.add('on'); }
       else { S.platforms.splice(idx, 1); btn.classList.remove('on'); }
@@ -5757,6 +5830,11 @@
         try { document.getElementById('dlBody').textContent = buildDL(); }
         catch (e) { console.error('buildDL error:', e); }
 
+        // Build Salla bridge BEFORE the lazy GTM build so _sallaBridgeCode is ready
+        if (S.cms === 'salla') {
+          try { buildSallaBridge(); } catch (e) { console.error('buildSallaBridge error:', e); }
+        }
+
         try { document.getElementById('guideSteps').innerHTML = buildGuide(); }
         catch (e) { console.error('buildGuide error:', e); }
 
@@ -5866,16 +5944,25 @@
       var tags = [], triggers = [], variables = [];
       var tagId = 1, trigId = 100, varId = 200;
       var trigMap = {};
-      var allPagesTrigId = 2147479553;
-      function fp(id) { return String(baseTs * 1000 + id); }
+      // ⚠️ GTM built-in trigger IDs must be STRINGS in v2 export JSON.
+      // Passing numbers here leaks into firingTriggerId arrays → int64 deserializer
+      // in the GTM UI importer rejects the payload with 500 Internal Server Error.
+      var allPagesTrigId = '2147479553';
+      var ga4ConfigTagName = null;
+      // ⚠️ GTM fingerprint is a 13-digit ms-since-epoch string. Anything wider
+      // overflows the backend int64 parser → 500 on UI import.
+      function fp(id) { return String(baseTs + (id % 1000)); }
+      // ── ID stringifiers — ALL IDs in v2 export are strings, never numbers ──
+      function sid(n) { return String(n); }
 
       // ── 1. VARIABLES ────────────────────────────────────────
       var dlKeys = [
-        'currency', 'value', 'transaction_id', 'affiliation',
+        'currency', 'value', 'price', 'num_items', 'event_id',
+        'transaction_id', 'affiliation',
         'coupon', 'shipping', 'tax', 'payment_type',
         'search_term', 'shipping_tier', 'method', 'items', 'user_email',
         'item_id', 'item_name', 'item_sku', 'item_brand', 'item_category',
-        'price', 'quantity'
+        'item_variant', 'item_list_name', 'quantity'
       ];
       if (S.platforms.indexOf('google') !== -1) {
         dlKeys.push('google_conversion_id');
@@ -5883,50 +5970,31 @@
       }
       if (S.platforms.indexOf('ga4') !== -1) dlKeys.push('user_id');
 
-      // سلة: أضف customer variables تلقائياً لما login event محدد
-      if (S.cms === 'salla' && S.events.indexOf('login') !== -1) {
-        // Variable: DL - customer.isGuest
-        variables.push({
-          accountId: '000000000', containerId: '00000000',
-          variableId: varId,
-          name: 'DL - customer.isGuest',
-          type: 'v',
-          parameter: [
-            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
-            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
-            { type: 'TEMPLATE', key: 'name', value: 'customer.isGuest' }
-          ],
-          fingerprint: fp(varId)
+      // سلة: أضف customer variables — purchase دايماً بيحتوي على customer data
+      // isGuest بيتبعت مع login (Signed In) وpurchase معاً
+      if (S.cms === 'salla') {
+        var _sallaCustVars = [
+          { name: 'DL - customer.isGuest',         path: 'customer.isGuest' },
+          { name: 'DL - customer.emailHashed',      path: 'customer.email_hashed' },
+          { name: 'DL - customer.phoneHashed',      path: 'customer.phone_hashed' },
+          { name: 'DL - customer.firstNameHashed',  path: 'customer.first_name' },
+          { name: 'DL - customer.lastNameHashed',   path: 'customer.last_name' }
+        ];
+        _sallaCustVars.forEach(function (cv) {
+          variables.push({
+            accountId: '000000000', containerId: '00000000',
+            variableId: varId,
+            name: cv.name,
+            type: 'v',
+            parameter: [
+              { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
+              { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
+              { type: 'TEMPLATE', key: 'name', value: cv.path }
+            ],
+            fingerprint: fp(varId)
+          });
+          varId++;
         });
-        varId++;
-        // Variable: DL - customer.emailHashed
-        variables.push({
-          accountId: '000000000', containerId: '00000000',
-          variableId: varId,
-          name: 'DL - customer.emailHashed',
-          type: 'v',
-          parameter: [
-            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
-            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
-            { type: 'TEMPLATE', key: 'name', value: 'customer.email_hashed' }
-          ],
-          fingerprint: fp(varId)
-        });
-        varId++;
-        // Variable: DL - customer.phoneHashed
-        variables.push({
-          accountId: '000000000', containerId: '00000000',
-          variableId: varId,
-          name: 'DL - customer.phoneHashed',
-          type: 'v',
-          parameter: [
-            { type: 'INTEGER', key: 'dataLayerVersion', value: '2' },
-            { type: 'BOOLEAN', key: 'setDefaultValue', value: 'false' },
-            { type: 'TEMPLATE', key: 'name', value: 'customer.phone_hashed' }
-          ],
-          fingerprint: fp(varId)
-        });
-        varId++;
       }
 
       // زد: أضف customer variables تلقائياً لما login event محدد
@@ -5992,90 +6060,96 @@
       }
 
       // ═══════════════════════════════════════════════════════════════
-      // سلة — Per-Event DLV Variables
+      // سلة — Optional RAW DLV Variables (debugging / advanced)
       // ═══════════════════════════════════════════════════════════════
-      // سلة بتستخدم paths مختلفة لنفس المفهوم في كل event
-      // Rule: نفس الـ path = نفس المتغير / path مختلف = متغير منفصل
+      // The canonical DL - * variables already read from the NORMALIZED schema
+      // produced by the Salla→Unified Bridge (see CMS_DL_MAP.salla.vars above).
+      // These extras expose the RAW Salla fields for debugging or for clients
+      // who prefer raw-path tags. Safe to ignore if you use the bridge.
       if (S.cms === 'salla') {
         var sallaPerEventVars = [
-          // ── Product List Viewed (data[]) ──────────────────────
-          { name: 'DLV - items_array - Product List Viewed',   path: 'data' },
-          { name: 'DLV - item_id - Product List Viewed',       path: 'data.0.id' },
-          { name: 'DLV - item_name - Product List Viewed',     path: 'data.0.name' },
-          { name: 'DLV - item_sku - Product List Viewed',      path: 'data.0.sku' },
-          { name: 'DLV - price - Product List Viewed',         path: 'data.0.price' },
-          { name: 'DLV - currency - Product List Viewed',      path: 'data.0.currency' },
-          // ⚠️ category هنا object {name} مش string مباشرة
-          { name: 'DLV - item_category - Product List Viewed', path: 'data.0.category.name' },
+          // ══════════════════════════════════════════════════════════════
+          // سلة — RAW DLV Variables (per-event, pre-bridge)
+          // التسمية: Event_Name - Parameter_Name
+          // المسارات مستخرجة مباشرة من توثيق سلة الرسمي
+          // القيم الـ null أو الحقول غير الموثقة تم تجاهلها
+          // ══════════════════════════════════════════════════════════════
 
-          // ── Product Viewed + Product Removed (shared 0.* path) ──
-          { name: 'DLV - item_id - Product Viewed',       path: '0.id' },
-          { name: 'DLV - item_name - Product Viewed',     path: '0.name' },
-          { name: 'DLV - item_sku - Product Viewed',      path: '0.sku' },
-          // ⚠️ استخدم price مش value — 0.value بيكون integer مقطوع
-          { name: 'DLV - price - Product Viewed',         path: '0.price' },
-          { name: 'DLV - currency - Product Viewed',      path: '0.currency' },
-          { name: 'DLV - item_category - Product Viewed', path: '0.category' },
-          { name: 'DLV - item_url - Product Viewed',      path: '0.url' },
-          { name: 'DLV - item_image - Product Viewed',    path: '0.image_url' },
-          // ⚠️ quantity في Product Viewed بيكون 0 دايماً (Salla bug) — hardcode 1 في GA4 tag
+          // ── Product List Viewed — المنتجات في obj.data[] ──
+          { name: 'Product List Viewed - data',             path: 'data' },
+          { name: 'Product List Viewed - product_id',       path: 'data.0.id' },
+          { name: 'Product List Viewed - product_name',     path: 'data.0.name' },
+          { name: 'Product List Viewed - product_price',    path: 'data.0.price' },
+          { name: 'Product List Viewed - product_currency', path: 'data.0.currency' },
+          { name: 'Product List Viewed - product_sku',      path: 'data.0.sku' },
+          { name: 'Product List Viewed - product_category', path: 'data.0.category.name' },
 
-          // ── addToCart (ecommerce.add.products[]) ──────────────
-          { name: 'DLV - items_array - addToCart',       path: 'ecommerce.add.products' },
-          { name: 'DLV - item_id - addToCart',           path: 'ecommerce.add.products.0.id' },
-          { name: 'DLV - item_name - addToCart',         path: 'ecommerce.add.products.0.name' },
-          { name: 'DLV - price - addToCart',             path: 'ecommerce.add.products.0.price' },
-          { name: 'DLV - quantity - addToCart',          path: 'ecommerce.add.products.0.quantity' },
-          { name: 'DLV - item_category - addToCart',     path: 'ecommerce.add.products.0.category' },
-          { name: 'DLV - brand - addToCart',             path: 'ecommerce.add.products.0.brand' },
-          // ⚠️ currencyCode مش currency
-          { name: 'DLV - currency - addToCart',          path: 'ecommerce.currencyCode' },
-          { name: 'DLV - event_id - addToCart',          path: 'ecommerce.event_id' },
-          // ⚠️ SKU غير موجود في addToCart من سلة
+          // ── Product Viewed — المنتج في obj[0] ──
+          { name: 'Product Viewed - product_id',       path: '0.id' },
+          { name: 'Product Viewed - product_name',     path: '0.name' },
+          { name: 'Product Viewed - product_price',    path: '0.price' },
+          { name: 'Product Viewed - product_category', path: '0.category' },
+          { name: 'Product Viewed - product_currency', path: '0.currency' },
+          { name: 'Product Viewed - product_sku',      path: '0.sku' },
+          { name: 'Product Viewed - image_url',        path: '0.image_url' },
+          { name: 'Product Viewed - url',              path: '0.url' },
 
-          // ── Cart Viewed (0.products[]) ────────────────────────
-          { name: 'DLV - cart_id - Cart Viewed',         path: '0.cart_id' },
-          { name: 'DLV - items_array - Cart Viewed',     path: '0.products' },
-          { name: 'DLV - item_id - Cart Viewed',         path: '0.products.0.id' },
-          { name: 'DLV - item_name - Cart Viewed',       path: '0.products.0.name' },
-          { name: 'DLV - item_sku - Cart Viewed',        path: '0.products.0.sku' },
-          // ⚠️ price هنا قد يكون إجمالي الخط (price * qty) — مش وحدة
-          { name: 'DLV - price - Cart Viewed',           path: '0.products.0.price' },
-          { name: 'DLV - quantity - Cart Viewed',        path: '0.products.0.quantity' },
-          { name: 'DLV - currency - Cart Viewed',        path: '0.products.0.currency' },
-          { name: 'DLV - item_category - Cart Viewed',   path: '0.products.0.category' },
-          { name: 'DLV - coupon - Cart Viewed',          path: '0.products.0.coupon' },
-          // ⚠️ مفيش cart total في Cart Viewed — اعمل Custom JS Variable تجمع الـ prices
+          // ── addToCart — ecommerce.add.products[] ──
+          { name: 'addToCart - currencyCode',       path: 'ecommerce.currencyCode' },
+          { name: 'addToCart - event_id',           path: 'ecommerce.event_id' },
+          { name: 'addToCart - products',           path: 'ecommerce.add.products' },
+          { name: 'addToCart - product_id',         path: 'ecommerce.add.products.0.id' },
+          { name: 'addToCart - product_name',       path: 'ecommerce.add.products.0.name' },
+          { name: 'addToCart - product_price',      path: 'ecommerce.add.products.0.price' },
+          { name: 'addToCart - product_quantity',   path: 'ecommerce.add.products.0.quantity' },
+          { name: 'addToCart - product_category',   path: 'ecommerce.add.products.0.category' },
+          { name: 'addToCart - product_brand',      path: 'ecommerce.add.products.0.brand' },
 
-          // ── cart::submitted — begin_checkout ─────────────────
-          // ⚠️ مفيش ecommerce data في cart::submitted — status only
+          // ── Cart Viewed — obj[0].products[] ──
+          { name: 'Cart Viewed - cart_id',           path: '0.cart_id' },
+          { name: 'Cart Viewed - products',          path: '0.products' },
+          { name: 'Cart Viewed - product_id',        path: '0.products.0.id' },
+          { name: 'Cart Viewed - product_name',      path: '0.products.0.name' },
+          { name: 'Cart Viewed - product_price',     path: '0.products.0.price' },
+          { name: 'Cart Viewed - product_quantity',  path: '0.products.0.quantity' },
+          { name: 'Cart Viewed - product_brand',     path: '0.products.0.brand' },
+          { name: 'Cart Viewed - product_sku',       path: '0.products.0.sku' },
+          { name: 'Cart Viewed - product_currency',  path: '0.products.0.currency' },
+          { name: 'Cart Viewed - product_coupon',    path: '0.products.0.coupon' },
 
-          // ── purchase (ecommerce.purchase.*) ───────────────────
-          { name: 'DLV - event_id - purchase',           path: 'ecommerce.event_id' },
-          { name: 'DLV - transaction_id - purchase',     path: 'ecommerce.purchase.actionField.id' },
-          { name: 'DLV - revenue - purchase',            path: 'ecommerce.purchase.actionField.revenue' },
-          { name: 'DLV - total - purchase',              path: 'ecommerce.purchase.actionField.total' },
-          { name: 'DLV - currency_code - purchase',      path: 'ecommerce.purchase.actionField.currency_code' },
-          { name: 'DLV - items_array - purchase',        path: 'ecommerce.purchase.products' },
-          { name: 'DLV - item_id - purchase',            path: 'ecommerce.purchase.products.0.id' },
-          { name: 'DLV - item_name - purchase',          path: 'ecommerce.purchase.products.0.name' },
-          { name: 'DLV - price - purchase',              path: 'ecommerce.purchase.products.0.price' },
-          { name: 'DLV - quantity - purchase',           path: 'ecommerce.purchase.products.0.quantity' },
-          // ⚠️ category قد تكون concatenated (المكملات/العروض) — اقطعها لو محتاج
-          { name: 'DLV - item_category - purchase',      path: 'ecommerce.purchase.products.0.category' },
-          // ⚠️ SKU غير موجود في purchase products من سلة
+          // ── Product Removed — obj[0] ──
+          { name: 'Product Removed - product_id',       path: '0.id' },
+          { name: 'Product Removed - product_name',     path: '0.name' },
+          { name: 'Product Removed - product_price',    path: '0.price' },
+          { name: 'Product Removed - product_quantity', path: '0.quantity' },
+          { name: 'Product Removed - product_category', path: '0.category' },
+          { name: 'Product Removed - product_sku',      path: '0.sku' },
+          { name: 'Product Removed - product_currency', path: '0.currency' },
+          { name: 'Product Removed - cart_id',          path: '0.cart_id' },
 
-          // ── Customer (purchase — logged-in) ───────────────────
-          // ⚠️ isGuest بـ camelCase — مختلف عن زد التي تستخدم is_guest
-          { name: 'DLV - customer.isGuest',              path: 'customer.isGuest' },
-          { name: 'DLV - customer.name',                 path: 'customer.name' },
-          // ⚠️ first_name و last_name مشفّرين SHA-1 من سلة — مش plain text
-          { name: 'DLV - customer.firstNameHashed',      path: 'customer.first_name' },
-          { name: 'DLV - customer.lastNameHashed',       path: 'customer.last_name' },
-          { name: 'DLV - customer.email',                path: 'customer.email' },
-          { name: 'DLV - customer.phone',                path: 'customer.phone' },
-          { name: 'DLV - customer.emailHashed',          path: 'customer.email_hashed' },
-          { name: 'DLV - customer.phoneHashed',          path: 'customer.phone_hashed' }
+          // ── purchase — ecommerce.purchase.actionField + products[] ──
+          { name: 'purchase - currencyCode',          path: 'ecommerce.currencyCode' },
+          { name: 'purchase - event_id',              path: 'ecommerce.event_id' },
+          { name: 'purchase - actionField_id',        path: 'ecommerce.purchase.actionField.id' },
+          { name: 'purchase - actionField_total',     path: 'ecommerce.purchase.actionField.total' },
+          { name: 'purchase - actionField_revenue',   path: 'ecommerce.purchase.actionField.revenue' },
+          { name: 'purchase - products',              path: 'ecommerce.purchase.products' },
+          { name: 'purchase - product_id',            path: 'ecommerce.purchase.products.0.id' },
+          { name: 'purchase - product_name',          path: 'ecommerce.purchase.products.0.name' },
+          { name: 'purchase - product_price',         path: 'ecommerce.purchase.products.0.price' },
+          { name: 'purchase - product_quantity',      path: 'ecommerce.purchase.products.0.quantity' },
+          { name: 'purchase - product_category',      path: 'ecommerce.purchase.products.0.category' },
+          { name: 'purchase - product_currency',      path: 'ecommerce.purchase.products.0.currency' },
+
+          // ── purchase — customer.* (موجودة فقط في حدث purchase حسب التوثيق) ──
+          { name: 'purchase - customer_isGuest',         path: 'customer.isGuest' },
+          { name: 'purchase - customer_name',            path: 'customer.name' },
+          { name: 'purchase - customer_firstNameHashed', path: 'customer.first_name' },
+          { name: 'purchase - customer_lastNameHashed',  path: 'customer.last_name' },
+          { name: 'purchase - customer_email',           path: 'customer.email' },
+          { name: 'purchase - customer_phone',           path: 'customer.phone' },
+          { name: 'purchase - customer_emailHashed',     path: 'customer.email_hashed' },
+          { name: 'purchase - customer_phoneHashed',     path: 'customer.phone_hashed' }
         ];
         sallaPerEventVars.forEach(function (v) {
           variables.push({
@@ -6099,29 +6173,91 @@
       // ═══════════════════════════════════════════════════════════════
       if (S.cms === 'zid') {
         var zidExtraVars = [
-          // ── Item-level (index 0) — explicit named variables ────
-          { name: 'DLV - item_id',              path: 'ecommerce.items.0.item_id' },
-          { name: 'DLV - item_name',            path: 'ecommerce.items.0.item_name' },
-          { name: 'DLV - item_category',        path: 'ecommerce.items.0.item_category' },
-          { name: 'DLV - item_price',           path: 'ecommerce.items.0.price' },
-          { name: 'DLV - item_quantity',        path: 'ecommerce.items.0.quantity' },
-          // ── SKU — TWO SEPARATE VARIABLES ──────────────────────
-          // ⚠️ CRITICAL: زد بتبعت item_sku في كل الـ events ما عدا purchase
-          // في purchase بتبعت sku (مش item_sku) — path مختلف → متغير منفصل
-          { name: 'DLV - item_sku',             path: 'ecommerce.items.0.item_sku' },
-          { name: 'DLV - item_sku (Purchase)',   path: 'ecommerce.items.0.sku' },
-          // ── Purchase-only fields ──────────────────────────────
-          { name: 'DLV - ecommerce_tax',        path: 'ecommerce.tax' },
-          { name: 'DLV - ecommerce_shipping',   path: 'ecommerce.shipping' },
-          { name: 'DLV - ecommerce_coupon',     path: 'ecommerce.coupon' },
-          // ── Customer fields ───────────────────────────────────
-          // ⚠️ is_guest بـ snake_case — مختلف عن سلة التي تستخدم isGuest
-          { name: 'DLV - customer.is_guest',    path: 'customer.is_guest' },
-          { name: 'DLV - customer.external_id', path: 'customer.external_id' },
-          { name: 'DLV - customer.email',       path: 'customer.email' },
-          { name: 'DLV - customer.mobile',      path: 'customer.mobile' },
-          { name: 'DLV - customer.emailHashed', path: 'customer.email_hashed' },
-          { name: 'DLV - customer.mobileHashed',path: 'customer.mobile_hashed' }
+          // ══════════════════════════════════════════════════════════════
+          // زد — RAW DLV Variables (per-event, GA4-compatible schema)
+          // التسمية: Event_Name - Parameter_Name
+          // زد بتبعت GA4 schema مباشرة — نفس الـ paths لكل الـ events
+          // ⚠️ purchase بتبعت sku (مش item_sku) — path مختلف
+          // ══════════════════════════════════════════════════════════════
+
+          // ── view_item ──
+          { name: 'view_item - item_id',       path: 'ecommerce.items.0.item_id' },
+          { name: 'view_item - item_name',     path: 'ecommerce.items.0.item_name' },
+          { name: 'view_item - item_category', path: 'ecommerce.items.0.item_category' },
+          { name: 'view_item - item_price',    path: 'ecommerce.items.0.price' },
+          { name: 'view_item - item_sku',      path: 'ecommerce.items.0.item_sku' },
+          { name: 'view_item - currency',      path: 'ecommerce.currency' },
+          { name: 'view_item - value',         path: 'ecommerce.value' },
+
+          // ── add_to_cart ──
+          { name: 'add_to_cart - item_id',       path: 'ecommerce.items.0.item_id' },
+          { name: 'add_to_cart - item_name',     path: 'ecommerce.items.0.item_name' },
+          { name: 'add_to_cart - item_category', path: 'ecommerce.items.0.item_category' },
+          { name: 'add_to_cart - item_price',    path: 'ecommerce.items.0.price' },
+          { name: 'add_to_cart - item_quantity', path: 'ecommerce.items.0.quantity' },
+          { name: 'add_to_cart - item_sku',      path: 'ecommerce.items.0.item_sku' },
+          { name: 'add_to_cart - currency',      path: 'ecommerce.currency' },
+          { name: 'add_to_cart - value',         path: 'ecommerce.value' },
+
+          // ── remove_from_cart ──
+          { name: 'remove_from_cart - item_id',       path: 'ecommerce.items.0.item_id' },
+          { name: 'remove_from_cart - item_name',     path: 'ecommerce.items.0.item_name' },
+          { name: 'remove_from_cart - item_price',    path: 'ecommerce.items.0.price' },
+          { name: 'remove_from_cart - item_quantity', path: 'ecommerce.items.0.quantity' },
+          { name: 'remove_from_cart - item_sku',      path: 'ecommerce.items.0.item_sku' },
+          { name: 'remove_from_cart - currency',      path: 'ecommerce.currency' },
+          { name: 'remove_from_cart - value',         path: 'ecommerce.value' },
+
+          // ── view_cart ──
+          { name: 'view_cart - item_id',       path: 'ecommerce.items.0.item_id' },
+          { name: 'view_cart - item_name',     path: 'ecommerce.items.0.item_name' },
+          { name: 'view_cart - item_price',    path: 'ecommerce.items.0.price' },
+          { name: 'view_cart - item_quantity', path: 'ecommerce.items.0.quantity' },
+          { name: 'view_cart - currency',      path: 'ecommerce.currency' },
+          { name: 'view_cart - value',         path: 'ecommerce.value' },
+
+          // ── begin_checkout ──
+          { name: 'begin_checkout - item_id',       path: 'ecommerce.items.0.item_id' },
+          { name: 'begin_checkout - item_name',     path: 'ecommerce.items.0.item_name' },
+          { name: 'begin_checkout - item_price',    path: 'ecommerce.items.0.price' },
+          { name: 'begin_checkout - item_quantity', path: 'ecommerce.items.0.quantity' },
+          { name: 'begin_checkout - currency',      path: 'ecommerce.currency' },
+          { name: 'begin_checkout - value',         path: 'ecommerce.value' },
+
+          // ── purchase ──
+          { name: 'purchase - transaction_id', path: 'ecommerce.transaction_id' },
+          { name: 'purchase - value',          path: 'ecommerce.value' },
+          { name: 'purchase - currency',       path: 'ecommerce.currency' },
+          { name: 'purchase - tax',            path: 'ecommerce.tax' },
+          { name: 'purchase - shipping',       path: 'ecommerce.shipping' },
+          { name: 'purchase - coupon',         path: 'ecommerce.coupon' },
+          { name: 'purchase - item_id',        path: 'ecommerce.items.0.item_id' },
+          { name: 'purchase - item_name',      path: 'ecommerce.items.0.item_name' },
+          { name: 'purchase - item_price',     path: 'ecommerce.items.0.price' },
+          { name: 'purchase - item_quantity',  path: 'ecommerce.items.0.quantity' },
+          // ⚠️ زد بتبعت sku (مش item_sku) في purchase فقط
+          { name: 'purchase - item_sku',       path: 'ecommerce.items.0.sku' },
+
+          // ── add_to_wishlist ──
+          { name: 'add_to_wishlist - item_id',    path: 'ecommerce.items.0.item_id' },
+          { name: 'add_to_wishlist - item_name',  path: 'ecommerce.items.0.item_name' },
+          { name: 'add_to_wishlist - item_price', path: 'ecommerce.items.0.price' },
+          { name: 'add_to_wishlist - currency',   path: 'ecommerce.currency' },
+          { name: 'add_to_wishlist - value',      path: 'ecommerce.value' },
+
+          // ── view_item_list ──
+          { name: 'view_item_list - item_id',       path: 'ecommerce.items.0.item_id' },
+          { name: 'view_item_list - item_name',     path: 'ecommerce.items.0.item_name' },
+          { name: 'view_item_list - item_category', path: 'ecommerce.items.0.item_category' },
+
+          // ── login / Customer (زد بتبعت customer data مع كل event) ──
+          // ⚠️ is_guest بـ snake_case — مختلف عن سلة (isGuest)
+          { name: 'login - customer_is_guest',      path: 'customer.is_guest' },
+          { name: 'login - customer_external_id',   path: 'customer.external_id' },
+          { name: 'login - customer_email',         path: 'customer.email' },
+          { name: 'login - customer_email_hashed',  path: 'customer.email_hashed' },
+          { name: 'login - customer_mobile',        path: 'customer.mobile' },
+          { name: 'login - customer_mobile_hashed', path: 'customer.mobile_hashed' }
         ];
         zidExtraVars.forEach(function (v) {
           variables.push({
@@ -6143,6 +6279,9 @@
       var cmsVarMap = CMS_DL_MAP[S.cms] && CMS_DL_MAP[S.cms].vars;
       for (var vi = 0; vi < dlKeys.length; vi++) {
         var k = dlKeys[vi];
+        // ── Salla: skip generic DL - * vars (per-event vars replace them) ──
+        // Keep Google Ads Const - * variables (needed by awct tags)
+        if (S.cms === 'salla' && k !== 'google_conversion_id' && k.indexOf('google_label_') !== 0) continue;
         // ── Google Ads: conversion ID + labels are CONSTANTS, not DataLayer variables ──
         if (k === 'google_conversion_id') {
           var gConstId = (S.pixelIds && S.pixelIds['google']) ? S.pixelIds['google'].replace('AW-', '') : 'XXXXXXXXXX';
@@ -6207,7 +6346,7 @@
 
 
       // ── 0. CONSENT MODE v2 — Custom HTML on Consent Initialization ──
-      var consentInitTrigId = 2147479572; // GTM built-in: Consent Initialization - All Pages
+      var consentInitTrigId = '2147479572'; // GTM built-in: Consent Initialization - All Pages (string — GTM v2 export requires string IDs)
 
       var consentDefaultHtml = '<script>\n'
         + 'window.dataLayer = window.dataLayer || [];\n'
@@ -6235,7 +6374,7 @@
           { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }
         ],
         firingTriggerId: [consentInitTrigId],
-        tagFiringOption: 'oncePerEvent',
+        tagFiringOption: 'ONCE_PER_EVENT',
         fingerprint: fp(tagId)
       });
       tagId++;
@@ -6401,11 +6540,62 @@
           { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }
         ],
         firingTriggerId: [allPagesTrigId],
-        tagFiringOption: 'oncePerPage',
+        tagFiringOption: 'ONCE_PER_LOAD',
         notes: 'Captures gclid, fbclid, ttclid, scclid, twclid and all UTM params into 90-day cookies (et_*) on every page | Generated by Easy Track',
         fingerprint: fp(tagId)
       });
       tagId++;
+
+      // ── Salla UA→GA4 Bridge — MUST fire before any event tag ───────────────
+      // Salla pushes UA Enhanced Ecommerce format (ecommerce.add.products, ecommerce.purchase.products,
+      // obj[0], obj.data[], etc.) which is incompatible with GA4 variable paths.
+      // This Custom HTML tag hooks dataLayer.push and normalizes every Salla event into a clean
+      // GA4 schema: { event, event_id, ecommerce: { currency, value|price, items:[] } }
+      // Fires on Consent Initialization (earliest possible trigger, priority 10) so it
+      // intercepts ALL subsequent dataLayer.push calls from the Salla storefront.
+      if (S.cms === 'salla') {
+        // Ensure bridge code is built (may be null if generate ran before buildSallaBridge)
+        if (!window._sallaBridgeCode) {
+          try { buildSallaBridge(); } catch (e2) { console.warn('bridge build failed:', e2); }
+        }
+        var _sallaBridgeHtml = window._sallaBridgeCode || '';
+        if (_sallaBridgeHtml) {
+          tags.push({
+            accountId: '000000000', containerId: '00000000', tagId: tagId,
+            name: 'Salla UA\u2192GA4 Bridge | Normalization',
+            type: 'html',
+            parameter: [
+              { type: 'TEMPLATE', key: 'html', value: _sallaBridgeHtml },
+              { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }
+            ],
+            // Consent Initialization - All Pages (earliest possible, runs before gtm.js event)
+            firingTriggerId: [String(consentInitTrigId)],
+            tagFiringOption: 'ONCE_PER_LOAD',
+            notes: 'Salla UA\u2192GA4 Bridge — Normalizes Salla UA Enhanced Ecommerce to GA4 schema. CRITICAL: must run before any event tag. Hooks dataLayer.push and converts Product Viewed, addToCart, Cart Viewed, etc. to standard GA4 events. | Generated by Easy Track',
+            fingerprint: fp(tagId)
+          });
+          tagId++;
+        }
+      }
+
+      // ── Google Ads Conversion Linker (Required for GCLID attribution) ─────
+      // Must be present whenever Google Ads tracking is used. Preserves gclid/wbraid/gbraid
+      // into first-party cookies so conversions are correctly attributed on return visits.
+      // No parameters needed — all defaults work. Extra parameters can trigger 500 errors
+      // on GTM UI import for some workspaces.
+      if (S.platforms.indexOf('google') !== -1) {
+        tags.push({
+          accountId: '000000000', containerId: '00000000', tagId: tagId,
+          name: 'Google Ads | Conversion Linker',
+          type: 'gclidw',
+          parameter: [],
+          firingTriggerId: [allPagesTrigId],
+          tagFiringOption: 'ONCE_PER_EVENT',
+          notes: 'Required for accurate gclid/wbraid attribution on Google Ads conversions | Generated by Easy Track',
+          fingerprint: fp(tagId)
+        });
+        tagId++;
+      }
 
       for (var bi = 0; bi < S.platforms.length; bi++) {
         var bp = S.platforms[bi];
@@ -6416,45 +6606,84 @@
         else if (bp === 'tiktok') bHtml = TIKTOK_BASE(bPixId);
         else if (bp === 'twitter') bHtml = TWITTER_BASE(bPixId);
         else if (bp === 'google') {
-          var gAdsId = S.pixelIds['google'] || 'AW-XXXXXXXXXX';
+          var gAdsId = S.pixelIds['google'] || 'AW-REPLACE_ME';
+          // ── Google Tag (googtag) — send_page_view: true, لا base code منفصل ──
           tags.push({
             accountId: '000000000', containerId: '00000000', tagId: tagId,
             name: safeName(PM[bp].name + ' | Google Tag'),
             type: 'googtag',
             parameter: [
-              { type: 'TEMPLATE', key: 'tagId', value: gAdsId }
+              { type: 'TEMPLATE', key: 'tagId', value: gAdsId },
+              {
+                type: 'LIST', key: 'configSettingsTable',
+                list: [
+                  { type: 'MAP', map: [
+                    { type: 'TEMPLATE', key: 'parameter',      value: 'send_page_view' },
+                    { type: 'TEMPLATE', key: 'parameterValue', value: 'true' }
+                  ]}
+                ]
+              }
             ],
             firingTriggerId: [allPagesTrigId],
+            notes: 'Google Ads Global Tag | send_page_view: true | Generated by Easy Track',
             fingerprint: fp(tagId)
           });
           tagId++;
           continue;
         } else if (bp === 'ga4') {
-          var ga4CfgId = S.pixelIds['ga4'] || 'G-XXXXXXXXXX';
-          // GA4 config: send_page_view + all UTM parameters from cookies for proper attribution
-          tags.push({
-            accountId: '000000000', containerId: '00000000', tagId: tagId,
-            name: safeName(PM[bp].name + ' | Google Tag'),
-            type: 'googtag',
-            parameter: [
-              { type: 'TEMPLATE', key: 'tagId', value: ga4CfgId },
-              {
-                type: 'LIST', key: 'configSettingsTable',
-                list: [
-                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'send_page_view' }, { type: 'TEMPLATE', key: 'parameterValue', value: 'true' }] },
-                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_source' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_source}}' }] },
-                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_medium' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_medium}}' }] },
-                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_name' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_campaign}}' }] },
-                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_content' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_content}}' }] },
-                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_term' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_term}}' }] },
-                  { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_id' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_id}}' }] }
-                ]
-              }
-            ],
-            firingTriggerId: [allPagesTrigId],
-            notes: 'GA4 Config Tag — includes all UTM params from et_* cookies for full attribution | Generated by Easy Track',
-            fingerprint: fp(tagId)
-          });
+          var ga4CfgId = S.pixelIds['ga4'] || '';
+          // ⚠️ googtag type: G-XXXXXXXXXX is technically valid (letters allowed in GA4 IDs)
+          // but GTM backend may reject non-real IDs — only use googtag if ID looks real (G- + alphanum, no repeated X pattern)
+          var ga4IsReal = /^G-[A-Z0-9]{4,12}$/.test(ga4CfgId) && !/^G-X+$/.test(ga4CfgId);
+          if (ga4IsReal) {
+            var _ga4TagName = safeName(PM[bp].name + ' | Google Tag');
+            // ✅ Store tag name so gaawe event tags can reference it via configurationTag
+            // (avoids per-event backend validation → prevents "Service unavailable" on import)
+            ga4ConfigTagName = _ga4TagName;
+            tags.push({
+              accountId: '000000000', containerId: '00000000', tagId: tagId,
+              name: _ga4TagName,
+              type: 'googtag',
+              parameter: [
+                { type: 'TEMPLATE', key: 'tagId', value: ga4CfgId },
+                {
+                  type: 'LIST', key: 'configSettingsTable',
+                  list: [
+                    { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'send_page_view' }, { type: 'TEMPLATE', key: 'parameterValue', value: 'true' }] },
+                    { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_source' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_source}}' }] },
+                    { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_medium' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_medium}}' }] },
+                    { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_name' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_campaign}}' }] },
+                    { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_content' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_content}}' }] },
+                    { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_term' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_term}}' }] },
+                    { type: 'MAP', map: [{ type: 'TEMPLATE', key: 'parameter', value: 'campaign_id' }, { type: 'TEMPLATE', key: 'parameterValue', value: '{{Cookie - utm_id}}' }] }
+                  ]
+                }
+              ],
+              firingTriggerId: [allPagesTrigId],
+              notes: 'GA4 Config Tag — includes all UTM params from et_* cookies for full attribution | Generated by Easy Track',
+              fingerprint: fp(tagId)
+            });
+          } else {
+            // Fallback: Custom HTML Google Tag — safe, no GTM backend validation, supports any placeholder
+            var ga4Html = '<script async src="https://www.googletagmanager.com/gtag/js?id=' + (ga4CfgId || 'G-REPLACE_ME') + '"><\/script>\n'
+              + '<script>\nwindow.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag("js", new Date());\ngtag("config", "' + (ga4CfgId || 'G-REPLACE_ME') + '", {\n'
+              + '  "send_page_view": true,\n'
+              + '  "campaign_source": "{{Cookie - utm_source}}",\n  "campaign_medium": "{{Cookie - utm_medium}}",\n'
+              + '  "campaign_name": "{{Cookie - utm_campaign}}",\n  "campaign_content": "{{Cookie - utm_content}}",\n'
+              + '  "campaign_term": "{{Cookie - utm_term}}",\n  "campaign_id": "{{Cookie - utm_id}}"\n});\n<\/script>';
+            tags.push({
+              accountId: '000000000', containerId: '00000000', tagId: tagId,
+              name: safeName(PM[bp].name + ' | Google Tag'),
+              type: 'html',
+              parameter: [
+                { type: 'TEMPLATE', key: 'html', value: ga4Html },
+                { type: 'BOOLEAN', key: 'supportDocumentWrite', value: 'false' }
+              ],
+              firingTriggerId: [allPagesTrigId],
+              notes: '⚠️ استبدل G-REPLACE_ME بالـ Measurement ID الحقيقي | Generated by Easy Track',
+              fingerprint: fp(tagId)
+            });
+          }
           tagId++;
           continue;
         }
@@ -6616,6 +6845,59 @@
         login: [{ key: 'method', value: '{{DL - method}}' }]
       };
 
+      // ══════════════════════════════════════════════════════════════════
+      // SALLA_GA4_EV_PARAMS — GA4 event params using raw Salla per-event paths
+      // ⚠️ Bridge pushes original event FIRST, so these raw paths are correct
+      //    at the time the Salla native event trigger fires.
+      // ══════════════════════════════════════════════════════════════════
+      var SALLA_GA4_EV_PARAMS = {
+        // purchase → ecommerce.purchase.* + customer.*
+        purchase: [
+          { key: 'transaction_id', value: '{{purchase - actionField_id}}' },
+          { key: 'value',          value: '{{purchase - actionField_revenue}}' },
+          { key: 'currency',       value: '{{purchase - currencyCode}}' },
+          { key: 'items', value: JSON.stringify([{ item_id: '{{purchase - product_id}}', item_name: '{{purchase - product_name}}', item_category: '{{purchase - product_category}}', price: '{{purchase - product_price}}', quantity: '{{purchase - product_quantity}}', currency: '{{purchase - product_currency}}' }]) }
+        ],
+        // add_to_cart → ecommerce.add.products.0.*
+        add_to_cart: [
+          { key: 'currency', value: '{{addToCart - currencyCode}}' },
+          { key: 'value',    value: '{{addToCart - product_price}}' },
+          { key: 'items', value: JSON.stringify([{ item_id: '{{addToCart - product_id}}', item_name: '{{addToCart - product_name}}', item_category: '{{addToCart - product_category}}', price: '{{addToCart - product_price}}', quantity: '{{addToCart - product_quantity}}' }]) }
+        ],
+        // remove_from_cart → 0.*
+        remove_from_cart: [
+          { key: 'currency', value: '{{Product Removed - product_currency}}' },
+          { key: 'value',    value: '{{Product Removed - product_price}}' },
+          { key: 'items', value: JSON.stringify([{ item_id: '{{Product Removed - product_id}}', item_name: '{{Product Removed - product_name}}', item_category: '{{Product Removed - product_category}}', price: '{{Product Removed - product_price}}', quantity: '{{Product Removed - product_quantity}}' }]) }
+        ],
+        // view_item → 0.*
+        view_item: [
+          { key: 'currency', value: '{{Product Viewed - product_currency}}' },
+          { key: 'value',    value: '{{Product Viewed - product_price}}' },
+          { key: 'items', value: JSON.stringify([{ item_id: '{{Product Viewed - product_id}}', item_name: '{{Product Viewed - product_name}}', item_category: '{{Product Viewed - product_category}}', price: '{{Product Viewed - product_price}}' }]) }
+        ],
+        // view_cart → 0.products.0.*
+        view_cart: [
+          { key: 'currency', value: '{{Cart Viewed - product_currency}}' },
+          { key: 'value',    value: '{{Cart Viewed - product_price}}' },
+          { key: 'items', value: JSON.stringify([{ item_id: '{{Cart Viewed - product_id}}', item_name: '{{Cart Viewed - product_name}}', price: '{{Cart Viewed - product_price}}', quantity: '{{Cart Viewed - product_quantity}}' }]) }
+        ],
+        // begin_checkout → cart::submitted (no product data in raw push)
+        begin_checkout: [
+          { key: 'content_type', value: 'product' }
+        ],
+        // view_item_list → data.0.*
+        view_item_list: [
+          { key: 'items', value: JSON.stringify([{ item_id: '{{Product List Viewed - product_id}}', item_name: '{{Product List Viewed - product_name}}', item_category: '{{Product List Viewed - product_category}}', price: '{{Product List Viewed - product_price}}', currency: '{{Product List Viewed - product_currency}}' }]) }
+        ],
+        // add_to_wishlist → Product Added to Wishlist (no product data)
+        add_to_wishlist: [
+          { key: 'content_type', value: 'product' }
+        ],
+        // login → Signed In
+        login: [{ key: 'method', value: 'salla' }]
+      };
+
       for (var pi2 = 0; pi2 < S.platforms.length; pi2++) {
         var plat = S.platforms[pi2];
         // Use per-platform event selection — if set, use it; otherwise fall back to union S.events
@@ -6634,16 +6916,54 @@
             // Labels are GTM Constants — reference the constant variable
             var evLblKey = evId2.charAt(0).toUpperCase() + evId2.slice(1).replace(/_/g, ' ');
             var gLabelId = '{{Const - Google Label ' + evLblKey + '}}';
-            var convIdNum = parseInt((gAdsId2.replace('AW-', '')).split('/')[0]) || 0;
+            var convIdNum = parseInt((gAdsId2.replace('AW-', '')).split('/')[0]);
+            // ⚠️ Skip awct tag entirely if no valid Conversion ID — conversionId:0 causes GTM "Service unavailable" on import
+            if (!convIdNum || convIdNum <= 0) continue;
             var evLbl2 = evLabels[evId2] || evId2;
+            // ── Salla: use raw per-event variable paths for awct ──
+            var _awctValue    = convP.hasValue ? '{{DL - value}}' : '0';
+            var _awctCurrency = '{{DL - currency}}';
+            var _awctOrderId  = '{{DL - transaction_id}}';
+            if (S.cms === 'salla') {
+              var _sAwctValMap = { view_item: '{{Product Viewed - product_price}}', add_to_cart: '{{addToCart - product_price}}', begin_checkout: '0', purchase: '{{purchase - actionField_revenue}}', add_to_wishlist: '0' };
+              var _sAwctCurMap = { view_item: '{{Product Viewed - product_currency}}', add_to_cart: '{{addToCart - currencyCode}}', begin_checkout: '', purchase: '{{purchase - currencyCode}}', add_to_wishlist: '' };
+              var _sAwctTxMap  = { purchase: '{{purchase - actionField_id}}' };
+              _awctValue    = convP.hasValue ? (_sAwctValMap[evId2] || '0') : '0';
+              _awctCurrency = _sAwctCurMap[evId2] || '{{DL - currency}}';
+              _awctOrderId  = _sAwctTxMap[evId2]  || '';
+            }
             var awctParams = [
-              { type: 'INTEGER', key: 'conversionId', value: String(convIdNum) },
+              { type: 'TEMPLATE', key: 'conversionId', value: String(convIdNum) },
               { type: 'TEMPLATE', key: 'conversionLabel', value: gLabelId },
-              { type: 'TEMPLATE', key: 'conversionValue', value: convP.hasValue ? '{{DL - value}}' : '0' },
+              { type: 'TEMPLATE', key: 'conversionValue', value: _awctValue },
               { type: 'BOOLEAN', key: 'enableDynamicRemarketing', value: 'false' }
             ];
-            if (convP.hasCurrency) awctParams.push({ type: 'TEMPLATE', key: 'currencyCode', value: '{{DL - currency}}' });
-            if (convP.hasTxId) awctParams.push({ type: 'TEMPLATE', key: 'orderId', value: '{{DL - transaction_id}}' });
+            if (convP.hasCurrency && _awctCurrency) awctParams.push({ type: 'TEMPLATE', key: 'currencyCode', value: _awctCurrency });
+            if (convP.hasTxId && _awctOrderId) awctParams.push({ type: 'TEMPLATE', key: 'orderId', value: _awctOrderId });
+            // ── items / contents — products array for Dynamic Remarketing & cart data ──
+            var _awctItemsSalla = {
+              view_item:      '{{Product Viewed - product_id}}',
+              add_to_cart:    '{{addToCart - products}}',
+              view_cart:      '{{Cart Viewed - products}}',
+              begin_checkout: '{{Cart Viewed - products}}',
+              purchase:       '{{purchase - products}}'
+            };
+            var _awctItemsGeneric = {
+              view_item:      '{{DL - items}}',
+              add_to_cart:    '{{DL - items}}',
+              view_cart:      '{{DL - items}}',
+              begin_checkout: '{{DL - items}}',
+              purchase:       '{{DL - items}}'
+            };
+            var _awctItems = S.cms === 'salla'
+              ? (_awctItemsSalla[evId2]  || null)
+              : (_awctItemsGeneric[evId2] || null);
+            if (_awctItems) awctParams.push({ type: 'TEMPLATE', key: 'items', value: _awctItems });
+            // NOTE: Enhanced Conversions for Google Ads cannot be configured via 'userProperties'
+            // on an 'awct' tag (that parameter belongs to 'gaawe'). On 'awct' tags, EC is configured
+            // from the Google Ads UI → Conversions → enable Enhanced Conversions, and the Conversion
+            // Linker tag (already added above) handles the rest. Adding unsupported params here causes
+            // GTM import to fail with "Service unavailable".
             tags.push({
               accountId: '000000000', containerId: '00000000', tagId: tagId,
               name: safeName('Google Ads | ' + evLbl2),
@@ -6660,11 +6980,17 @@
           // ── GA4: gaawe ──
           if (plat === 'ga4') {
             var ga4Id2 = S.pixelIds['ga4'] || 'G-XXXXXXXXXX';
-            var ga4Params = GA4_EV_PARAMS[evId2] || [];
+            // ── Salla: use SALLA_GA4_EV_PARAMS (raw per-event paths, no bridge dependency) ──
+            var ga4Params = (S.cms === 'salla' ? SALLA_GA4_EV_PARAMS[evId2] : GA4_EV_PARAMS[evId2]) || [];
             var evLbl3 = evLabels[evId2] || evId2;
+            // ── classic pattern (UI-import safe) ─────────────────────────
+            // Using TAG_REFERENCE to the Google Tag causes GTM UI import to
+            // return 500 in some workspaces. The plain measurementIdOverride
+            // works in both the public API and the UI importer.
             var gaaweP = [
+              { type: 'BOOLEAN',  key: 'overrideSettings',      value: 'true' },
               { type: 'TEMPLATE', key: 'measurementIdOverride', value: ga4Id2 },
-              { type: 'TEMPLATE', key: 'eventName', value: evId2 }
+              { type: 'TEMPLATE', key: 'eventName',             value: evId2 }
             ];
             if (ga4Params.length) {
               gaaweP.push({
@@ -6693,8 +7019,10 @@
           }
 
           // ── Other platforms: HTML ──
+          // ⚠️ Salla: use SALLA_TAGHTML (raw per-event paths) instead of generic TAGHTML
+          var _tagSrc = (S.cms === 'salla' && SALLA_TAGHTML[plat]) ? SALLA_TAGHTML : TAGHTML;
           var platEv = PMAP[plat] && PMAP[plat][evId2];
-          var rawHtml = TAGHTML[plat] && TAGHTML[plat][platEv];
+          var rawHtml = _tagSrc[plat] && _tagSrc[plat][platEv];
           if (!rawHtml) continue;
           var evLbl4 = evLabels[evId2] || evId2;
           var htmlFinal = rawHtml.replace(/\[S\]/g, '<scr' + 'ipt>').replace(/\[\/S\]/g, '<\/script>');
@@ -6717,20 +7045,24 @@
       // ── Google Ads Remarketing ──
       if (S.platforms.indexOf('google') !== -1) {
         var rmkId = S.pixelIds['google_rmk'] || S.pixelIds['google'] || 'AW-XXXXXXXXXX';
-        var rmkNum = parseInt(rmkId.replace('AW-', '')) || 0;
-        tags.push({
-          accountId: '000000000', containerId: '00000000', tagId: tagId,
-          name: 'Google Ads | Remarketing',
-          type: 'sp',
-          parameter: [
-            { type: 'INTEGER', key: 'conversionId', value: String(rmkNum) },
-            { type: 'BOOLEAN', key: 'enableDynamicRemarketing', value: 'true' }
-          ],
-          firingTriggerId: [allPagesTrigId],
-          notes: 'Dynamic Remarketing Tag | Generated by Easy Track',
-          fingerprint: fp(tagId)
-        });
-        tagId++;
+        var rmkNum = parseInt(rmkId.replace('AW-', ''));
+        // ⚠️ Skip remarketing tag if no valid Conversion ID — conversionId:0 causes GTM "Service unavailable"
+        if (!rmkNum || rmkNum <= 0) rmkNum = null;
+        if (rmkNum) {
+          tags.push({
+            accountId: '000000000', containerId: '00000000', tagId: tagId,
+            name: 'Google Ads | Remarketing',
+            type: 'sp',
+            parameter: [
+              { type: 'TEMPLATE', key: 'conversionId', value: String(rmkNum) },
+              { type: 'BOOLEAN', key: 'enableDynamicRemarketing', value: 'true' }
+            ],
+            firingTriggerId: [allPagesTrigId],
+            notes: 'Dynamic Remarketing Tag | Generated by Easy Track',
+            fingerprint: fp(tagId)
+          });
+          tagId++;
+        }
       }
 
       // ── Build Folders ──
@@ -6761,53 +7093,141 @@
         folderId++;
       });
 
-      // Assign tags to folders
+      // Assign tags to folders — ordered from most-specific to least-specific
       tags.forEach(function (tag) {
         var n = tag.name.toLowerCase();
         if (n.indexOf('consent') !== -1) tag.parentFolderId = folderMap['consent'];
-        else if (n.indexOf('base code') !== -1) tag.parentFolderId = folderMap['base'];
-        else if (n.indexOf('google ads') !== -1 || n.indexOf('remarketing') !== -1) tag.parentFolderId = folderMap['google'];
-        else if (n.indexOf('ga4') !== -1) tag.parentFolderId = folderMap['ga4'];
+        // GA4 tags (Google Tag + Event tags) — check before the generic "google" match
+        else if (n.indexOf('ga4') !== -1 || (n.indexOf('google analytics') !== -1)) tag.parentFolderId = folderMap['ga4'];
+        // Google Ads — conversion linker, base tag, conversions, remarketing
+        else if (n.indexOf('google ads') !== -1 || n.indexOf('remarketing') !== -1 || n.indexOf('conversion linker') !== -1) tag.parentFolderId = folderMap['google'];
         else if (n.indexOf('meta') !== -1) tag.parentFolderId = folderMap['meta'];
         else if (n.indexOf('snapchat') !== -1) tag.parentFolderId = folderMap['snapchat'];
         else if (n.indexOf('tiktok') !== -1) tag.parentFolderId = folderMap['tiktok'];
-        else if (n.indexOf('twitter') !== -1 || n.indexOf('x-') !== -1) tag.parentFolderId = folderMap['twitter'];
+        else if (n.indexOf('twitter') !== -1 || n.indexOf('x-') !== -1 || n.indexOf('𝕏') !== -1) tag.parentFolderId = folderMap['twitter'];
+        // Base / utility tags (Cookie Capture, Base Code, Google Tag fallbacks)
+        else if (n.indexOf('base code') !== -1 || n.indexOf('cookie capture') !== -1 || n.indexOf('google tag') !== -1) tag.parentFolderId = folderMap['base'];
+        // Safety net: nothing unfoldered
+        else tag.parentFolderId = folderMap['base'];
       });
 
       // Assign variables to vars folder
       variables.forEach(function (v) { v.parentFolderId = folderMap['vars']; });
 
+      // ═══════════════════════════════════════════════════════════════
+      // POST-PROCESS: normalize everything for GTM UI Import compatibility
+      // ═══════════════════════════════════════════════════════════════
+      // The UI importer (tagmanager.google.com/api/.../import) is STRICTER than
+      // the public Tag Manager API. It rejects numeric IDs, >13-digit fingerprints,
+      // and any empty monitoringMetadata / path fields. These fixes guarantee
+      // "Import" succeeds without 500 Internal Server Error.
+
+      function normalizeTag(t) {
+        t.accountId   = '0';
+        t.containerId = '0';
+        t.tagId       = sid(t.tagId);
+        if (t.parentFolderId != null) t.parentFolderId = sid(t.parentFolderId);
+        if (Array.isArray(t.firingTriggerId))  t.firingTriggerId  = t.firingTriggerId.map(sid);
+        if (Array.isArray(t.blockingTriggerId)) t.blockingTriggerId = t.blockingTriggerId.map(sid);
+        if (!t.tagFiringOption) t.tagFiringOption = 'ONCE_PER_EVENT';
+        // ⚠️ DO NOT add empty monitoringMetadata — UI importer rejects empty MAP here.
+        if (t.monitoringMetadata && Array.isArray(t.monitoringMetadata.map) && !t.monitoringMetadata.map.length) {
+          delete t.monitoringMetadata;
+        }
+        // ⚠️ gaawe: keep measurementIdOverride (tag needs SOME way to know the GA4
+        // property). The GA4 backend lookup only fails on "Service unavailable" when
+        // the measurement ID is malformed/placeholder. With a real ID (G-S04FXD56P6)
+        // the lookup succeeds, so no stripping needed. Caller must pass a real ID.
+        // However REMOVE any empty LIST params (e.g. empty userProperties) — they
+        // fail int64 deserialization in the UI importer.
+        if (Array.isArray(t.parameter)) {
+          t.parameter = t.parameter.filter(function (p) {
+            if (p.type === 'LIST' && Array.isArray(p.list) && p.list.length === 0) return false;
+            return true;
+          });
+        }
+        return t;
+      }
+      function normalizeTrigger(tr) {
+        tr.accountId   = '0';
+        tr.containerId = '0';
+        tr.triggerId   = sid(tr.triggerId);
+        if (tr.parentFolderId != null) tr.parentFolderId = sid(tr.parentFolderId);
+        return tr;
+      }
+      function normalizeVariable(v) {
+        v.accountId   = '0';
+        v.containerId = '0';
+        v.variableId  = sid(v.variableId);
+        if (v.parentFolderId != null) v.parentFolderId = sid(v.parentFolderId);
+        return v;
+      }
+      function normalizeFolder(f) {
+        f.accountId   = '0';
+        f.containerId = '0';
+        f.folderId    = sid(f.folderId);
+        return f;
+      }
+      function normalizeBuiltIn(b) {
+        b.accountId   = '0';
+        b.containerId = '0';
+        return b;
+      }
+
       return {
         exportFormatVersion: 2,
         exportTime: now,
         containerVersion: {
-          path: 'accounts/000000000/containers/00000000/versions/0',
-          accountId: '000000000',
-          containerId: '00000000',
+          accountId: '0',
+          containerId: '0',
           containerVersionId: '0',
           container: {
-            path: 'accounts/000000000/containers/00000000',
-            accountId: '000000000',
-            containerId: '00000000',
+            accountId: '0',
+            containerId: '0',
             name: safeName('Easy Track - ' + ((S.lead && S.lead.name) || 'Client')),
-            publicId: 'GTM-XXXXXX',
+            publicId: 'GTM-PLACEHLD',
             usageContext: ['WEB'],
+            notes: 'Generated by Easy Track | CMS: ' + (S.cms || 'n/a')
+              + ' | Platforms: ' + (S.platforms || []).join(',')
+              + ' | Events: ' + (S.events || []).join(',')
+              + ' | Built: ' + now,
             fingerprint: fp(0)
           },
-          tag: tags.map(function(t) {
-            if (!t.tagFiringOption) t.tagFiringOption = 'oncePerEvent';
-            if (!t.monitoringMetadata) t.monitoringMetadata = { type: 'MAP', map: [] };
-            return t;
-          }),
-          trigger: triggers,
-          variable: variables,
-          folder: folders,
+          tag:      tags.map(normalizeTag),
+          trigger:  triggers.map(normalizeTrigger),
+          variable: variables.map(normalizeVariable),
+          folder:   folders.map(normalizeFolder),
           builtInVariable: [
-            { accountId: '000000000', containerId: '00000000', type: 'PAGE_URL', name: 'Page URL' },
-            { accountId: '000000000', containerId: '00000000', type: 'PAGE_HOSTNAME', name: 'Page Hostname' },
-            { accountId: '000000000', containerId: '00000000', type: 'PAGE_PATH', name: 'Page Path' },
-            { accountId: '000000000', containerId: '00000000', type: 'REFERRER', name: 'Referrer' },
-            { accountId: '000000000', containerId: '00000000', type: 'EVENT', name: 'Event' }
+            // ── Pages ──
+            { accountId: '0', containerId: '0', type: 'PAGE_URL', name: 'Page URL' },
+            { accountId: '0', containerId: '0', type: 'PAGE_HOSTNAME', name: 'Page Hostname' },
+            { accountId: '0', containerId: '0', type: 'PAGE_PATH', name: 'Page Path' },
+            { accountId: '0', containerId: '0', type: 'REFERRER', name: 'Referrer' },
+            // ── Events ──
+            { accountId: '0', containerId: '0', type: 'EVENT', name: 'Event' },
+            // ── Clicks ──
+            { accountId: '0', containerId: '0', type: 'CLICK_ELEMENT', name: 'Click Element' },
+            { accountId: '0', containerId: '0', type: 'CLICK_CLASSES', name: 'Click Classes' },
+            { accountId: '0', containerId: '0', type: 'CLICK_ID', name: 'Click ID' },
+            { accountId: '0', containerId: '0', type: 'CLICK_TARGET', name: 'Click Target' },
+            { accountId: '0', containerId: '0', type: 'CLICK_URL', name: 'Click URL' },
+            { accountId: '0', containerId: '0', type: 'CLICK_TEXT', name: 'Click Text' },
+            // ── Forms ──
+            { accountId: '0', containerId: '0', type: 'FORM_ELEMENT', name: 'Form Element' },
+            { accountId: '0', containerId: '0', type: 'FORM_CLASSES', name: 'Form Classes' },
+            { accountId: '0', containerId: '0', type: 'FORM_ID', name: 'Form ID' },
+            { accountId: '0', containerId: '0', type: 'FORM_TARGET', name: 'Form Target' },
+            { accountId: '0', containerId: '0', type: 'FORM_URL', name: 'Form URL' },
+            { accountId: '0', containerId: '0', type: 'FORM_TEXT', name: 'Form Text' },
+            // ── Utilities (safe, universally supported built-ins) ──
+            { accountId: '0', containerId: '0', type: 'DEBUG_MODE', name: 'Debug Mode' },
+            { accountId: '0', containerId: '0', type: 'RANDOM_NUMBER', name: 'Random Number' },
+            { accountId: '0', containerId: '0', type: 'HTML_ID', name: 'HTML ID' },
+            { accountId: '0', containerId: '0', type: 'CONTAINER_ID', name: 'Container ID' },
+            { accountId: '0', containerId: '0', type: 'CONTAINER_VERSION', name: 'Container Version' }
+            // NOTE: SCROLL_*, ENVIRONMENT_NAME, VIDEO_* intentionally omitted —
+            // they cause "Error deserializing enum type [BuiltInVariableType]" on some GTM accounts.
+            // Add them back in the GTM UI (Variables → Built-In Variables) if needed.
           ]
         }
       };
@@ -6819,39 +7239,53 @@
         // سلة بتبعت events بـ UA Enhanced Ecommerce format — محتاج UA→GA4 Bridge
         note: '// ✅ سلة — Real Data Layer Examples\n// ─────────────────────────────────────────────────────────────────\n// ⚠️ سلة بتبعت UA Enhanced Ecommerce format — مش GA4 مباشرة\n// استخدم الـ UA→GA4 Bridge tab عشان تحوّل الـ events لـ GA4 تلقائياً\n// تأكد إن GTM Container ID اتحط في: الإعدادات → التسويق → Google Tag Manager\n\n// ── 1) Product List Viewed — المنتجات في obj.data ──\ndataLayer.push({\n  event: "Product List Viewed",\n  status: 200,\n  data: [\n    { id: "1131050439", name: "فرشاة أورما الكهربائية", price: 155.65, currency: "SAR", sku: "DV58595151", category: { name: "الأجهزة" }, is_available: true },\n    { id: "1503084629", name: "جهاز التنظيف بالبخار",  price: 169.57, currency: "SAR", sku: "OM-DV",      category: { name: "الأجهزة" }, is_available: true },\n    { id: "1597494942", name: "مكنسة تولون برميل 1500 واط", price: 256.52, currency: "SAR", sku: "659465223693", category: { name: "الأجهزة" }, is_available: true }\n  ],\n  title: "3 منتجات",\n  source: "categories"\n});\n\n// ── 2) Product Viewed — المنتج في obj[0] ──\ndataLayer.push({\n  0: { id: 1503084629, name: "جهاز التنظيف بالبخار", category: "الأجهزة", price: 169.57, quantity: 0, currency: "SAR", sku: "OM-DV" },\n  event: "Product Viewed"\n});\n\n// ── 3) Add to Cart — ecommerce.add.products ──\ndataLayer.push({\n  event: "addToCart",\n  ecommerce: {\n    currencyCode: "SAR",\n    exchangeRate: "1",\n    event_id: 2674990342,\n    add: {\n      products: [{ id: 1830680877, name: "بكج التنظيف الشامل", category: "العروض", price: 199.13, quantity: 1, brand: "ORMA" }]\n    }\n  }\n});\n\n// ── 4) Signed In ──\ndataLayer.push({ event: "Signed In" });\n\n// ── 5) Product Added to Wishlist ──\ndataLayer.push({ event: "Product Added to Wishlist" });\n\n// ── 6) Cart Viewed — obj[0].products ──\ndataLayer.push({\n  0: {\n    cart_id: "145778443",\n    products: [\n      { id: 1830680877, name: "بكج التنظيف الشامل", category: "العروض", price: 458, quantity: 2, brand: "ORMA", sku: "orma222", currency: "SAR" },\n      { id: 1503084629, name: "جهاز التنظيف بالبخار",  category: "الأجهزة", price: 975.05, quantity: 5, sku: "OM-DV", currency: "SAR" }\n    ]\n  },\n  event: "Cart Viewed"\n});\n\n// ── 7) Product Removed — obj[0] ──\ndataLayer.push({\n  0: { id: 1503084629, name: "جهاز التنظيف بالبخار", category: "الأجهزة", price: 195.01, quantity: 5, cart_id: "145778443", sku: "OM-DV", currency: "SAR" },\n  event: "Product Removed"\n});\n\n// ── 8) Begin Checkout ──\ndataLayer.push({ event: "cart::submitted", status: 200, success: true });\n\n// ── 9) Purchase — ecommerce.purchase.products ──\ndataLayer.push({\n  event: "purchase",\n  ecommerce: {\n    currencyCode: "SAR",\n    exchangeRate: "1",\n    event_id: 253138256,\n    purchase: {\n      actionField: { id: 253138256, total: 83.86, revenue: 83.86, currency_code: "SAR" },\n      products: [{ id: 462352033, name: "...", category: "المكملات الغذائية", price: 73.85, quantity: 1, currency: "SAR" }]\n    }\n  },\n  customer: { isGuest: false, email_hashed: "sha256...", phone_hashed: "sha256..." }\n});\n\n// ── GTM Variables ──\n// • currency    → ecommerce.currencyCode\n// • transaction → ecommerce.event_id  أو  ecommerce.purchase.actionField.id\n// • value       → ecommerce.purchase.actionField.total\n// • product data → obj[0]  أو  ecommerce.add.products  أو  obj.data\n// • login       → Custom Event "Signed In"',
         vars: {
-          // ── Currency: addToCart + purchase use ecommerce.currencyCode ──
-          currency: 'ecommerce.currencyCode',
-          // ── Value / Revenue: purchase actionField (primary revenue event) ──
-          value: 'ecommerce.purchase.actionField.revenue',
-          // ── Transaction ID: FIXED — was ecommerce.event_id (WRONG) ──
-          // Real path: ecommerce.purchase.actionField.id
-          transaction_id: 'ecommerce.purchase.actionField.id',
-          // ── Purchase extra fields ──
-          revenue: 'ecommerce.purchase.actionField.revenue',
-          total: 'ecommerce.purchase.actionField.total',
-          event_id: 'ecommerce.event_id',
-          // ── Items: purchase event products array ──
-          items: 'ecommerce.purchase.products',
-          // ── Item-level (Product Viewed / Product Removed — path 0.*) ──
-          item_id: '0.id',
-          item_name: '0.name',
-          item_brand: '0.brand',
-          item_category: '0.category',
-          item_sku: '0.sku',
-          price: '0.price',
-          quantity: '0.quantity',
-          cart_id: '0.cart_id',
+          // ══════════════════════════════════════════════════════════════
+          // ⚠️ IMPORTANT: These paths read from the NORMALIZED Salla dataLayer
+          //    AFTER the Salla→Unified Bridge has run.
+          //    The bridge converts every raw Salla shape (0.*, data[],
+          //    ecommerce.add.products[], ecommerce.purchase.products[], ...)
+          //    into ONE consistent schema:
+          //      { event, event_id, ecommerce:{ currency, price|value, num_items, items:[...] } }
+          //    → that's why one `DL - items` variable now works in EVERY tag.
+          // ══════════════════════════════════════════════════════════════
+
+          // ── Top-level ──
+          currency:       'ecommerce.currency',           // bridge emits canonical "currency" (not currencyCode)
+          value:          'ecommerce.value',              // ONLY purchase has value
+          price:          'ecommerce.price',              // view_item / add_to_cart / cart / wishlist — per-event semantics
+          num_items:      'ecommerce.num_items',          // sum of quantities across items
+          event_id:       'event_id',                     // dedup id (top-level) — Meta/TikTok CAPI
+          transaction_id: 'ecommerce.transaction_id',     // purchase only
+          affiliation:    'ecommerce.affiliation',
+          coupon:         'ecommerce.coupon',
+          shipping:       'ecommerce.shipping',
+          tax:            'ecommerce.tax',
+          item_list_name: 'ecommerce.item_list_name',     // view_item_list only
+
+          // ── Items array (full) — GA4 items param ──
+          items:          'ecommerce.items',
+
+          // ── Item-level (index 0) — works for ANY event post-bridge ──
+          item_id:        'ecommerce.items.0.item_id',
+          item_name:      'ecommerce.items.0.item_name',
+          item_brand:     'ecommerce.items.0.item_brand',
+          item_category:  'ecommerce.items.0.item_category',
+          item_variant:   'ecommerce.items.0.item_variant',
+          item_sku:       'ecommerce.items.0.item_id',    // SKU mirrored into item_id by bridge
+          quantity:       'ecommerce.items.0.quantity',
+
           // ── Other ──
-          search_term: 'searchTerm',
-          method: 'method',
-          // ── Customer (purchase — logged-in users) ──
-          'customer.isGuest': 'customer.isGuest',
-          'customer.email': 'customer.email',
-          'customer.phone': 'customer.phone',
-          'customer.emailHashed': 'customer.email_hashed',
-          'customer.phoneHashed': 'customer.phone_hashed',
-          'customer.firstNameHashed': 'customer.first_name',
-          'customer.lastNameHashed': 'customer.last_name'
+          search_term: 'search_term',
+          method:      'method',
+
+          // ── Customer (passthrough from Salla raw — the bridge preserves it) ──
+          'customer.isGuest':          'customer.isGuest',
+          'customer.email':            'customer.email',
+          'customer.phone':            'customer.phone',
+          'customer.emailHashed':      'customer.email_hashed',
+          'customer.phoneHashed':      'customer.phone_hashed',
+          'customer.firstNameHashed':  'customer.first_name',
+          'customer.lastNameHashed':   'customer.last_name'
         },
         eventNames: {
           view_item_list: 'Product List Viewed',
@@ -7874,121 +8308,258 @@
       var code = [
         '<script>',
         '// ============================================================',
-        '// Salla UA\u2192GA4 Bridge — Easy Track',
-        '// GTM Custom HTML Tag | Trigger: All Pages | Priority: HIGH',
-        '// يحوّل Salla UA Enhanced Ecommerce events \u2192 GA4 schema تلقائياً',
+        '// Salla \u2192 Unified DataLayer Bridge v2 (GA4 + Meta + TikTok)',
+        '// GTM Custom HTML Tag | Trigger: Consent Initialization - All Pages',
+        '// Normalizes ANY Salla dataLayer shape into a clean GA4 schema:',
+        '//   { event, event_id, ecommerce: { currency, value|price, items:[] } }',
+        '//',
+        '// FIXES vs v1:',
+        '//   \u2022 brand is an object in Product List Viewed \u2192 now extracted via .name',
+        '//   \u2022 item_sku field added to normalized items',
+        '//   \u2022 begin_checkout (cart::submitted) has no products \u2192 uses cached cart',
+        '//   \u2022 add_to_wishlist has no products \u2192 uses cached last viewed product',
+        '//   \u2022 Cart Viewed currency also checked from slot0.products[0].currency',
         '// ============================================================',
         '(function () {',
         '  if (window._etSallaBridge) return; // run once',
         '  window._etSallaBridge = true;',
         '',
-        '  // خريطة أسماء أحداث سلة → GA4',
-        '  var UA_TO_GA4 = {',
-        "    'Product Viewed':           'view_item',",
-        "    'Product List Viewed':      'view_item_list',",
-        "    'addToCart':                'add_to_cart',",
-        "    'Cart Viewed':              'view_cart',",
-        "    'Product Removed':          'remove_from_cart',",
-        "    'Product Added to Wishlist':'add_to_wishlist',",
-        "    'cart::submitted':          'begin_checkout',",
-        "    'purchase':                 'purchase',",
-        "    'search':                   'search',",
-        "    'Signed In':                'login'",
+        '  // ── Salla event names \u2192 standard (GA4) names ──────────',
+        '  var EVENT_MAP = {',
+        "    'Product Viewed':            'view_item',",
+        "    'Product List Viewed':       'view_item_list',",
+        "    'addToCart':                 'add_to_cart',",
+        "    'Cart Viewed':               'view_cart',",
+        "    'Product Removed':           'remove_from_cart',",
+        "    'Product Added to Wishlist': 'add_to_wishlist',",
+        "    'cart::submitted':           'begin_checkout',",
+        "    'purchase':                  'purchase',",
+        "    'search':                    'search',",
+        "    'Signed In':                 'login'",
         '  };',
         '',
-        '  // تحويل مصفوفة المنتجات لـ GA4 items format',
-        '  function mapItems(products) {',
-        '    return (products || []).map(function (p, i) {',
-        '      return {',
-        "        item_id:       String(p.id   || p.sku  || ''),",
-        "        item_name:     p.name     || '',",
-        "        item_brand:    p.brand    || '',",
-        "        item_category: p.category || '',",
-        '        price:         parseFloat(p.price)     || 0,',
-        '        quantity:      parseInt(p.quantity, 10) || 1,',
-        '        index:         i',
-        '      };',
-        '    });',
+        '  // ── State cache ─────────────────────────────────────────',
+        '  // Salla\'s cart::submitted and Product Added to Wishlist fire with NO product data.',
+        '  // We cache the last known cart (view_cart/add_to_cart) and last product (view_item)',
+        '  // and use them as fallbacks so these events still fire with real data.',
+        '  var _lastCart    = null;  // { items, price, currency } from view_cart or add_to_cart',
+        '  var _lastProduct = null;  // { items, price, currency } from view_item',
+        '',
+        '  // ── Helpers ─────────────────────────────────────────────',
+        '  function toNum(v){ var n = parseFloat(v); return isNaN(n) ? 0 : n; }',
+        '  function toInt(v){ var n = parseInt(v, 10); return isNaN(n) ? 0 : n; }',
+        '  function round2(n){ return Math.round((n + Number.EPSILON) * 100) / 100; }',
+        '  function hasKeys(o){ return o && typeof o === "object" && !Array.isArray(o); }',
+        '  // FIX: extract string from an object field (handles brand/category as objects)',
+        '  function strField(v, keys){',
+        '    if (!v) return \'\';',
+        '    if (typeof v === \'string\') return v;',
+        '    if (typeof v === \'object\') {',
+        '      for (var ki = 0; ki < keys.length; ki++) if (v[keys[ki]]) return String(v[keys[ki]]);',
+        '    }',
+        '    return \'\';',
         '  }',
         '',
-        '  var _origPush = Array.prototype.push.bind(window.dataLayer);',
-        '  window.dataLayer.push = function (obj) {',
-        '    _origPush(obj);',
-        '    if (!obj || !obj.event) return;',
-        '    var ga4Ev = UA_TO_GA4[obj.event];',
-        '    if (!ga4Ev) return;',
+        '  // event_id: reuse if present, else derive (order_id + ts), else timestamp+rand.',
+        '  function genEventId(raw, mapped){',
+        '    var ec = raw.ecommerce || {};',
+        '    if (ec.event_id)  return String(ec.event_id);',
+        '    if (raw.event_id) return String(raw.event_id);',
+        '    var af = (ec.purchase && ec.purchase.actionField) || {};',
+        "    if (af.id)        return String(af.id) + '_' + Date.now();",
+        "    if (raw.order_id) return String(raw.order_id) + '_' + Date.now();",
+        "    return (mapped || 'evt') + '_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);",
+        '  }',
         '',
-        '    var ec    = obj.ecommerce || {};',
-        '    var prod0 = obj[0]        || {};   // سلة أحياناً بتحط البيانات في obj[0]',
+        '  // Dynamic product extraction — scans every known Salla shape by MEANING.',
+        '  function extractProducts(raw){',
+        '    var out = [];',
+        '    var ec  = raw.ecommerce || {};',
+        "    var slot0 = raw[0] || raw['0'];",
         '',
-        '    // استخراج المنتجات حسب نوع الحدث',
-        '    var prods = [];',
-        "    if (ga4Ev === 'view_item') {",
-        '      // Product Viewed — المنتج في obj[0]',
-        '      prods = prod0.id ? [prod0] : [];',
-        "    } else if (ga4Ev === 'view_item_list') {",
-        '      // Product List Viewed — المنتجات في obj.data',
-        '      prods = obj.data || [];',
-        "    } else if (ga4Ev === 'add_to_cart') {",
-        '      prods = (ec.add && ec.add.products) || [];',
-        "    } else if (ga4Ev === 'view_cart') {",
-        '      // Cart Viewed — المنتجات في obj[0].products',
-        '      prods = prod0.products || [];',
-        "    } else if (ga4Ev === 'remove_from_cart') {",
-        '      // Product Removed — المنتج في obj[0]',
-        '      prods = prod0.id ? [prod0] : (ec.remove && ec.remove.products) || [];',
-        "    } else if (ga4Ev === 'add_to_wishlist') {",
-        '      prods = prod0.id ? [prod0] : [];',
-        "    } else if (ga4Ev === 'begin_checkout') {",
-        '      prods = (ec.checkout && ec.checkout.products) || prod0.products || [];',
-        "    } else if (ga4Ev === 'purchase') {",
-        '      prods = (ec.purchase && ec.purchase.products) || [];',
+        '    // 1) Enhanced Ecommerce containers (addToCart, purchase, etc.)',
+        '    [ec.add, ec.remove, ec.purchase, ec.checkout, ec.detail].forEach(function(box){',
+        '      if (box && Array.isArray(box.products) && box.products.length) out.push(box.products);',
+        '    });',
+        '    if (Array.isArray(ec.impressions) && ec.impressions.length) out.push(ec.impressions);',
+        '',
+        '    // 2) Top-level arrays (Product List Viewed uses raw.data)',
+        '    if (Array.isArray(raw.data)     && raw.data.length)    out.push(raw.data);',
+        '    if (Array.isArray(raw.items)    && raw.items.length)   out.push(raw.items);',
+        '    if (Array.isArray(raw.products) && raw.products.length) out.push(raw.products);',
+        '',
+        '    // 3) Numeric-indexed wrapper raw[0] — Salla idiom for Product Viewed,',
+        '    //    Cart Viewed ({ cart_id, products:[] }), Product Removed, etc.',
+        '    if (hasKeys(slot0)) {',
+        '      if (Array.isArray(slot0.products) && slot0.products.length) out.push(slot0.products);',
+        '      else if (slot0.id || slot0.sku || slot0.name)               out.push([slot0]);',
         '    }',
         '',
-        '    var af = (ec.purchase && ec.purchase.actionField) ||',
-        '             (ec.checkout && ec.checkout.actionField) || {};',
+        '    // 4) Last resort: any numeric-indexed key that looks like a product',
+        '    if (!out.length) {',
+        '      Object.keys(raw).forEach(function(k){',
+        '        if (/^\\d+$/.test(k) && raw[k] && (raw[k].id || raw[k].sku || raw[k].name)) out.push([raw[k]]);',
+        '      });',
+        '    }',
         '',
-        '    // Clear previous ecommerce object (GA4 best practice)',
-        "    _origPush({ ecommerce: null });",
+        '    for (var i = 0; i < out.length; i++) if (out[i] && out[i].length) return out[i];',
+        '    return [];',
+        '  }',
         '',
-        '    var currency = ec.currencyCode || prod0.currency || \'SAR\';',
-        '    var mappedItems = mapItems(prods);',
-        '    var totalValue  = mappedItems.reduce(function (s, it) {',
-        '      return s + it.price * it.quantity;',
-        '    }, 0);',
+        '  // Normalize any product-ish object into strict GA4 item schema.',
+        '  // FIX v2: brand and category are handled as objects (Salla Product List Viewed',
+        '  //         sends brand as { id, url, name } — NOT a plain string).',
+        '  function normalizeItems(products, listName){',
+        '    return (products || []).map(function(p, i){',
+        '      if (!p || typeof p !== \'object\') return null;',
+        '      var item = {',
+        "        item_id:       String(p.id || p.sku || p.product_id || ''),",
+        "        item_name:     p.name || p.title || '',",
+        '        // FIX: category & brand can be objects — extract .name',
+        "        item_category: strField(p.category, ['name','title']),",
+        "        item_brand:    strField(p.brand,    ['name']),",
+        "        item_variant:  strField(p.variant || p.variation, ['name']) || (typeof (p.variant || p.variation) === 'string' ? (p.variant || p.variation) : ''),",
+        '        // FIX: include item_sku for clients who track SKU separately from product ID',
+        "        item_sku:      p.sku || p.item_sku || String(p.id || ''),",
+        '        price:         round2(toNum(p.price || p.amount || p.unit_price || p.value)),',
+        '        quantity:      toInt(p.quantity || p.qty) || 1,',
+        '        index:         i',
+        '      };',
+        '      if (listName) item.item_list_name = listName;',
+        '      return item;',
+        '    }).filter(function(x){ return x && x.item_id; });',
+        '  }',
+        '',
+        '  // FIX v2: also try slot0.products[0].currency (Cart Viewed has no currency at slot0 level)',
+        '  function extractCurrency(raw){',
+        '    var ec = raw.ecommerce || {};',
+        '    var af = (ec.purchase && ec.purchase.actionField) || {};',
+        "    var slot0 = raw[0] || raw['0'] || {};",
+        '    var prodCur = (Array.isArray(slot0.products) && slot0.products[0]) ? slot0.products[0].currency : null;',
+        '    return ec.currencyCode || ec.currency || af.currency_code ||',
+        "           slot0.currency || prodCur || (raw.data && raw.data[0] && raw.data[0].currency) || 'SAR';",
+        '  }',
+        '',
+        '  function extractRevenue(raw){',
+        '    var ec = raw.ecommerce || {};',
+        '    var af = (ec.purchase && ec.purchase.actionField) || {};',
+        '    return toNum(af.revenue || af.total || ec.revenue || ec.value);',
+        '  }',
+        '',
+        '  function extractTransactionId(raw){',
+        '    var ec = raw.ecommerce || {};',
+        '    var af = (ec.purchase && ec.purchase.actionField) || {};',
+        "    return String(af.id || ec.transaction_id || raw.order_id || ec.event_id || '');",
+        '  }',
+        '',
+        '  function sumLineItems(items){',
+        '    return round2(items.reduce(function(s, it){ return s + (it.price * it.quantity); }, 0));',
+        '  }',
+        '  function sumQty(items){',
+        '    return items.reduce(function(s, it){ return s + (parseInt(it.quantity,10)||0); }, 0);',
+        '  }',
+        '',
+        '  // ── Hook dataLayer.push ────────────────────────────────',
+        '  window.dataLayer = window.dataLayer || [];',
+        '  var _origPush = Array.prototype.push.bind(window.dataLayer);',
+        '',
+        '  window.dataLayer.push = function(raw){',
+        '    _origPush(raw);',
+        '    if (!raw || typeof raw !== \'object\' || !raw.event) return;',
+        '    if (raw.__et_normalized) return;',
+        '',
+        '    var mapped = EVENT_MAP[raw.event];',
+        '    if (!mapped) return;',
+        '',
+        "    var listName = (mapped === 'view_item_list' && raw.title)",
+        "      ? String(raw.title).replace(/<[^>]+>/g, '').trim() : '';",
+        '',
+        '    var products = extractProducts(raw);',
+        "    var items    = normalizeItems(products, mapped === 'view_item_list' ? listName : '');",
+        '    var currency = extractCurrency(raw);',
+        '    var eventId  = genEventId(raw, mapped);',
+        '',
+        '    // FIX v2: begin_checkout (cart::submitted) fires with NO product data.',
+        '    // Use cached cart state from the last view_cart or add_to_cart event.',
+        "    if (mapped === 'begin_checkout' && items.length === 0 && _lastCart) {",
+        '      items    = _lastCart.items;',
+        '      currency = _lastCart.currency || currency;',
+        '    }',
+        '',
+        '    // FIX v2: add_to_wishlist fires with NO product data.',
+        '    // Use cached last viewed product from view_item.',
+        "    if (mapped === 'add_to_wishlist' && items.length === 0 && _lastProduct) {",
+        '      items    = _lastProduct.items;',
+        '      currency = _lastProduct.currency || currency;',
+        '    }',
+        '',
+        '    // GA4 best practice: clear previous ecommerce object before pushing a new one.',
+        '    _origPush({ ecommerce: null, __et_normalized: true });',
+        '',
+        '    // Monetary semantics (per-event):',
+        '    //   purchase         → ecommerce.value  (order total from actionField.revenue)',
+        '    //   view_item        → ecommerce.price  (single product price)',
+        '    //   add_to_wishlist  → ecommerce.price  (single product price — fallback from cache)',
+        '    //   add_to_cart      → ecommerce.price  (unit price × qty)',
+        '    //   remove_from_cart → ecommerce.price  (line total)',
+        '    //   view_cart        → ecommerce.price  (sum of all line items)',
+        '    //   begin_checkout   → ecommerce.price  (from cached cart)',
+        '    //   view_item_list   → (no monetary field)',
+        '    var ecBlock = { currency: currency, items: items };',
+        "    if (mapped === 'purchase') {",
+        '      ecBlock.value     = round2(extractRevenue(raw) || sumLineItems(items));',
+        '      ecBlock.num_items = sumQty(items);',
+        "    } else if (mapped === 'view_item' || mapped === 'add_to_wishlist') {",
+        '      ecBlock.price     = round2(items[0] ? items[0].price : 0);',
+        '      ecBlock.num_items = items.length ? (parseInt(items[0].quantity, 10) || 1) : 0;',
+        "    } else if (mapped === 'add_to_cart' || mapped === 'remove_from_cart') {",
+        '      ecBlock.price     = round2(sumLineItems(items));',
+        '      ecBlock.num_items = sumQty(items);',
+        "    } else if (mapped === 'view_cart' || mapped === 'begin_checkout') {",
+        '      ecBlock.price     = round2(sumLineItems(items));',
+        '      ecBlock.num_items = sumQty(items);',
+        '    }',
         '',
         '    var payload = {',
-        '      event:     ga4Ev,',
-        '      ecommerce: {',
-        '        currency: currency,',
-        '        value:    totalValue,',
-        '        items:    mappedItems',
-        '      }',
+        '      event:           mapped,',
+        '      event_id:        eventId,',
+        '      __et_normalized: true,',
+        '      ecommerce:       ecBlock',
         '    };',
         '',
-        "    if (ga4Ev === 'purchase') {",
-        "      payload.ecommerce.transaction_id = String(ec.event_id || af.id || '');",
-        '      payload.ecommerce.value          = parseFloat(af.total || af.revenue || ec.revenue) || totalValue;',
-        '      payload.ecommerce.tax            = parseFloat(af.tax)      || 0;',
-        '      payload.ecommerce.shipping       = parseFloat(af.shipping) || 0;',
-        "      payload.ecommerce.coupon         = af.coupon || '';",
-        "    } else if (ga4Ev === 'view_item_list') {",
-        "      payload.ecommerce.item_list_name = obj.title ? obj.title.replace(/<[^>]+>/g, '').trim() : '';",
-        "      delete payload.ecommerce.value;",
-        "    } else if (ga4Ev === 'search') {",
-        "      payload.search_term = obj.searchTerm || '';",
-        "    } else if (ga4Ev === 'login') {",
-        '      // Signed In — لا يحتاج ecommerce',
+        "    if (mapped === 'purchase') {",
+        '      var txId = extractTransactionId(raw) || eventId;',
+        '      payload.ecommerce.transaction_id = txId;',
+        '      var af = (raw.ecommerce && raw.ecommerce.purchase && raw.ecommerce.purchase.actionField) || {};',
+        '      payload.ecommerce.tax      = round2(toNum(af.tax));',
+        '      payload.ecommerce.shipping = round2(toNum(af.shipping));',
+        "      payload.ecommerce.coupon   = af.coupon || '';",
+        '    }',
+        "    if (mapped === 'view_item_list') {",
+        '      payload.ecommerce.item_list_name = listName;',
+        '    }',
+        "    if (mapped === 'search') {",
+        "      payload.search_term = raw.searchTerm || raw.search_term || '';",
+        '    }',
+        "    if (mapped === 'login') {",
         '      delete payload.ecommerce;',
-        '      payload.method = \'salla\';',
+        "      payload.method = 'salla';",
         '    }',
         '',
-        '    // أضف بيانات العميل لو موجودة',
-        '    if (obj.customer) {',
-        '      payload.customer = obj.customer;',
-        '    }',
+        '    // Customer passthrough — hashed email/phone for Meta CAPI / GA4 User-ID.',
+        '    if (raw.customer) payload.customer = raw.customer;',
         '',
         '    _origPush(payload);',
+        '',
+        '    // ── Update state cache AFTER pushing ──────────────────',
+        '    // Cache cart state for the next begin_checkout event.',
+        "    if ((mapped === 'view_cart' || mapped === 'add_to_cart') && items.length) {",
+        '      _lastCart = { items: items, price: ecBlock.price, currency: currency };',
+        '    }',
+        '    // Cache last product for the next add_to_wishlist event.',
+        "    if (mapped === 'view_item' && items.length) {",
+        '      _lastProduct = { items: items, price: ecBlock.price, currency: currency };',
+        '    }',
         '  };',
         '})();',
         '<\/script>'
@@ -8263,7 +8834,8 @@
       }
     }
 
-    async function _inlineGtmPost(path, body) {
+    async function _inlineGtmPost(path, body, _attempt) {
+      _attempt = _attempt || 1;
       var token = _gtmInlineState.token;
       var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
       var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, 20000) : null;
@@ -8275,6 +8847,12 @@
           });
         clearTimeout(timer);
         var txt = await r.text();
+        // ── Retry on transient 5xx or 429 (up to 3 attempts, exponential backoff) ──
+        if ((r.status === 503 || r.status === 502 || r.status === 429) && _attempt < 3) {
+          console.warn('[GTM] ' + r.status + ' on ' + path + ' — retry ' + _attempt + '/3');
+          await new Promise(function (res) { setTimeout(res, 800 * _attempt); });
+          return _inlineGtmPost(path, body, _attempt + 1);
+        }
         try { return { ok: r.ok, status: r.status, data: JSON.parse(txt) }; }
         catch (e) { return { ok: false, status: r.status, data: null, raw: txt.substring(0, 400) }; }
       } catch (fe) {
@@ -8529,6 +9107,34 @@
         ['accountId', 'containerId', 'tagId', 'triggerId', 'variableId', 'fingerprint', 'path', 'parentFolderId'].forEach(function (k) { delete o[k]; });
         return o;
       }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // PRE-FLIGHT SANITIZER
+      // Strips parameters known to cause "Service unavailable" from GTM backend
+      // regardless of whether the JSON was generated by a newer or older tool build.
+      // Each entry: tagType → set of parameter keys not supported on that type.
+      // ─────────────────────────────────────────────────────────────────────
+      var FORBIDDEN_PARAMS = {
+        // gclidw: Conversion Linker — accepts no parameters by default
+        gclidw: ['enableCookieOverrides', 'enableCrossDomain'],
+        // awct: Google Ads Conversion — reject params that belong to other tag types
+        awct:   ['enableConversionLinker', 'userProperties', 'sendEcommerceData'],
+        // gaawe: GA4 Event — sendEcommerceData causes 503 when explicitly 'false'
+        gaawe:  ['sendEcommerceData'],
+        // sp: Google Ads Remarketing — keep minimal
+        sp:     ['userProperties', 'sendEcommerceData']
+      };
+      function sanitizeTag(t) {
+        var bad = FORBIDDEN_PARAMS[t.type];
+        if (!bad || !t.parameter) return t;
+        var before = t.parameter.length;
+        t.parameter = t.parameter.filter(function (p) { return bad.indexOf(p.key) === -1; });
+        if (before !== t.parameter.length) {
+          console.info('[sanitize] stripped ' + (before - t.parameter.length) + ' param(s) from', t.name, '(' + t.type + ')');
+        }
+        return t;
+      }
+
       var BUILTIN = { 2147479553: true, 2147479572: true };
 
       try {
@@ -8641,7 +9247,7 @@
         for (var gi = 0; gi < tags.length; gi++) {
           await _gtmDelay();
           _setGtmProgress('⏳ Tags... (' + (gi + 1) + '/' + tags.length + ')  —  Step 4/5', true);
-          var gObj = clean(tags[gi]);
+          var gObj = sanitizeTag(clean(tags[gi]));   // ← strips forbidden params
           gObj.name = resolvedName(gObj.name, existingTagMap);
           gObj.firingTriggerId = remapIds(gObj.firingTriggerId);
           gObj.blockingTriggerId = remapIds(gObj.blockingTriggerId);
@@ -8659,12 +9265,24 @@
         // No create_version needed: the workspace IS the draft.
         if (!isPublish) {
           _setGtmProgress('', false);
-          _setGtmResult(
-            '✅ تم الاستيراد في الـ Workspace بنجاح!\n'
-            + tags.length + ' Tag  ·  ' + triggers.length + ' Trigger  ·  ' + vars.length + ' Variable\n'
-            + 'افتح GTM وهتلاقي التغييرات في الـ Workspace جاهزة للمراجعة.',
-            false
-          );
+          var okT = tags.length - failedTags.length;
+          var okTr = triggers.length - failedTrigs.length;
+          var okV = vars.length - failedVars.length;
+          var anyErr = failedVars.length || failedTrigs.length || failedTags.length;
+          var msg = (anyErr ? '⚠️  الاستيراد اكتمل مع أخطاء\n' : '✅ تم الاستيراد في الـ Workspace بنجاح!\n')
+            + okT + '/' + tags.length + ' Tag  ·  '
+            + okTr + '/' + triggers.length + ' Trigger  ·  '
+            + okV + '/' + vars.length + ' Variable';
+          if (anyErr) {
+            msg += '\n\n❌ فشلت الـ Entities التالية (ابعتها لي لتشخيص سبب الـ Service unavailable):';
+            if (failedVars.length)  msg += '\n— Variables:\n   • ' + failedVars.join('\n   • ');
+            if (failedTrigs.length) msg += '\n— Triggers:\n   • ' + failedTrigs.join('\n   • ');
+            if (failedTags.length)  msg += '\n— Tags:\n   • ' + failedTags.join('\n   • ');
+            msg += '\n\n💡 افتح DevTools → Console عشان تشوف الـ response الكامل لكل فشل.';
+          } else {
+            msg += '\nافتح GTM وهتلاقي التغييرات في الـ Workspace جاهزة للمراجعة.';
+          }
+          _setGtmResult(msg, anyErr ? true : false);
           if (pubBtn) pubBtn.disabled = false;
           if (conBtn) conBtn.disabled = false;
           return;
@@ -8685,7 +9303,25 @@
         _setGtmProgress('', false);
 
         if (!verRes.ok) {
-          _setGtmResult('❌ فشل إنشاء الـ Version (' + verRes.status + '):\n' + _gtmErrMsg(verRes), true);
+          // Extract detailed error info (Google often includes a `details` array with the offending entity)
+          var detailMsg = _gtmErrMsg(verRes);
+          var details = (verRes.data && verRes.data.error && verRes.data.error.details) || [];
+          if (details.length) {
+            detailMsg += '\n\n🔎 تفاصيل الأخطاء من GTM API:';
+            details.forEach(function (d) {
+              detailMsg += '\n   • ' + (d.reason || d['@type'] || '') + ': ' + (d.message || JSON.stringify(d).substring(0, 200));
+            });
+          }
+          var stepErrs = '';
+          if (failedVars.length)  stepErrs += '\n— Variables فشلت: ' + failedVars.length;
+          if (failedTrigs.length) stepErrs += '\n— Triggers فشلت: ' + failedTrigs.length;
+          if (failedTags.length)  stepErrs += '\n— Tags فشلت: ' + failedTags.length;
+          _setGtmResult(
+            '❌ فشل إنشاء الـ Version (' + verRes.status + '):\n' + detailMsg
+            + (stepErrs ? '\n\nقبل الإصدار:' + stepErrs : '')
+            + '\n\n💡 افتح DevTools Console عشان تشوف أي Entity سبب المشكلة.',
+            true
+          );
           if (pubBtn) pubBtn.disabled = false;
           if (conBtn) conBtn.disabled = false;
           return;
@@ -9257,19 +9893,57 @@
       setTimeout(function() { enterTool(devUser, 'dev-token'); }, 300);
     }
 
+    // ── Cached session fallback (used when Firebase is unavailable) ──
+    function _tryLoadCachedSession() {
+      try {
+        var cached = localStorage.getItem('et_user');
+        if (cached) {
+          var u = JSON.parse(cached);
+          if (u && u.id && u.plan && u.status === 'active') {
+            console.warn('[Easy Track] Firebase unavailable — using cached session for:', u.email);
+            enterTool(u, 'cached-token');
+            return true;
+          }
+        }
+      } catch(e) {}
+      return false;
+    }
+
     function initFirebase() {
       // If running locally from file://, skip Firebase and use dev mode
       if (_isLocalDev()) {
         _enterDevMode();
         return;
       }
+
+      // Firebase load timeout — if SDK never loads after 10s, try cache or show gate
+      var _fbLoadTimer = setTimeout(function() {
+        console.warn('[Easy Track] Firebase SDK timeout');
+        if (!_tryLoadCachedSession()) {
+          // Show gate with offline warning
+          var gErr = document.getElementById('gGlobalErr');
+          if (gErr) { gErr.textContent = '⚠️ مشكلة في الاتصال — تأكد من الإنترنت وحاول تاني'; gErr.style.display = 'block'; }
+        }
+      }, 10000);
+
       if (typeof firebase === 'undefined') {
         setTimeout(initFirebase, 50);
         return;
       }
+
+      clearTimeout(_fbLoadTimer);
+
       if (!firebase.apps.length) firebase.initializeApp(FB_CONFIG);
       db = firebase.firestore();
       auth = firebase.auth();
+
+      // Enable Firestore offline persistence for resilience
+      try {
+        db.enablePersistence({ synchronizeTabs: true }).catch(function(e) {
+          if (e.code !== 'failed-precondition' && e.code !== 'unimplemented') console.warn('Firestore persistence:', e);
+        });
+      } catch(e) {}
+
       checkGTMRedirectResult();
       initSession();
     }
@@ -9337,7 +10011,11 @@
     // ── INIT SESSION ──
     function initSession() {
       auth.onAuthStateChanged(async function (fbUser) {
-        if (!fbUser) return;  // Not logged in → show gate
+        if (!fbUser) {
+          // Not logged in — try cached session as fallback
+          _tryLoadCachedSession();
+          return;
+        }
 
         try {
           var doc = await db.collection('clients').doc(fbUser.uid).get();
@@ -9358,6 +10036,13 @@
           enterTool(client, null);
         } catch (e) {
           console.error('initSession error:', e);
+          // Firestore unavailable — fallback to cached session
+          if (e.code === 'unavailable' || (e.message && e.message.toLowerCase().indexOf('unavailable') !== -1)) {
+            if (!_tryLoadCachedSession()) {
+              var gErr = document.getElementById('gGlobalErr');
+              if (gErr) { gErr.textContent = '⚠️ الخدمة غير متاحة مؤقتاً — حاول مرة أخرى'; gErr.style.display = 'block'; }
+            }
+          }
         }
       });
     }
@@ -10017,12 +10702,18 @@
         enterTool(client, '');
 
       } catch (e) {
-        var msg = (
-          e.code === 'auth/wrong-password' ||
-          e.code === 'auth/user-not-found' ||
-          e.code === 'auth/invalid-credential' ||
-          e.code === 'auth/invalid-email'
-        ) ? 'البريد أو كلمة المرور غلط' : (e.message || 'خطأ في الدخول');
+        var msg;
+        if (e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential' || e.code === 'auth/invalid-email') {
+          msg = 'البريد أو كلمة المرور غلط';
+        } else if (e.code === 'unavailable' || (e.message && e.message.toLowerCase().indexOf('unavailable') !== -1)) {
+          // Firebase unavailable — try cached session
+          if (_tryLoadCachedSession()) return;
+          msg = '⚠️ الخدمة غير متاحة مؤقتاً — انتظر ثواني وحاول تاني';
+        } else if (e.code === 'auth/network-request-failed') {
+          msg = '⚠️ تأكد من اتصال الإنترنت وحاول تاني';
+        } else {
+          msg = e.message || 'خطأ في الدخول';
+        }
         showGateError('l', msg);
         btn.textContent = 'دخول ←'; btn.disabled = false;
       }
@@ -10832,19 +11523,53 @@
         var prods = [];
         if (!raw) return prods;
         if (Array.isArray(raw)) { prods = raw; }
-        else if (raw.id) { prods = [raw]; }
-        else if (raw[0] && raw[0].id) { prods = Object.values(raw); }
+        else if (raw.id || raw.sku) { prods = [raw]; }
+        else if (raw[0] && (raw[0].id || raw[0].sku)) { prods = Object.values(raw); }
         return prods.map(function (p, i) {
+          if (!p || typeof p !== 'object') return null;
+          var cat = p.category;
+          if (cat && typeof cat === 'object') cat = cat.name || cat.title || '';
+          var qty = parseInt(p.quantity || p.qty, 10);
+          if (isNaN(qty) || qty < 1) qty = 1;
           return {
-            item_id: String(p.id || p.sku || ''),
+            item_id: String(p.id || p.sku || p.product_id || ''),
             item_name: p.name || p.title || '',
             item_brand: p.brand || '',
-            item_category: p.category || p.type || '',
-            price: parseFloat(p.price || p.regular_price || 0),
-            quantity: parseInt(p.quantity || p.qty || 1, 10),
+            item_category: cat || p.type || '',
+            item_variant: p.variant || p.variation || '',
+            price: Math.round(parseFloat(p.price || p.regular_price || p.unit_price || 0) * 100) / 100,
+            quantity: qty,
             index: i
           };
+        }).filter(function (x) { return x && x.item_id; });
+      }
+
+      // ── Dynamic product extractor — detects shape by MEANING, not fixed paths ──
+      function extractSallaProducts(raw) {
+        var out = [];
+        var ec = raw.ecommerce || {};
+        var slot0 = raw[0] || raw['0'];
+        [ec.add, ec.remove, ec.purchase, ec.checkout, ec.detail].forEach(function (box) {
+          if (box && Array.isArray(box.products) && box.products.length) out.push(box.products);
         });
+        if (Array.isArray(ec.impressions) && ec.impressions.length) out.push(ec.impressions);
+        if (Array.isArray(ec.products) && ec.products.length) out.push(ec.products);
+        if (Array.isArray(raw.data) && raw.data.length) out.push(raw.data);
+        if (Array.isArray(raw.items) && raw.items.length) out.push(raw.items);
+        if (Array.isArray(raw.products) && raw.products.length) out.push(raw.products);
+        if (slot0 && typeof slot0 === 'object') {
+          if (Array.isArray(slot0.products) && slot0.products.length) out.push(slot0.products);
+          else if (slot0.id || slot0.sku || slot0.name) out.push([slot0]);
+        }
+        if (!out.length) {
+          Object.keys(raw).forEach(function (k) {
+            if (/^\d+$/.test(k) && raw[k] && (raw[k].id || raw[k].sku || raw[k].name)) {
+              out.push([raw[k]]);
+            }
+          });
+        }
+        for (var i = 0; i < out.length; i++) if (out[i] && out[i].length) return out[i];
+        return [];
       }
 
       function normalizeZidItems(rawItems) {
@@ -10899,7 +11624,7 @@
         return Math.round(val * 100) / 100;
       }
 
-      // ── Normalize Salla raw push to GA4 structure ──
+      // ── Normalize Salla raw push to GA4 structure (shape-agnostic) ──
       function normalizeSalla(raw) {
         if (!raw || !raw.event) return null;
         var ga4Ev = SALLA_UA_TO_GA4[raw.event];
@@ -10908,50 +11633,54 @@
         var ec = raw.ecommerce || {};
         var prod0 = (raw[0] && typeof raw[0] === 'object') ? raw[0] : {};
 
-        var prods = [];
-        if (ga4Ev === 'view_item') {
-          prods = prod0.id ? [prod0] : (ec.detail && ec.detail.products) || [];
-        } else if (ga4Ev === 'view_item_list') {
-          prods = raw.data || (ec.impressions) || [];
-        } else if (ga4Ev === 'add_to_cart') {
-          prods = (ec.add && ec.add.products) || (prod0.id ? [prod0] : []);
-        } else if (ga4Ev === 'view_cart') {
-          prods = prod0.products || ec.products || [];
-        } else if (ga4Ev === 'remove_from_cart') {
-          prods = (ec.remove && ec.remove.products) || (prod0.id ? [prod0] : []);
-        } else if (ga4Ev === 'add_to_wishlist') {
-          prods = prod0.id ? [prod0] : [];
-        } else if (ga4Ev === 'begin_checkout') {
-          prods = (ec.checkout && ec.checkout.products) || prod0.products || [];
-        } else if (ga4Ev === 'purchase') {
-          prods = (ec.purchase && ec.purchase.products) || [];
-        }
+        // Dynamic extraction — works with data[] / [0] / [0].products / ecommerce.*.products
+        var prods = extractSallaProducts(raw);
 
         var items = normalizeSallaItems(prods);
-        var currency = ec.currencyCode || prod0.currency || 'SAR';
-        var value = extractValue(ga4Ev, items, ec, raw);
+        var currency = ec.currencyCode || ec.currency || prod0.currency || 'SAR';
+
+        // Monetary field semantics — per-event, NOT generalized:
+        //   purchase          → ecommerce.value  (final order revenue / total)
+        //   view_item         → ecommerce.price  (single product price)
+        //   add_to_wishlist   → ecommerce.price  (single product price)
+        //   add_to_cart       → ecommerce.price  (unit price × quantity — line total)
+        //   remove_from_cart  → ecommerce.price  (line total of removed item)
+        //   view_cart         → ecommerce.price  (sum across all line items)
+        //   begin_checkout    → ecommerce.price  (sum across all line items at checkout)
+        //   view_item_list    → (no monetary field)
+        var ecBlock = { currency: currency, items: items };
+        var sumQty = items.reduce(function (s, it) { return s + (parseInt(it.quantity, 10) || 0); }, 0);
+        if (ga4Ev === 'purchase') {
+          ecBlock.value     = extractValue('purchase', items, ec, raw);
+          ecBlock.num_items = sumQty;
+        } else if (ga4Ev === 'view_item' || ga4Ev === 'add_to_wishlist') {
+          ecBlock.price     = extractValue(ga4Ev, items, ec, raw);
+          ecBlock.num_items = items.length ? (parseInt(items[0].quantity, 10) || 1) : 0;
+        } else if (ga4Ev === 'add_to_cart' || ga4Ev === 'remove_from_cart' ||
+                   ga4Ev === 'view_cart'   || ga4Ev === 'begin_checkout') {
+          ecBlock.price     = extractValue(ga4Ev, items, ec, raw);
+          ecBlock.num_items = sumQty;
+        }
 
         var payload = {
           event: ga4Ev,
-          event_id: generateEventId(),
-          ecommerce: { currency: currency, value: value, items: items }
+          event_id: generateEventId(raw, ga4Ev),
+          ecommerce: ecBlock
         };
 
         // purchase extras
         if (ga4Ev === 'purchase') {
           var af2 = (ec.purchase && ec.purchase.actionField) || {};
-          payload.ecommerce.transaction_id = String(af2.id || ec.event_id || raw.order_id || '');
-          payload.ecommerce.tax = parseFloat(af2.tax || 0);
-          payload.ecommerce.shipping = parseFloat(af2.shipping || 0);
-          delete payload.ecommerce.value;
-          payload.ecommerce.value = extractValue('purchase', items, ec, raw);
+          payload.ecommerce.transaction_id = String(af2.id || ec.event_id || raw.order_id || payload.event_id);
+          payload.ecommerce.tax = parseFloat(af2.tax || 0) || 0;
+          payload.ecommerce.shipping = parseFloat(af2.shipping || 0) || 0;
+          if (af2.coupon) payload.ecommerce.coupon = String(af2.coupon);
         }
         if (ga4Ev === 'view_item_list') {
           payload.ecommerce.item_list_name = raw.title
-            ? raw.title.replace(/<[^>]+>/g, '').trim() : '';
-          delete payload.ecommerce.value;
+            ? String(raw.title).replace(/<[^>]+>/g, '').trim() : '';
         }
-        if (ga4Ev === 'search') { payload.search_term = raw.searchTerm || ''; delete payload.ecommerce; }
+        if (ga4Ev === 'search') { payload.search_term = raw.searchTerm || raw.search_term || ''; delete payload.ecommerce; }
         if (ga4Ev === 'login') { delete payload.ecommerce; payload.method = 'salla'; }
         if (ga4Ev === 'sign_up') { delete payload.ecommerce; payload.method = 'salla'; }
 
@@ -10978,16 +11707,30 @@
         }
 
         var currency = ec.currency || ec.currencyCode || raw.currency || 'SAR';
-        var value = extractValue(ga4Ev, items, ec, raw);
+
+        // Per-event monetary field: purchase → value; all other ecommerce events → price.
+        var ecBlock = { currency: currency, items: items };
+        var sumQtyZ = items.reduce(function (s, it) { return s + (parseInt(it.quantity, 10) || 0); }, 0);
+        if (ga4Ev === 'purchase') {
+          ecBlock.value     = extractValue('purchase', items, ec, raw);
+          ecBlock.num_items = sumQtyZ;
+        } else if (ga4Ev === 'view_item' || ga4Ev === 'add_to_wishlist') {
+          ecBlock.price     = extractValue(ga4Ev, items, ec, raw);
+          ecBlock.num_items = items.length ? (parseInt(items[0].quantity, 10) || 1) : 0;
+        } else if (ga4Ev === 'add_to_cart' || ga4Ev === 'remove_from_cart' ||
+                   ga4Ev === 'view_cart'   || ga4Ev === 'begin_checkout') {
+          ecBlock.price     = extractValue(ga4Ev, items, ec, raw);
+          ecBlock.num_items = sumQtyZ;
+        }
 
         var payload = {
           event: ga4Ev,
-          event_id: generateEventId(),
-          ecommerce: { currency: currency, value: value, items: items }
+          event_id: generateEventId(raw, ga4Ev),
+          ecommerce: ecBlock
         };
 
         if (ga4Ev === 'purchase') {
-          payload.ecommerce.transaction_id = String(ec.transaction_id || ec.order_id || raw.order_id || '');
+          payload.ecommerce.transaction_id = String(ec.transaction_id || ec.order_id || raw.order_id || payload.event_id);
           // Remove duplicate purchase block if present
           delete payload.ecommerce.purchase;
         }
@@ -10999,12 +11742,22 @@
       }
 
       // ══════════════════════════════════════════════════════
-      // 3. UNIQUE EVENT ID (Deduplication)
+      // 3. UNIQUE EVENT ID (Deduplication) — Meta / TikTok / CAPI
       // ══════════════════════════════════════════════════════
-      function generateEventId() {
+      // Priority: reuse existing id  →  order_id + ts  →  random ts.
+      // This id is sent on BOTH browser pixel & server CAPI so duplicates merge.
+      function generateEventId(raw, mapped) {
+        if (raw && typeof raw === 'object') {
+          var ec = raw.ecommerce || {};
+          if (ec.event_id)  return String(ec.event_id);
+          if (raw.event_id) return String(raw.event_id);
+          var af = (ec.purchase && ec.purchase.actionField) || {};
+          if (af.id)        return String(af.id) + '_' + Date.now();
+          if (raw.order_id) return String(raw.order_id) + '_' + Date.now();
+        }
         var ts = Date.now().toString(36).toUpperCase();
         var rand = Math.random().toString(36).slice(2, 8).toUpperCase();
-        return 'ET-' + ts + '-' + rand;
+        return 'ET-' + (mapped ? String(mapped).toUpperCase() + '-' : '') + ts + '-' + rand;
       }
 
       // ══════════════════════════════════════════════════════
@@ -11433,6 +12186,71 @@
       console.log('%c  DataLayer Normalizer · Attribution · Deduplication · Multi-Platform · Server-Side', 'color:#85948d;font-size:11px;');
     })();
   </script>
+
+  <!-- ═══════════════════════════════════════════
+       WhatsApp Floating Button
+  ════════════════════════════════════════════ -->
+  <a href="https://wa.me/201552388174?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20Easy%20Track"
+     target="_blank"
+     id="wa-float-btn"
+     title="تواصل معنا على واتساب"
+     style="
+       position:fixed;
+       bottom:28px;
+       left:28px;
+       z-index:9998;
+       width:58px;
+       height:58px;
+       background:#25D366;
+       border-radius:50%;
+       display:flex;
+       align-items:center;
+       justify-content:center;
+       box-shadow:0 4px 24px rgba(37,211,102,0.55);
+       text-decoration:none;
+       transition:transform .25s, box-shadow .25s;
+     "
+     onmouseover="this.style.transform='scale(1.12)';this.style.boxShadow='0 8px 36px rgba(37,211,102,0.75)'"
+     onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 24px rgba(37,211,102,0.55)'"
+  >
+    <!-- WhatsApp SVG icon -->
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    <!-- Pulse ring -->
+    <span style="
+      position:absolute;inset:0;border-radius:50%;
+      background:rgba(37,211,102,0.4);
+      animation:wa-ping 2s infinite;
+      pointer-events:none;
+    "></span>
+  </a>
+  <style>
+    @keyframes wa-ping {
+      0%   { transform:scale(1);   opacity:.5; }
+      70%  { transform:scale(1.7); opacity:0;  }
+      100% { transform:scale(1.7); opacity:0;  }
+    }
+  </style>
+
+  <!-- ═══════════════════════════════════════════
+       Domain Footer Bar
+  ════════════════════════════════════════════ -->
+  <div style="
+    width:100%;
+    text-align:center;
+    padding:14px 0 18px;
+    background:rgba(11,14,20,0.9);
+    border-top:1px solid rgba(70,241,197,0.08);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:3px;
+    color:rgba(70,241,197,0.45);
+    text-transform:lowercase;
+    user-select:none;
+  ">
+    easytrac.io
+  </div>
 
 </body>
 
